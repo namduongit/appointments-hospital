@@ -37,13 +37,13 @@ spoсe-doctor/
 - Note: You must config some things before run docker compose
 - Script
     ```bash
-        cd spoce-doctor/docker && docker compose up
+        cd appointments-hostpital/docker && docker compose up
     ```
 *** 2. Run BackEnd ***
 - Note: Run with IDE or Docker. This script to help you run with VsCode
 - Script: 
     ```bash
-        cd spoce-doctor/server && code . 
+        cd appointments-hostpital/server && code . 
         # Run by button Run in JavaSpring project
     ```
 *** 3. Run FontEnd ***
@@ -51,6 +51,6 @@ spoсe-doctor/
 - Script:
     ```bash
         # Install dependencies
-        cd spoce-docer/client && npm install
+        cd appointments-hostpital/client && npm install
         npm run dev
     ```
