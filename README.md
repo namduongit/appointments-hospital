@@ -9,6 +9,8 @@ _Backend: Spring Boot | Frontend: Vite + TypeScript_
 - Server:
 - Client:
 
+*Note* You must config variable in `.env` and `application.properties`. You can read example file to config
+
 ### Clone the repository
 ```bash
 git clone https://github.com/namduongit/appointments-hostpital.git
@@ -23,6 +25,7 @@ spoсe-doctor/
 ├── docker/           # Docker (Update later)
 ├── .env              # Config variable
 └── README.md         # README.md
+... Some file or Folder
 ... Update somethings later
 ```
 
