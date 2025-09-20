@@ -1,6 +1,8 @@
 package com.appointmenthostpital.server.handlers;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -12,7 +14,8 @@ import com.appointmenthostpital.server.utils.HttpStatusResponse;
 public class GlobalExceptionHandler {
     // Server Error
     @ExceptionHandler(value = {
-        IllegalArgumentException.class
+        IllegalArgumentException.class,
+        UsernameNotFoundException.class
     })
     public ResponseEntity<RestResponse<?>> serverExceptionHandler(Exception exception) {
         RestResponse<Object> restResponse = new RestResponse<>();
@@ -27,7 +30,8 @@ public class GlobalExceptionHandler {
 
     // Client Error
     @ExceptionHandler(value = {
-        PasswordNotValidException.class
+        PasswordNotValidException.class,
+        BadCredentialsException.class
     })
     public ResponseEntity<RestResponse<?>> clientExceptionHandler(Exception exception) {
         RestResponse<Object> restResponse = new RestResponse<>();

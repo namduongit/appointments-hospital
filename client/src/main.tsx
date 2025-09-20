@@ -1,25 +1,21 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
-
 import { AppProviders } from "./contexts/AppProviders";
-
 import "./assets/index.css";
 
-// Client
 import Layout from "./layouts/layout";
 import HomePage from "./pages/home/home.page";
-import LoadingComponent from "./components/loadings/loading.component";
+import RotateLoading from "./components/loadings/rotate.loading";
 
-
-// Doctor - Admin and Page not be installed
 const DoctorLayout = lazy(() => import("./doctor/layouts/layout"))
 const DoctorHomePage = lazy(() => import("./doctor/pages/home/home.page"))
 const DoctorLoginPage = lazy(() => import("./doctor/pages/login/login.page"))
-const DoctorAppointment = lazy(() => import("./doctor/pages/appointment/appointment.page"))
+const DoctorAppointmentPage = lazy(() => import("./doctor/pages/appointment/appointment.page"))
 
 const LoginPage = lazy(() => import("./pages/login/login.page"));
 const RegisterPage = lazy(() => import("./pages/register/register.page"));
+const AccountPage = lazy(() => import("./pages/account/account.page"));
 
 const router = createBrowserRouter([
   {
@@ -35,6 +31,10 @@ const router = createBrowserRouter([
         path: "auth/register",
         Component: RegisterPage,
       },
+      {
+        path: "page/account",
+        Component: AccountPage
+      }
     ],
   },
   {
@@ -48,17 +48,17 @@ const router = createBrowserRouter([
       },
       {
         path: "appointments",
-        Component: DoctorAppointment
-      }
+        Component: DoctorAppointmentPage
+      },
     ]
   }
 ]);
 
 // Render app
 createRoot(document.getElementById("root")!).render(
-    <AppProviders>
-      <Suspense fallback={<LoadingComponent />}>
-        <RouterProvider router={router} />
-      </Suspense>
-    </AppProviders>
+  <AppProviders>
+    <Suspense fallback={<RotateLoading />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  </AppProviders>
 );

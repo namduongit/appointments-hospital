@@ -1,10 +1,33 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
 import thumbnail from "../../assets/images/auth/thumbnail.png";
 import person from "../../assets/images/auth/person.png";
 
+import { useToast } from "../../contexts/toastContext";
+import { login } from "../../services/authService";
+import { useAuth } from "../../contexts/authContext";
+
 const LoginPage = () => {
+    const toast = useToast();
+    const auth = useAuth();
+
+    const navigate = useNavigate();
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+
     const [showPassword, setShowPassword] = useState<boolean>(false);
+
+    async function handleLogin() {
+        const restResponse = await login(email, password);
+        if (restResponse.statusCode === 400) {
+            toast.showToast("Thông báo", "Tài khoản hoặc mật khẩu không chính xác", "error");
+        } else if (restResponse.statusCode === 200) {
+            toast.showToast("Thông báo", restResponse.message, "success");
+            setTimeout(() => navigate("/"), 1000);
+            auth.setAuth(restResponse.data);
+        }
+    }
 
     return (
         <main className="login-page w-full min-h-[90vh] flex">
@@ -22,6 +45,8 @@ const LoginPage = () => {
                                 type="email"
                                 placeholder="email@example.com"
                                 className="flex-1 outline-none bg-transparent"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
 
@@ -31,6 +56,8 @@ const LoginPage = () => {
                                 type={showPassword ? "text" : "password"}
                                 placeholder="••••••••"
                                 className="flex-1 outline-none bg-transparent"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                             <i
                                 className={`fa-solid ${showPassword ? "fa-eye" : "fa-eye-slash"
@@ -50,7 +77,7 @@ const LoginPage = () => {
                         </div>
                     </div>
                     <div className="flex gap-3 mt-6">
-                        <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer">
+                        <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer" onClick={handleLogin}>
                             Đăng nhập
                         </button>
                         <button className="flex-1 border py-2 rounded-lg hover:bg-gray-50 transition cursor-pointer">

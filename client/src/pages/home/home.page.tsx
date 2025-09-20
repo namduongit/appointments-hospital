@@ -1,5 +1,5 @@
 import MainSection from "../../components/sections/main.section";
-import NurseTeamSection from "../../components/sections/nurse-team.section";
+import NurseTeamSection from "../../components/sections/nurseTeam.section";
 
 const HomePage = () => {
     return (

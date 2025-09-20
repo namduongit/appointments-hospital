@@ -11,3 +11,11 @@ input[type="password"]::-webkit-credentials-auto-fill-button,
 input[type="password"]::-webkit-clear-button {
   display: none;
 }
+
+input:focus {
+    outline: none;
+}
+
+select:focus {
+  outline: none;
+}

@@ -41,7 +41,7 @@ const ToastProvider = ({ children }: { children: React.ReactNode }) => {
           <div
             key={toast.id}
             className={`
-              flex items-center gap-3 p-4 rounded-lg shadow-lg text-white
+              flex items-center gap-3 p-4 rounded-lg shadow-lg text-white w-60 lg:w-80
               ${toast.type === "success" ? "bg-green-500" : ""}
               ${toast.type === "error" ? "bg-red-500" : ""}
               ${toast.type === "warning" ? "bg-yellow-500" : ""}
@@ -72,3 +72,4 @@ const useToast = () => {
 }
 
 export { ToastProvider, useToast }
+export type { Toast }

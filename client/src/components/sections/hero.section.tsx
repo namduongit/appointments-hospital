@@ -1,4 +1,4 @@
-import MiniHeroSection from "./mini-hero.section";
+import MiniHeroSection from "./miniHero.section";
 
 const HeroSection = () => {
     const sections = [

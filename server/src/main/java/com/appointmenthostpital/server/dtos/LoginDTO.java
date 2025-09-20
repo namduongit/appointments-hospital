@@ -1,8 +1,12 @@
 package com.appointmenthostpital.server.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginDTO {
     public static class LoginRequest {
+        @NotBlank(message = "Email không được để trống")
         private String email;
+        @NotBlank(message = "Mật khẩu không được để trống")
         private String password;
 
         public String getEmail() {
@@ -27,14 +31,14 @@ public class LoginDTO {
         }
     }
 
-    public static class LoginRepsonse {
+    public static class LoginResponse {
         private String accessToken;
         private String email;
         private String role;
         private int issuedAt;
         private int expiresAt;
 
-        public LoginRepsonse(String accessToken, String email, String role, int issuedAt, int expiresAt) {
+        public LoginResponse(String accessToken, String email, String role, int issuedAt, int expiresAt) {
             this.accessToken = accessToken;
             this.email = email;
             this.role = role;

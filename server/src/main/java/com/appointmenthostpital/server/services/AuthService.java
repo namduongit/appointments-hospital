@@ -1,17 +1,16 @@
 package com.appointmenthostpital.server.services;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import com.appointmenthostpital.server.dtos.JWTResponse;
 import com.appointmenthostpital.server.dtos.LoginDTO;
 import com.appointmenthostpital.server.dtos.RegisterDTO;
+import com.appointmenthostpital.server.dtos.ValidResponse;
 import com.appointmenthostpital.server.models.UserModel;
 import com.appointmenthostpital.server.models.UserProfileModel;
 import com.appointmenthostpital.server.repositories.UserRepository;
@@ -33,6 +32,11 @@ public class AuthService {
     @Autowired
     private JWTService jwtService;
 
+    /**
+     * 
+     * @param registerRequest
+     * @return
+     */
     public RegisterDTO.RegisterResponse handlerRegister(RegisterDTO.RegisterRequest registerRequest) {
         UserModel userModel = new UserModel();
         UserProfileModel profileModel = new UserProfileModel();
@@ -51,35 +55,32 @@ public class AuthService {
                 DateCustom.getCurrentTimeStamp());
     }
 
-    public LoginDTO.LoginRepsonse handleLogin(LoginDTO.LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getPassword()));
+    /**
+     * 
+     * @param loginRequest
+     * @return
+     */
+    public LoginDTO.LoginResponse handlerLogin(LoginDTO.LoginRequest loginRequest) {
+        Authentication authentication = this.authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+        );
 
-        if (!authentication.isAuthenticated()) {
-            throw new UsernameNotFoundException("Invalid email or password");
-        }
+        JWTResponse jwtResponse = this.jwtService.generateToken(authentication);
 
-        // Generate token
-        String accessToken = this.jwtService.generateToken(authentication);
-
-        // getName was used when login
-        String email = authentication.getName();
-        String role = authentication.getAuthorities().iterator().next().getAuthority();
-
-        // Extract issuedAt + expiresAt from JWTService
-        Instant now = Instant.now();
-        Instant expires = now.plus(jwtService.getExpireSecond(), ChronoUnit.SECONDS);
-
-        int issuedAt = (int) now.getEpochSecond();
-        int expiresAt = (int) expires.getEpochSecond();
-
-        return new LoginDTO.LoginRepsonse(
-                accessToken,
-                email,
-                role,
-                issuedAt,
-                expiresAt);
+        return new LoginDTO.LoginResponse(jwtResponse.getAccessToken(), loginRequest.getEmail(), jwtResponse.getRole(), jwtResponse.getNow(), jwtResponse.getValidity());
     }
+
+    /**
+     * 
+     * @param authentication
+     * @return
+     */
+    public ValidResponse handlerValid(Authentication authentication) {
+        String email = authentication.getName();
+        UserModel userModel = this.userRepository.findByEmail(email);
+        Jwt jwt = (Jwt)authentication.getPrincipal();
+        
+        return new ValidResponse(email, userModel.getRole(), (int)jwt.getIssuedAt().getEpochSecond(), (int)jwt.getExpiresAt().getEpochSecond());
+    }
+
 }

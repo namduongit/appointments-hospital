@@ -1,4 +1,3 @@
-
 type NurseSectionProps = {
     id: number,
     image: string,

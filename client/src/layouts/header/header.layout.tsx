@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import ScheduleNowButton from "../../components/buttons/schedule-now.button";
-import MenuHeader from "../../components/menus/menu-header.component";
+import ScheduleNowButton from "../../components/buttons/scheduleNow.button";
+import MenuHeader from "../../components/menus/header.menu";
 import AccountButton from "../../components/buttons/account.button";
 
 const HeaderLayout = () => {

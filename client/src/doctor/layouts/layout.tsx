@@ -1,22 +1,22 @@
 
 
 import { Outlet } from "react-router-dom";
-import HeaderLayout from "./header/header.layout";
-import FooterLayout from "./footer/footer.layout";
-import DoctorSidebar from "../components/sidebar/sidebar.component";
+import DoctorHeaderLayout from "./header/header.layout";
+import DoctorFooterLayout from "./footer/footer.layout";
+import DoctorMainSidebar from "../components/sidebar/main.sidebar";
 
 const DoctorLayout = () => {
     return (
         <div className="flex flex-col min-h-screen">
-            <HeaderLayout />
+            <DoctorHeaderLayout />
             <div className="flex flex-1 w-full">
-                <DoctorSidebar />
-                <main className="flex-1 p-4 bg-gray-150 min-h-0">
+                <DoctorMainSidebar />
+                <main className="flex-1 p-4 bg-gray-150 min-h-0 px-6">
                     <Outlet />
                 </main>
                  {/* <Outlet /> */}
             </div>  
-            <FooterLayout />
+            <DoctorFooterLayout />
         </div>
     );
 };
