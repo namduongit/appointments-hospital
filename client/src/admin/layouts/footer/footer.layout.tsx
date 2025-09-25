@@ -1,4 +1,4 @@
-const DoctorFooterLayout = () => {
+const AdminFooterLayout = () => {
   return (
     <footer className="footer-layout bg-white py-2 text-center shadow-md font-bold">
       <span className="text-black">© {new Date().getFullYear()} - Bản quyền thuộc Công ty Công nghệ
@@ -7,4 +7,4 @@ const DoctorFooterLayout = () => {
     </footer>
   )
 }
-export default DoctorFooterLayout;
+export default AdminFooterLayout;
