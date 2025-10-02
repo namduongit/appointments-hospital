@@ -4,17 +4,17 @@ import { motion } from "motion/react";
 const navLinks = [
     { id:"home", href: '/admin', label: 'Trang chủ', icon: 'fa-solid fa-chart-line' },
     { id:"accounts", href: '/admin/accounts', label: 'Quản lý tài khoản', icon: 'fa-solid fa-users' },
-    { id:"doctor-profile", href: '/admin/doctor-profile', label: 'Quản lý bác sĩ', icon: 'fa-solid fa-user-doctor' },
-    { id:"assitor-profile", href: '/admin/assitor-profile', label: 'Quản lý nhân viên', icon: 'fa-solid fa-user-nurse' },
-    { id:"appointment", href: '/admin/appointment', label: 'Quản lý lịch hẹn', icon: 'fa-solid fa-calendar-check' },
+    { id:"doctor-profile", href: '/admin/doctors-profile', label: 'Quản lý bác sĩ', icon: 'fa-solid fa-user-doctor' },
+    { id:"assitor-profile", href: '/admin/assitors-profile', label: 'Quản lý nhân viên', icon: 'fa-solid fa-user-nurse' },
+    { id:"appointment", href: '/admin/appointments', label: 'Quản lý lịch hẹn', icon: 'fa-solid fa-calendar-check' },
     { id:"medician-store", href: '/admin/medician-store', label: 'Quản lý kho thuốc', icon: 'fa-solid fa-warehouse' },
-    { id:"none1", href: '/admin/', label: 'Quản lý nhập hàng', icon: 'fa-solid fa-file-import' },
-    { id:"none2", href: '/admin/', label: 'Báo cáo thống kê', icon: 'fa-solid fa-chart-pie' },
+    { id:"none1", href: '/admin/none1', label: 'Quản lý nhập hàng', icon: 'fa-solid fa-file-import' },
+    { id:"none2", href: '/admin/none2', label: 'Báo cáo thống kê', icon: 'fa-solid fa-chart-pie' },
 ]
 
 const AdminMainSidebar = () => {
-    const [open, setOpen] = useState<boolean>(false);
-    const [tabActive, setTabActive] = useState<string>("home");
+    const locationPath = window.location.pathname;
+    const [open, setOpen] = useState<boolean>(true);
 
     return (
         <div className='sidebar-component'>
@@ -37,15 +37,13 @@ const AdminMainSidebar = () => {
                     >
                         <motion.i 
                             className={`fa-solid fa-angles-${open ? 'left' : 'right'}`}
-                            animate={{ rotate: open ? 0 : 180 }}
                             transition={{ duration: 0.3 }}
                         ></motion.i>
                     </button>
 
                     {navLinks.map(link => (
                         <a key={link.href} href={link.href} className={`overflow-hidden font-semibold flex gap-2 items-center hover:text-blue-600 hover:bg-blue-50 rounded px-3 py-3 transition-all duration-200
-                        ${tabActive === link.id && 'border-l-3 rounded-lg border-blue-600 bg-blue-50 text-blue-600'}
-                        `} onClick={() => {setTabActive(link.id)}}>
+                        ${locationPath === link.href && 'border-l-3 rounded-lg border-blue-600 bg-blue-50 text-blue-600'}`}>
                             <i className={`fa-solid ${link.icon} min-w-[20px]`}></i>
                             <motion.span 
                                 className="whitespace-nowrap"

@@ -1,4 +1,4 @@
-package com.appointmenthostpital.server.dtos;
+package com.appointmenthostpital.server.dtos.auth;
 
 import jakarta.validation.constraints.NotBlank;
 

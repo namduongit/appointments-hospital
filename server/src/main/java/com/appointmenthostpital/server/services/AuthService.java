@@ -8,9 +8,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import com.appointmenthostpital.server.dtos.JWTResponse;
-import com.appointmenthostpital.server.dtos.LoginDTO;
-import com.appointmenthostpital.server.dtos.RegisterDTO;
 import com.appointmenthostpital.server.dtos.ValidResponse;
+import com.appointmenthostpital.server.dtos.auth.LoginDTO;
+import com.appointmenthostpital.server.dtos.auth.RegisterDTO;
 import com.appointmenthostpital.server.models.UserModel;
 import com.appointmenthostpital.server.models.UserProfileModel;
 import com.appointmenthostpital.server.repositories.UserRepository;
@@ -75,6 +75,7 @@ public class AuthService {
      * @param authentication
      * @return
      */
+    @SuppressWarnings("null")
     public ValidResponse handlerValid(Authentication authentication) {
         String email = authentication.getName();
         UserModel userModel = this.userRepository.findByEmail(email);

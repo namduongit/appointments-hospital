@@ -2,6 +2,7 @@ package com.appointmenthostpital.server.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +21,8 @@ public class AppointmentModel {
     private String phone;
     private String time;
     private String note;
-    private String status;
+    @Column(columnDefinition = "enum('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELED') default 'PENDING'")
+    private String status = "PENDING";
 
     @ManyToOne
     @JoinColumn(name = "user_id")

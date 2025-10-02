@@ -17,7 +17,7 @@ public class HttpMessageNotReadableExceptionHandler {
         restResponse.setResult(false);
         restResponse.setData(null);
         restResponse.setMessage(HttpStatusResponse.INTERNAL_MESSAGE);
-        restResponse.setErrorMessage("Required request body is missing");
+        restResponse.setErrorMessage(HttpStatusResponse.BODY_MISSING);
 
         return ResponseEntity.status(HttpStatusResponse.INTERNAL_SERVER_ERROR).body(restResponse);
     }

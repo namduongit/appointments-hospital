@@ -120,19 +120,202 @@ public class AccountDTO {
         }
     }
 
-    public static class UpdateAccountRequest {
-
-    }
-
-    public static class UpdateAccountResponse {
-
-    }
-
+    // Not use
     public static class DeleteAccountRequest {
+        private Long id;
+        private String email;
 
+        public DeleteAccountRequest(Long id, String email) {
+            this.id = id;
+            this.email = email;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        @Override
+        public String toString() {
+            return "DeleteAccountRequest [id=" + id + ", email=" + email + "]";
+        }
     }
 
     public static class DeleteAccountResponse {
+        private Long id;
+        private String email;
+        private String role;
+        private String type;
 
+        public DeleteAccountResponse(Long id, String email, String role, String type) {
+            this.id = id;
+            this.email = email;
+            this.role = role;
+            this.type = type;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return "DeleteAccountResponse [id=" + id + ", email=" + email + ", role=" + role + ", type=" + type + "]";
+        }
+    }
+
+    public static class UpdateAccountRequest {
+        private String email;
+        private String password;
+        private String role;
+        private String type;
+        private String status;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+        
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return "UpateAccountResponse [email=" + email + ", password=" + password + ", role=" + role
+                    + ", type=" + type + ", status=" + status + "]";
+        }
+    }
+
+    public static class UpdateAccountResponse {
+        private Long id;
+        private String email;
+        private String role;
+        private String type;
+        private String status;
+
+        public UpdateAccountResponse(Long id, String email, String role, String type, String status) {
+            this.id = id;
+            this.email = email;
+            this.role = role;
+            this.type = type;
+            this.status = status;
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public void setId(Long id) {
+            this.id = id;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+        
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        @Override
+        public String toString() {
+            return "UpdateAccountResponse [id=" + id + ", email=" + email + ", role=" + role
+                    + ", type=" + type + ", status=" + status + "]";
+        }
     }
 }

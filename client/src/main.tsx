@@ -14,10 +14,13 @@ const DoctorLoginPage = lazy(() => import("./doctor/pages/login/login.page"));
 const DoctorAppointmentPage = lazy(() => import("./doctor/pages/appointment/appointment.page"));
 
 const AdminLayout = lazy(() => import("./admin/layouts/layout"));
+const AdminAccountsPage = lazy(() => import("./admin/pages/accounts/accounts.page"));
+const AdminDoctorsPage = lazy(() => import("./admin/pages/doctors/doctors.page"));
 
 const LoginPage = lazy(() => import("./pages/login/login.page"));
 const RegisterPage = lazy(() => import("./pages/register/register.page"));
 const AccountPage = lazy(() => import("./pages/account/account.page"));
+const BookingPage = lazy(() => import("./pages/booking/booking.page"));
 
 const router = createBrowserRouter([
   {
@@ -36,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "page/account",
         Component: AccountPage
+      },
+      {
+        path: "page/booking",
+        Component: BookingPage
       }
     ],
   },
@@ -58,7 +65,14 @@ const router = createBrowserRouter([
     path: "/admin",
     Component: AdminLayout,
     children: [
-      
+      {
+        path: "accounts",
+        Component: AdminAccountsPage
+      },
+      {
+        path: "doctors-profile",
+        Component: AdminDoctorsPage
+      }
     ]
   }
 ]);

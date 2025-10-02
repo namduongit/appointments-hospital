@@ -5,7 +5,7 @@ import { rooms } from "../../../models/data";
 import { departments } from "../../../models/data";
 import { appointments } from "../../../models/data";
 
-import { rows } from "../../contexts/utils.context";
+import { rows } from "../../../constants/row.constant";
 import DoctorTablePagination from "../../components/paginations/table.pagination";
 import type { AppointmentModel } from "../../../models/Appointment.model";
 import DoctorDetailAppointment from "../../components/appointment/detail.appointment";
@@ -29,83 +29,56 @@ const DoctorAppointmentPage = () => {
                     </div>
                 </div>
 
-                <div className="appointment__sort bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-                    <div className="appointment__filter space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            <div className="space-y-1">
-                                <label className="block text-xs font-medium text-gray-700">Phòng khám</label>
-                                <select className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                                    <option value="">Chọn phòng</option>
-                                    {rooms.map((room) => (
-                                        <option key={room.id} value={room.id}>
-                                            {room.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="block text-xs font-medium text-gray-700">Khoa</label>
-                                <select className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
-                                    <option value="">Chọn khoa</option>
-                                    {departments.map((department) => (
-                                        <option key={department.id} value={department.id}>
-                                            {department.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="block text-xs font-medium text-gray-700">Hiển thị</label>
-                                <select 
-                                    className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                    onChange={(event) => {
-                                        setRow(parseInt(event.target.value));
-                                        console.log(event.target.value)
-                                    }}
-                                >
-                                    <option value="">Số hàng</option>
-                                    {rows.map((row) => (
-                                        <option key={row.id} value={row.value}>
-                                            {row.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                <div className="appointment__sort bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6 grid grid-cols-1 lg:grid-cols-2">
+                    <div className="flex gap-3">
+                        <div className="space-y-1 flex-1">
+                            <select className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                <option value="">Chọn phòng</option>
+                                {rooms.map((room) => (
+                                    <option key={room.id} value={room.id}>
+                                        {room.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
-                        <div className="space-y-1">
-                            <label className="block text-xs font-medium text-gray-700">Tìm kiếm</label>
-                            <div className="relative">
-                                <i className="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                                <input 
-                                    type="text" 
-                                    className="w-full border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" 
-                                    placeholder="Tìm theo tên bệnh nhân, số điện thoại..."
-                                />
-                            </div>
+                        <div className="space-y-1 flex-1">
+                            <select className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors">
+                                <option value="">Chọn khoa</option>
+                                {departments.map((department) => (
+                                    <option key={department.id} value={department.id}>
+                                        {department.name}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
-                        <div className="space-y-2">
-                            <label className="block text-xs font-medium text-gray-700">Trạng thái</label>
-                            <div className="flex flex-wrap gap-2">
-                                <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium hover:bg-blue-200 transition-colors">
-                                    Tất cả
-                                </button>
-                                <button className="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium hover:bg-yellow-200 transition-colors">
-                                    Chờ xác nhận
-                                </button>
-                                <button className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium hover:bg-green-200 transition-colors">
-                                    Đã xác nhận
-                                </button>
-                                <button className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-medium hover:bg-gray-200 transition-colors">
-                                    Đã hủy
-                                </button>
-                                <button className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium hover:bg-emerald-200 transition-colors">
-                                    Hoàn thành
-                                </button>
-                            </div>
+                        <div className="space-y-1 flex-1">
+                            <select
+                                className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                onChange={(event) => {
+                                    setRow(parseInt(event.target.value));
+                                    console.log(event.target.value)
+                                }}
+                            >
+                                <option value="">Số hàng</option>
+                                {rows.map((row) => (
+                                    <option key={row.id} value={row.value}>
+                                        {row.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="space-y-1 flex justify-end">
+                        <div className="relative">
+                            <i className="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input
+                                type="text"
+                                className="border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                placeholder="Tìm theo tên bệnh nhân, số điện thoại..."
+                            />
                         </div>
                     </div>
                 </div>
@@ -136,9 +109,9 @@ const DoctorAppointmentPage = () => {
                                                 ${appointment.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : ''}
                                             `}>
                                                 {appointment.status === 'PENDING' ? 'Chờ xác nhận' :
-                                                 appointment.status === 'CONFIRMED' ? 'Đã xác nhận' :
-                                                 appointment.status === 'COMPLETED' ? 'Hoàn thành' :
-                                                 appointment.status === 'CANCELED' ? 'Đã hủy' : appointment.status}
+                                                    appointment.status === 'CONFIRMED' ? 'Đã xác nhận' :
+                                                        appointment.status === 'COMPLETED' ? 'Hoàn thành' :
+                                                            appointment.status === 'CANCELED' ? 'Đã hủy' : appointment.status}
                                             </span>
                                         </td>
                                         <td className="px-4 py-3 text-sm text-gray-600">{appointment.phone}</td>
@@ -146,10 +119,10 @@ const DoctorAppointmentPage = () => {
                                         <td className="px-4 py-3 text-center">
                                             <div className="flex items-center justify-center gap-2">
                                                 <button className="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-xs font-medium"
-                                                onClick={() => {
-                                                    setShowDetailAppointment(true);
-                                                    setAppoinment(appointment);
-                                                }}
+                                                    onClick={() => {
+                                                        setShowDetailAppointment(true);
+                                                        setAppoinment(appointment);
+                                                    }}
                                                 >
                                                     <i className="fa-solid fa-eye mr-1"></i>
                                                     Xem
@@ -182,12 +155,12 @@ const DoctorAppointmentPage = () => {
                                     ${appointment.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : ''}
                                 `}>
                                     {appointment.status === 'PENDING' ? 'Chờ xác nhận' :
-                                     appointment.status === 'CONFIRMED' ? 'Đã xác nhận' :
-                                     appointment.status === 'COMPLETED' ? 'Hoàn thành' :
-                                     appointment.status === 'CANCELED' ? 'Đã hủy' : appointment.status}
+                                        appointment.status === 'CONFIRMED' ? 'Đã xác nhận' :
+                                            appointment.status === 'COMPLETED' ? 'Hoàn thành' :
+                                                appointment.status === 'CANCELED' ? 'Đã hủy' : appointment.status}
                                 </span>
                             </div>
-                            
+
                             <div className="space-y-2 mb-4">
                                 <div className="flex items-center text-sm">
                                     <i className="fa-solid fa-phone text-gray-400 w-4 mr-2"></i>
@@ -198,7 +171,7 @@ const DoctorAppointmentPage = () => {
                                     <span className="text-gray-600">{appointment.time}</span>
                                 </div>
                             </div>
-                            
+
                             <div className="flex gap-2 pt-3 border-t border-gray-100">
                                 <button className="flex-1 bg-blue-100 text-blue-700 py-2 px-3 rounded-md hover:bg-blue-200 transition-colors text-sm font-medium">
                                     <i className="fa-solid fa-eye mr-2"></i>
@@ -221,7 +194,7 @@ const DoctorAppointmentPage = () => {
                 </div>
             </div>
 
-            {showDetailAppointment && (<DoctorDetailAppointment  appointmentModel={{...appointment}} setShowDetailAppointment={setShowDetailAppointment} departmentName="Khoa kham noi quat" roomName="Phong 2" doctorName="Nam Duong" />)}
+            {showDetailAppointment && (<DoctorDetailAppointment appointmentModel={{ ...appointment }} setShowDetailAppointment={setShowDetailAppointment} departmentName="Khoa kham noi quat" roomName="Phong 2" doctorName="Nam Duong" />)}
         </main>
     )
 }

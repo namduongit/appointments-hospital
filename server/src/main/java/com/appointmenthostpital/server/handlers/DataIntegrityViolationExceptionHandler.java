@@ -17,7 +17,7 @@ public class DataIntegrityViolationExceptionHandler {
         restResponse.setResult(false);
         restResponse.setData(null);
         restResponse.setMessage(HttpStatusResponse.BAD_MESSAGE);
-        restResponse.setErrorMessage("Dữ liệu đã tồn tại trong hệ thống");
+        restResponse.setErrorMessage(HttpStatusResponse.EXISTS_RESOURCE);
 
         return ResponseEntity.status(HttpStatusResponse.BAD_REQUEST).body(restResponse);
     }

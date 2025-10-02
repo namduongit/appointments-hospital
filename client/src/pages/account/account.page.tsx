@@ -2,18 +2,9 @@ import { useEffect, useState } from "react";
 import person from "../../assets/images/auth/person.png"
 import { useAuth } from "../../contexts/authContext";
 import type { UserProfileModel } from "../../models/UserProfile.model";
-import type { AppointmentModel } from "../../models/Appointment.model";
 import { userDetail, updateUserProfile } from "../../services/userService";
-
-type AccountDetail = {
-    id: number,
-    email: string,
-    role: string,
-    type: string,
-    status: string,
-    userProfileModel: UserProfileModel,
-    userAppointmets: AppointmentModel[]
-}
+import type { AccountDetail } from "../../constants/dtos.constant";
+import { validNumberPhone } from "../../utils/valid.util";
 
 const AccountPage = () => {
     const auth = useAuth();
@@ -41,13 +32,13 @@ const AccountPage = () => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-    const getUserDetail = async () => {
+    const handleFetchUserDetail = async () => {
         try {
             setLoading(true);
             setError(null);
             const restResponse = await userDetail();
             
-            if (restResponse.result) {
+            if (restResponse.result && restResponse.statusCode === 200) {
                 const data: AccountDetail = restResponse.data;
                 setAccountDetail(data);
                 
@@ -55,10 +46,10 @@ const AccountPage = () => {
                     fullName: data.userProfileModel?.fullName || "",
                     phone: data.userProfileModel?.phone || "",
                     address: data.userProfileModel?.address || "",
-                    birthDate: data.userProfileModel?.birthDay || "" // server returns birthDay
+                    birthDate: data.userProfileModel?.birthDate || ""
                 });
             } else {
-                setError(restResponse.message || "Không thể tải thông tin tài khoản");
+                setError("Không thể tải thông tin tài khoản");
             }
         } catch (err) {
             setError("Đã xảy ra lỗi khi tải dữ liệu");
@@ -91,7 +82,7 @@ const AccountPage = () => {
         
         if (!profileForm.phone.trim()) {
             errors.phone = "Số điện thoại là bắt buộc";
-        } else if (!/^[0-9]{10,11}$/.test(profileForm.phone.replace(/\s/g, ""))) {
+        } else if (validNumberPhone(profileForm.phone)) {
             errors.phone = "Số điện thoại không hợp lệ";
         }
         
@@ -143,20 +134,19 @@ const AccountPage = () => {
         }
     };
 
-    // Reset form to original values
     const handleCancel = () => {
         setProfileForm({
             fullName: accountDetail.userProfileModel?.fullName || "",
             phone: accountDetail.userProfileModel?.phone || "",
             address: accountDetail.userProfileModel?.address || "",
-            birthDate: accountDetail.userProfileModel?.birthDay || "" // server uses birthDay
+            birthDate: accountDetail.userProfileModel?.birthDate || "" 
         });
         setFormErrors({});
         setIsEditing(false);
     };
 
     useEffect(() => {
-        getUserDetail();
+        handleFetchUserDetail();
     }, []);
 
     const menuItems = [
@@ -282,6 +272,7 @@ const AccountPage = () => {
                                         </label>
                                         <input
                                             type="date"
+                                            lang="vi"
                                             value={profileForm.birthDate}
                                             onChange={(e) => handleInputChange('birthDate', e.target.value)}
                                             disabled={!isEditing}

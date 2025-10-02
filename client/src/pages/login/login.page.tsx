@@ -23,7 +23,7 @@ const LoginPage = () => {
         if (restResponse.statusCode === 400) {
             toast.showToast("Thông báo", "Tài khoản hoặc mật khẩu không chính xác", "error");
         } else if (restResponse.statusCode === 200) {
-            toast.showToast("Thông báo", restResponse.message, "success");
+            toast.showToast("Thông báo", "Đăng nhập thành công", "success");
             setTimeout(() => navigate("/"), 1000);
             auth.setAuth(restResponse.data);
         }

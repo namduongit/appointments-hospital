@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import thumbnail from "../../assets/images/auth/thumbnail.png";
 import person from "../../assets/images/auth/person.png";
 import { useToast } from "../../contexts/toastContext";
+import { register } from "../../services/authService";
 
 const RegisterPage = () => {
     const toast = useToast();
@@ -10,8 +11,24 @@ const RegisterPage = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [showConfirmPasssword, setShowConfirmPassword] = useState<boolean>(false);
 
+    const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [confirmPasword, setConfirmPassword] = useState<string>("");
+
+    async function handleRegister() {
+        const restResponse = await register(email, password, confirmPasword);
+        if (restResponse.statusCode === 400) {
+            if (Array.isArray(restResponse.errorMessage)) {
+                restResponse.errorMessage.forEach((error: string) => {
+                    toast.showToast("Thông báo", error, "error");
+                });
+            } else {
+                toast.showToast("Thông báo", restResponse.errorMessage as string, "error");
+            }
+        } else if (restResponse.statusCode === 201) {
+            toast.showToast("Thông báo", "Đăng ký thành công", "success");
+        }
+    }
 
     return (
         <main className="register-page w-full min-h-[90vh] flex">
@@ -36,6 +53,8 @@ const RegisterPage = () => {
                                 type="email"
                                 placeholder="email@example.com"
                                 className="flex-1 outline-none bg-transparent"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
                             />
                         </div>
 
@@ -88,9 +107,7 @@ const RegisterPage = () => {
                     </div>
                     <div className="flex gap-3 mt-6">
                         <button className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-600 transition cursor-pointer"
-                        onClick={()=> {
-                            toast.showToast("Hehehe", "Hehehehe", "note")
-                        }}>
+                        onClick={()=> handleRegister()}>
                             Đăng ký
                         </button>
                     </div>

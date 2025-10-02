@@ -10,14 +10,9 @@ export const rows = [
         value: 10
     },
     {
-        id: 3,
+        id: 5,
         name: '15 hàng',
         value: 15
-    },
-    {
-        id: 4,
-        name: '20 hàng',
-        value: 20
     }
 ]
 

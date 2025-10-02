@@ -1,13 +1,13 @@
 import type { JSX } from "react";
 
-type MiniHeroSectionProps = {
+type MiniHeroSection = {
     icon: JSX.Element;
     title: string;
     detail: string;
 };
 
 
-const MiniHeroSection = ({ icon, title, detail }: MiniHeroSectionProps) => {
+const MiniHeroSection = ({ icon, title, detail }: MiniHeroSection) => {
     return (
         <div className="mini-hero-section px-4 py-4 bg-white rounded-xl shadow-2xl">
             <div className="mini-hero-section__wrap flex flex-col">

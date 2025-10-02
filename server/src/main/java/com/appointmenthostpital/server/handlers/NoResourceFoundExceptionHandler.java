@@ -17,7 +17,7 @@ public class NoResourceFoundExceptionHandler {
         restResponse.setResult(false);
         restResponse.setData(null);
         restResponse.setMessage(HttpStatusResponse.BAD_MESSAGE);
-        restResponse.setErrorMessage("No static resource api");
+        restResponse.setErrorMessage(HttpStatusResponse.NO_RESOURCE);
 
         return ResponseEntity.status(HttpStatusResponse.BAD_REQUEST).body(restResponse);
     }
