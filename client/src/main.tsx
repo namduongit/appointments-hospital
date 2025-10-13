@@ -1,33 +1,40 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import { AppProviders } from "./contexts/AppProviders";
+import { AppProvider } from "./contexts/appProvider";
 import "./assets/index.css";
 
-import Layout from "./layouts/layout";
-import HomePage from "./pages/home/home.page";
-import RotateLoading from "./components/loadings/rotate.loading";
+import PatientLayout from "./layouts/patient/layout";
+import PatientHomePage from "./pages/patient/home/home.page";
+import RotateLoading from "./components/common/others/loading";
 
-const DoctorLayout = lazy(() => import("./doctor/layouts/layout"));
-const DoctorHomePage = lazy(() => import("./doctor/pages/home/home.page"));
-const DoctorLoginPage = lazy(() => import("./doctor/pages/login/login.page"));
-const DoctorAppointmentPage = lazy(() => import("./doctor/pages/appointment/appointment.page"));
+const AssistorLayout = lazy(() => import("./layouts/assistor/layout"));
+const AssistorHomePage = lazy(() => import("./pages/assistor/home/home.page"));
+const AssistorAppointmentPage = lazy(() => import("./pages/assistor/appointment/appointment.page"));
 
-const AdminLayout = lazy(() => import("./admin/layouts/layout"));
-const AdminAccountsPage = lazy(() => import("./admin/pages/accounts/accounts.page"));
-const AdminDoctorsPage = lazy(() => import("./admin/pages/doctors/doctors.page"));
+const DoctorLayout = lazy(() => import("./layouts/doctor/layout"));
+const DoctorHomePage = lazy(() => import("./pages/doctor/home/home.page"));
+const DoctorLoginPage = lazy(() => import("./pages/doctor/login/login.page"));
+const DoctorAppointmentPage = lazy(() => import("./pages/doctor/appointment/appointment.page"));
 
-const LoginPage = lazy(() => import("./pages/login/login.page"));
-const RegisterPage = lazy(() => import("./pages/register/register.page"));
-const AccountPage = lazy(() => import("./pages/account/account.page"));
-const BookingPage = lazy(() => import("./pages/booking/booking.page"));
+const AdminLayout = lazy(() => import("./layouts/admin/layout"));
+const AdminAccountsPage = lazy(() => import("./pages/admin/account/account.page"));
+const AdminDoctorsPage = lazy(() => import("./pages/admin/doctor/doctor.page"));
+const AdminCalendarPage = lazy(() => import("./pages/admin/calendar/calendar.page"));
+const AdminAppointmentsPage = lazy(() => import("./pages/admin/appointment/appointment.page"));
+const AdminDepartmentPage = lazy(() => import("./pages/admin/department/department.page"));
+
+const LoginPage = lazy(() => import("./pages/patient/login/login.page"));
+const RegisterPage = lazy(() => import("./pages/patient/register/register.page"));
+const AccountPage = lazy(() => import("./pages/patient/account/account.page"));
+const BookingPage = lazy(() => import("./pages/patient/booking/booking.page"));
 
 const router = createBrowserRouter([
   {
     path: "/",
-    Component: Layout,
+    Component: PatientLayout,
     children: [
-      { index: true, Component: HomePage },
+      { index: true, Component: PatientHomePage },
       {
         path: "auth/login",
         Component: LoginPage,
@@ -47,7 +54,18 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/doctor",
+    path: "/assistor",
+    Component: AssistorLayout,
+    children: [
+      { index: true, Component: AssistorHomePage },
+      {
+        path: "appointments",
+        Component: AssistorAppointmentPage
+      }
+    ]
+  },
+  {
+    path: "doctor",
     Component: DoctorLayout,
     children: [
       { index: true, Component: DoctorHomePage },
@@ -72,16 +90,28 @@ const router = createBrowserRouter([
       {
         path: "doctors-profile",
         Component: AdminDoctorsPage
+      },
+      {
+        path: "assitors-profile",
+        Component: AdminCalendarPage
+      },
+      {
+        path: "appointments",
+        Component: AdminAppointmentsPage
+      },
+      {
+        path: "department-room",
+        Component: AdminDepartmentPage
       }
     ]
-  }
+  },
 ]);
 
 // Render app
 createRoot(document.getElementById("root")!).render(
-  <AppProviders>
+  <AppProvider>
     <Suspense fallback={<RotateLoading />}>
       <RouterProvider router={router} />
     </Suspense>
-  </AppProviders>
+  </AppProvider>
 );

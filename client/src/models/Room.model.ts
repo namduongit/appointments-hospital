@@ -1,6 +1,8 @@
 export interface RoomModel {
     id: number,
     name: string,
-    status: 'ACTIVE' | 'INACTIVE',
-    departmentId: number
+    status: 'EMPTY' | 'FULL' | 'REPAIR',
+    departmentId: number,
+
+    departmentName?: string
 }

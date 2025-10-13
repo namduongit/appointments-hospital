@@ -5,11 +5,3 @@ export interface UserProfileModel {
     address: string,
     birthDate: string,
 }
-
-export interface UserProfileResponse {
-    id: number,
-    fullName: string,
-    phone: string,
-    address: string,
-    birthDate: string,
-}

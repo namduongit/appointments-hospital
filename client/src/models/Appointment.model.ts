@@ -5,6 +5,7 @@ export interface AppointmentModel {
     time: string,
     note?: string,
     status: 'PENDING' | 'CONFIRMED' | 'CANCELED' | 'COMPLETED',
+    createdAt: string,
     departmentId: number,
     doctorId: number,
     roomId: number,

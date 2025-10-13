@@ -2,11 +2,11 @@ export interface DoctorProfileModel {
     userId: number,
     image: string,
     fullName: string,
-    gender: 'MALE' | 'FEMALE',
+    gender: 'MALE' | 'FEMALE' | 'OTHER',
     phone: string,
     birthDate: string,
     degree: string,
     workDate: string,
-    status: 'ACTIVE' | 'INACTIVE',
+    status: 'AVAILABLE' | 'BUSY' | 'OFFLINE',
     departmentId: number,
 }

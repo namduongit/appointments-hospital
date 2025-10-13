@@ -20,14 +20,7 @@ api.interceptors.response.use(
     return response;
   },
   (error: any) => {
-    error.data = {
-      statusCode: 400,
-      result: false,
-      message: "BAD REQUEST",
-      data: null,
-      errorMessage: "Lỗi phía hê thống"
-    } as RestResponse;
-    return error;
+    return error.response;
   }
 );
 

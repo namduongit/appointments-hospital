@@ -10,6 +10,7 @@ import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
 @RestControllerAdvice
 public class HttpMessageNotReadableExceptionHandler {
+    // Body Missing Exception
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<RestResponse<?>> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException exception) {
         RestResponse<Object> restResponse = new RestResponse<>();

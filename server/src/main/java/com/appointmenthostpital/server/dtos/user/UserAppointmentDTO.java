@@ -53,12 +53,6 @@ public class UserAppointmentDTO {
         public void setNote(String note) {
             this.note = note;
         }
-
-        @Override
-        public String toString() {
-            return "createAppointmentRequest [fullName=" + fullName + ", phone=" + phone + ", date=" + date + ", time="
-                    + time + ", note=" + note + "]";
-        }
     }
 
     public static class CreateAppointmentResponse {
@@ -114,12 +108,6 @@ public class UserAppointmentDTO {
         
         public void setStatus(String status) {
             this.status = status;
-        }
-
-        @Override
-        public String toString() {
-            return "CreateAppointmentResponse [fullName=" + fullName + ", phone=" + phone + ", time=" + time + ", note="
-                    + note + ", status=" + status + "]";
         }
     }
 }

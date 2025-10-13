@@ -7,9 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.appointmenthostpital.server.dtos.admin.AccountDTO;
-import com.appointmenthostpital.server.dtos.user.UserAppointmentDTO;
-import com.appointmenthostpital.server.dtos.user.UserDetailDTO;
+import com.appointmenthostpital.server.dtos.admin.AdminUserDTO;
 import com.appointmenthostpital.server.dtos.user.UserUpdateDTO;
 import com.appointmenthostpital.server.exceptions.DuplicateResourceException;
 import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
@@ -18,8 +16,9 @@ import com.appointmenthostpital.server.models.AppointmentModel;
 import com.appointmenthostpital.server.models.DoctorProfileModel;
 import com.appointmenthostpital.server.models.UserModel;
 import com.appointmenthostpital.server.models.UserProfileModel;
-import com.appointmenthostpital.server.repositories.AppointmentRepository;
 import com.appointmenthostpital.server.repositories.UserRepository;
+import com.appointmenthostpital.server.responses.AccountResponse;
+import com.appointmenthostpital.server.responses.DetailResponse;
 import com.appointmenthostpital.server.repositories.UserProfileRepository;
 
 @Service
@@ -31,28 +30,65 @@ public class UserService {
     private UserProfileRepository userProfileRepository;
 
     @Autowired
-    private AppointmentRepository appointmentRepository;
-
-    @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public AccountDTO.CreateAccountResponse handleCreateAccount(AccountDTO.CreateAccountRequest createRequest) {
-        if (!createRequest.getPassword().equals(createRequest.getPasswordConfirm())) {
+    public UserModel getUserById(Long id) {
+        return this.userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy tài khoản"));
+    }
+
+    public UserModel getUserByEmail(String email) {
+        UserModel userModel = this.userRepository.findByEmail(email);
+        if (userModel == null) {
+            throw new NotFoundResourceException("Không tìm thấy tài khoản");
+        }
+        return userModel;
+    }
+
+    public UserModel save(UserModel userModel) {
+        return this.userRepository.save(userModel);
+    }
+
+    public void delete(UserModel userModel) {
+        this.userRepository.delete(userModel);
+    }
+
+    public void deleteById(Long id) {
+        UserModel userModel = this.getUserById(id);
+        this.userRepository.delete(userModel);
+    }
+
+    public List<AccountResponse> handleGetAccountList() {
+        List<UserModel> userModels = this.userRepository.findAll();
+        return userModels.stream().map(userModel -> {
+            AccountResponse response = new AccountResponse();
+            response.setId(userModel.getId());
+            response.setEmail(userModel.getEmail());
+            response.setRole(userModel.getRole());
+            response.setType(userModel.getType());
+            response.setStatus(userModel.getStatus());
+            return response;
+        }).toList();
+    }
+
+    public AccountResponse handleCreateAccount(AdminUserDTO.CreateAccountRequest request) {
+        if (!request.getPassword().equals(request.getPasswordConfirm())) {
             throw new PasswordNotValidException("Mật khẩu và mật khẩu xác nhận không khớp");
         }
 
-        if (this.userRepository.findByEmail(createRequest.getEmail()) != null) {
+        if (this.userRepository.findByEmail(request.getEmail()) != null) {
             throw new DuplicateResourceException("Email đã tồn tại");
         }
 
         UserModel newUser = new UserModel();
-        newUser.setEmail(createRequest.getEmail());
-        newUser.setPassword(passwordEncoder.encode(createRequest.getPassword()));
-        newUser.setRole(createRequest.getRole());
+
+        newUser.setEmail(request.getEmail());
+        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        newUser.setRole(request.getRole());
         newUser.setType("ACCOUNT");
         newUser.setStatus("ACTIVE");
 
-        if (createRequest.getRole().equals("DOCTOR")) {
+        if (request.getRole().equals("DOCTOR")) {
             DoctorProfileModel profileModel = new DoctorProfileModel();
             newUser.setDoctorProfileModel(profileModel);
             profileModel.setUserModel(newUser);
@@ -64,38 +100,77 @@ public class UserService {
 
         UserModel savedUser = this.userRepository.save(newUser);
 
-        return new AccountDTO.CreateAccountResponse(
-                savedUser.getId(),
-                savedUser.getEmail(),
-                savedUser.getRole(),
-                savedUser.getType(),
-                java.time.LocalDateTime.now().toString());
+        AccountResponse response = new AccountResponse();
+        response.setId(savedUser.getId());
+        response.setEmail(savedUser.getEmail());
+        response.setRole(savedUser.getRole());
+        response.setType(savedUser.getType());
+        response.setStatus(savedUser.getStatus());
+        return response;
     }
 
-    public UserModel getUserByEmail(String username) {
-        return this.userRepository.findByEmail(username);
+    public AccountResponse handleUpdateAccount(AdminUserDTO.UpdateAccountRequest request, Long id) {
+        UserModel userModel = this.getUserById(id);
+
+        userModel.setPassword(request.getPassword() != null ? this.passwordEncoder.encode(request.getPassword())
+                : userModel.getPassword());
+        userModel.setRole(request.getRole() != null ? request.getRole() : userModel.getRole());
+        userModel.setStatus(request.getStatus() != null ? request.getStatus() : userModel.getStatus());
+
+        UserModel newUserModel = this.userRepository.save(userModel);
+        AccountResponse response = new AccountResponse();
+        response.setId(newUserModel.getId());
+        response.setEmail(newUserModel.getEmail());
+        response.setRole(newUserModel.getRole());
+        response.setType(newUserModel.getType());
+        response.setStatus(newUserModel.getStatus());
+        return response;
     }
 
-    public List<UserModel> handleGetAccountList() {
-        return this.userRepository.findAll();
-    }
-
-    public UserDetailDTO handleGetAccountDetail(Authentication authentication) {
+    /** Services is used in _UserController */
+    public AccountResponse handleGetAccountDetail(Authentication authentication) {
         String email = authentication.getName();
         UserModel userModel = this.getUserByEmail(email);
-        return new UserDetailDTO(userModel.getId(), userModel.getEmail(), userModel.getRole(), userModel.getType(),
-                userModel.getStatus(), userModel.getUserProfileModel(), userModel.getUserAppointmets());
-    }
+        UserProfileModel userProfileModel = userModel.getUserProfileModel();
+        List<AppointmentModel> appointmentModels = userModel.getUserAppointments();
 
-    public UserUpdateDTO.UpdateProfileResponse handleUpdateUserProfile(Authentication authentication,
-            UserUpdateDTO.UpdateProfileRequest updateRequest) {
+        AccountResponse response = new AccountResponse();
 
-        String email = authentication.getName();
-        UserModel userModel = this.getUserByEmail(email);
-
-        if (userModel == null) {
-            throw new NotFoundResourceException("Không tìm thấy tài khoản");
+        response.setId(userModel.getId());
+        response.setEmail(userModel.getEmail());
+        response.setRole(userModel.getRole());
+        response.setType(userModel.getType());
+        response.setStatus(userModel.getStatus());
+        if (userProfileModel != null) {
+            DetailResponse.ProfileDetail detail = new DetailResponse.ProfileDetail();
+            detail.setFullName(userProfileModel.getFullName());
+            detail.setPhone(userProfileModel.getPhone());
+            detail.setAddress(userProfileModel.getAddress());
+            detail.setBirthDate(userProfileModel.getBirthDate());
+            response.setProfileDetail(detail);
         }
+        if (appointmentModels != null) {
+            List<DetailResponse.AppointmentDetail> appointmentDetails = appointmentModels.stream().map(appointmentModel -> {
+                DetailResponse.AppointmentDetail detail = new DetailResponse.AppointmentDetail();
+                detail.setFullName(appointmentModel.getFullName());
+                detail.setPhone(appointmentModel.getPhone());
+                detail.setTime(appointmentModel.getTime());
+                detail.setNote(appointmentModel.getNote());
+                detail.setStatus(appointmentModel.getStatus());
+                detail.setCreatedAt(appointmentModel.getCreatedAt().toString());
+                return detail;
+            }).toList();
+            response.setAppointmentDetails(appointmentDetails);
+        }
+
+        return response;
+    }
+
+    public AccountResponse handleUpdateProfile(Authentication authentication,
+            UserUpdateDTO.UpdateProfileRequest request) {
+
+        String email = authentication.getName();
+        UserModel userModel = this.getUserByEmail(email);
 
         UserProfileModel userProfile = userModel.getUserProfileModel();
         if (userProfile == null) {
@@ -104,105 +179,25 @@ public class UserService {
             userModel.setUserProfileModel(userProfile);
         }
 
-        userProfile.setFullName(updateRequest.getFullName());
-        userProfile.setPhone(updateRequest.getPhone());
-        userProfile.setAddress(updateRequest.getAddress());
-        userProfile.setBirthDate(updateRequest.getBirthDate());
+        userProfile.setFullName(request.getFullName());
+        userProfile.setPhone(request.getPhone());
+        userProfile.setAddress(request.getAddress());
+        userProfile.setBirthDate(request.getBirthDate());
 
         UserProfileModel savedProfile = this.userProfileRepository.save(userProfile);
+        DetailResponse.ProfileDetail detail = new DetailResponse.ProfileDetail();
+        detail.setFullName(savedProfile.getFullName());
+        detail.setPhone(savedProfile.getPhone());
+        detail.setAddress(savedProfile.getAddress());
+        detail.setBirthDate(savedProfile.getBirthDate());
 
-        return new UserUpdateDTO.UpdateProfileResponse(
-                savedProfile.getId(),
-                savedProfile.getFullName(),
-                savedProfile.getPhone(),
-                savedProfile.getAddress(),
-                savedProfile.getBirthDate(),
-                "Cập nhật thông tin thành công");
-    }
-
-    public void validateUpdateRequest(UserUpdateDTO.UpdateProfileRequest updateRequest) {
-        if (updateRequest.getFullName() == null || updateRequest.getFullName().trim().isEmpty()) {
-            throw new RuntimeException("Họ và tên không được để trống");
-        }
-
-        if (updateRequest.getPhone() == null || updateRequest.getPhone().trim().isEmpty()) {
-            throw new RuntimeException("Số điện thoại không được để trống");
-        }
-
-        String phone = updateRequest.getPhone().replaceAll("\\s", "");
-        if (!phone.matches("^[0-9]{10,11}$")) {
-            throw new RuntimeException("Số điện thoại không hợp lệ");
-        }
-
-        if (updateRequest.getBirthDate() == null || updateRequest.getBirthDate().trim().isEmpty()) {
-            throw new RuntimeException("Ngày sinh không được để trống");
-        }
-
-        if (!updateRequest.getBirthDate().matches("^\\d{4}-\\d{2}-\\d{2}$")) {
-            throw new RuntimeException("Ngày sinh phải có định dạng yyyy-MM-dd");
-        }
-    }
-
-    public AccountDTO.DeleteAccountResponse handleDeleteAccount(Long id) {
-        UserModel userModel = this.userRepository.findById(id).orElse(null);
-        if (userModel == null) {
-            throw new NotFoundResourceException("Không tìm thấy tài khoản");
-        }
-        this.userRepository.deleteById(id);
-        return new AccountDTO.DeleteAccountResponse(userModel.getId(), userModel.getEmail(), userModel.getRole(),
-                userModel.getType());
-    }
-
-    public AccountDTO.UpdateAccountResponse handleUpdateAccount(AccountDTO.UpdateAccountRequest accountRequest, Long id) {
-        UserModel userModel = this.userRepository.findById(id).orElse(null);
-        if (userModel == null) {
-            throw new NotFoundResourceException("Không tìm thấy tài khoản");
-        }
-        // Set password and status and role
-        userModel.setPassword(accountRequest.getPassword() != null ? this.passwordEncoder.encode(accountRequest.getPassword()) : userModel.getPassword());
-        userModel.setRole(accountRequest.getRole() != null ? accountRequest.getRole() : userModel.getRole());
-        userModel.setStatus(accountRequest.getStatus() != null ? accountRequest.getStatus() : userModel.getStatus());
-
-        UserModel newUserModel = this.userRepository.save(userModel);
-        AccountDTO.UpdateAccountResponse updateAccountResponse = new AccountDTO.UpdateAccountResponse(
-            newUserModel.getId(), newUserModel.getEmail(), newUserModel.getRole(), newUserModel.getType(), newUserModel.getStatus()
-        );
-        return updateAccountResponse;
-    }
-
-    /**
-     * Create new appointment
-     * 
-     * @param authentication
-     * @param createRequest
-     * @return
-     */
-    public UserAppointmentDTO.CreateAppointmentResponse handleCreateAppointment(
-            Authentication authentication,
-            UserAppointmentDTO.CreateAppointmentRequest createRequest) {
-        
-        String email = authentication.getName();
-        UserModel userModel = this.getUserByEmail(email);
-        
-        if (userModel == null) {
-            throw new NotFoundResourceException("Không tìm thấy tài khoản");
-        }
-        
-        AppointmentModel appointment = new AppointmentModel();
-        appointment.setFullName(createRequest.getFullName());
-        appointment.setPhone(createRequest.getPhone());
-        appointment.setTime("Ngày: "+ createRequest.getDate() + ", Giờ: " + createRequest.getTime());
-        appointment.setNote(createRequest.getNote());
-        appointment.setUserModel(userModel);
-        
-        AppointmentModel savedAppointment = this.appointmentRepository.save(appointment);
-        
-        return new UserAppointmentDTO.CreateAppointmentResponse(
-            savedAppointment.getFullName(),
-            savedAppointment.getPhone(),
-            savedAppointment.getTime(),
-            savedAppointment.getNote(),
-            savedAppointment.getStatus()
-        );
+        AccountResponse response = new AccountResponse();
+        response.setId(savedProfile.getId());
+        response.setEmail(userModel.getEmail());
+        response.setRole(userModel.getRole());
+        response.setType(userModel.getType());
+        response.setStatus(userModel.getStatus());
+        response.setProfileDetail(detail);
+        return response;
     }
 }

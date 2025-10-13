@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useMemo, useEffect } from "react";
 import { useToast } from "./toastContext";
-import { valid } from "../services/authService";
+import { valid } from "../services/_auth.service";
+import useCallApi from "../hooks/useCallApi";
 
 type UserAuth = {
   accessToken: string,
@@ -9,6 +10,13 @@ type UserAuth = {
   issuedAt: number,
   role: string
 };
+
+type AuthResponse = {
+  email: string,
+  role: string,
+  issuedAt: number,
+  expiresAt: number
+}
 
 type AuthContext = {
   token: string | null,
@@ -29,7 +37,8 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<string>("");
   const [expiresAt, setExpiresAt] = useState<number | null>(null);
 
-  const toast = useToast();
+  const { execute, doFunc } = useCallApi();
+  const { showToast } = useToast();
 
   useEffect(() => {
     const authSessionStr = sessionStorage.getItem("CURRENT_USER");
@@ -37,14 +46,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const authSession: UserAuth = JSON.parse(authSessionStr);
 
     const validToken = async () => {
-      const restResponse = await valid();
-      if (restResponse.statusCode === 401) {
-        toast.showToast("Thông báo", "Tài khoản không hợp lệ", "warning");
-      } else if (restResponse.statusCode === 200) {
-        const data: UserAuth = restResponse.data;
-        data.accessToken = authSession.accessToken;
-        setAuth(data);
-      }
+      const restResponse = await execute(valid());
+      doFunc(() => {
+        if (!restResponse?.result) {
+          showToast("Thông báo", "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại", "error");
+          clearAuth();
+          return; 
+        }
+        const authResponse: AuthResponse = restResponse.data;
+        setAuth({...authSession, email: authResponse.email, role: authResponse.role, issuedAt: authResponse.issuedAt, expiresAt: authResponse.expiresAt });
+      });
     }
 
     validToken();

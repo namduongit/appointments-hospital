@@ -59,4 +59,4 @@ export const times = [
         shift: "afternoon",
         value: "17h đến 18h - Chiều"
     }
-]
+];

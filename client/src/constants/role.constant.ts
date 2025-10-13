@@ -19,4 +19,4 @@ export const roles = [
         name: "Quản trị viên",
         value: "ADMIN"
     },
-]
+];

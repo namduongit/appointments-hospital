@@ -10,6 +10,7 @@ import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
 @RestControllerAdvice
 public class DataIntegrityViolationExceptionHandler {
+    // Data Integrity Violation Exception - Exists Resource (400 API) in server side
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<RestResponse<?>> dataIntegrityViolationExceptionHandler(DataIntegrityViolationException exception) {
         RestResponse<?> restResponse = new RestResponse<>();
