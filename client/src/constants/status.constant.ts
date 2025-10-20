@@ -82,3 +82,29 @@ export const dayStatus = [
         value: "ASC"
     }
 ];
+
+export const moneyStatus = [
+    {
+        id: 1,
+        name: "Giá cao đến thấp",
+        value: "DESC"
+    },
+    {
+        id: 2,
+        name: "Giá thấp đến cao",
+        value: "ASC"
+    }
+];
+
+export const medicalPackageStatus = [
+    {
+        id: 1,
+        name: "Hoạt động",
+        value: "ACTIVE"
+    },
+    {
+        id: 2,
+        name: "Ngừng hoạt động",
+        value: "INACTIVE"
+    }
+];

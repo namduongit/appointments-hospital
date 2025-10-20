@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.appointmenthostpital.server.dtos.auth.JWTResponse;
 import com.appointmenthostpital.server.dtos.auth.LoginDTO;
 import com.appointmenthostpital.server.dtos.auth.RegisterDTO;
-import com.appointmenthostpital.server.dtos.auth.ValidResponse;
+import com.appointmenthostpital.server.dtos.auth.AuthConfig;
 import com.appointmenthostpital.server.exceptions.AccountLockedException;
 import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
 import com.appointmenthostpital.server.exceptions.PasswordNotValidException;
@@ -90,12 +90,12 @@ public class AuthService {
      * @return
      */
     @SuppressWarnings("null")
-    public ValidResponse handleValid(Authentication authentication) {
+    public AuthConfig handleValid(Authentication authentication) {
         String email = authentication.getName();
         UserModel userModel = this.userRepository.findByEmail(email);
         Jwt jwt = (Jwt)authentication.getPrincipal();
-        
-        return new ValidResponse(email, userModel.getRole(), (int)jwt.getIssuedAt().getEpochSecond(), (int)jwt.getExpiresAt().getEpochSecond());
+
+        return new AuthConfig(email, userModel.getRole(), (int)jwt.getIssuedAt().getEpochSecond(), (int)jwt.getExpiresAt().getEpochSecond());
     }
 
 }

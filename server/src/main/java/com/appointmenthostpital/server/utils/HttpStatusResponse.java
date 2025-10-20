@@ -20,10 +20,17 @@ public class HttpStatusResponse {
     // Message
     public static final String BAD_MESSAGE = "BAD REQUEST";
     public static final String SUCCESS_MESSAGE = "REQUEST SUCCESS";
+
     public static final String INTERNAL_MESSAGE = "INTERNAL SERVER ERROR";
+
     public static final String BODY_MISSING = "REQUIRED REQUEST BODY IS MISSING";
+
     public static final String NO_RESOURCE = "NO STATIC RESOURCE API";
     public static final String EXISTS_RESOURCE = "EXIST RESOURCE";
+
     public static final String UNAUTHORIZED_MESSAGE = "UNAUTHORIZED";
+    public static final String ACCESS_DENIED_MESSAGE = "ACCESS DENIED";
+
+    public static final String METHOD_NOT_ALLOWED = "HTTP METHOD NOT ALLOWED";
 
 }

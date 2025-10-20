@@ -1,7 +1,6 @@
 package com.appointmenthostpital.server.dtos.admin;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 
 public class AdminAppointmentDTO {
     public static class UpdateAppointmentRequest {
@@ -12,7 +11,6 @@ public class AdminAppointmentDTO {
         @NotBlank(message = "Ghi chú không được để trống")
         private String note;
         @NotBlank(message = "Trạng thái không được để trống")
-        @Pattern(regexp = "PENDING|CONFIRMED|CANCELED|COMPLETED", message = "Trạng thái không đúng")
         private String status;
 
         private Long departmentId;

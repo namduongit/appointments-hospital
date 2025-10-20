@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.appointmenthostpital.server.dtos.admin.AdminUserDTO;
+import com.appointmenthostpital.server.dtos.admin.AdminAccountDTO;
 import com.appointmenthostpital.server.dtos.user.UserUpdateDTO;
 import com.appointmenthostpital.server.exceptions.DuplicateResourceException;
 import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
@@ -71,7 +71,7 @@ public class UserService {
         }).toList();
     }
 
-    public AccountResponse handleCreateAccount(AdminUserDTO.CreateAccountRequest request) {
+    public AccountResponse handleCreateAccount(AdminAccountDTO.CreateAccountRequest request) {
         if (!request.getPassword().equals(request.getPasswordConfirm())) {
             throw new PasswordNotValidException("Mật khẩu và mật khẩu xác nhận không khớp");
         }
@@ -80,25 +80,25 @@ public class UserService {
             throw new DuplicateResourceException("Email đã tồn tại");
         }
 
-        UserModel newUser = new UserModel();
+        UserModel userModel = new UserModel();
 
-        newUser.setEmail(request.getEmail());
-        newUser.setPassword(passwordEncoder.encode(request.getPassword()));
-        newUser.setRole(request.getRole());
-        newUser.setType("ACCOUNT");
-        newUser.setStatus("ACTIVE");
+        userModel.setEmail(request.getEmail());
+        userModel.setPassword(passwordEncoder.encode(request.getPassword()));
+        userModel.setRole(request.getRole());
+        userModel.setType("ACCOUNT");
+        userModel.setStatus("ACTIVE");
 
         if (request.getRole().equals("DOCTOR")) {
             DoctorProfileModel profileModel = new DoctorProfileModel();
-            newUser.setDoctorProfileModel(profileModel);
-            profileModel.setUserModel(newUser);
+            userModel.setDoctorProfileModel(profileModel);
+            profileModel.setUserModel(userModel);
         } else {
             UserProfileModel profileModel = new UserProfileModel();
-            newUser.setUserProfileModel(profileModel);
-            profileModel.setUserModel(newUser);
+            userModel.setUserProfileModel(profileModel);
+            profileModel.setUserModel(userModel);
         }
 
-        UserModel savedUser = this.userRepository.save(newUser);
+        UserModel savedUser = this.userRepository.save(userModel);
 
         AccountResponse response = new AccountResponse();
         response.setId(savedUser.getId());
@@ -109,21 +109,41 @@ public class UserService {
         return response;
     }
 
-    public AccountResponse handleUpdateAccount(AdminUserDTO.UpdateAccountRequest request, Long id) {
+    public AccountResponse handleUpdateAccount(Long id, AdminAccountDTO.UpdateAccountRequest request) {
         UserModel userModel = this.getUserById(id);
 
-        userModel.setPassword(request.getPassword() != null ? this.passwordEncoder.encode(request.getPassword())
-                : userModel.getPassword());
-        userModel.setRole(request.getRole() != null ? request.getRole() : userModel.getRole());
-        userModel.setStatus(request.getStatus() != null ? request.getStatus() : userModel.getStatus());
+        if (request.getPassword() != null) {
+            userModel.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        if (request.getRole() != null) {
+            userModel.setRole(request.getRole());
+            if (request.getRole().equals("DOCTOR")) {
+                if (userModel.getDoctorProfileModel() == null) {
+                    DoctorProfileModel profileModel = new DoctorProfileModel();
+                    userModel.setDoctorProfileModel(profileModel);
+                    profileModel.setUserModel(userModel);
+                }
+                userModel.setUserProfileModel(null);
+            } else {
+                if (userModel.getUserProfileModel() == null) {
+                    UserProfileModel profileModel = new UserProfileModel();
+                    userModel.setUserProfileModel(profileModel);
+                    profileModel.setUserModel(userModel);
+                }
+                userModel.setDoctorProfileModel(null);
+            }
+        }
+        if (request.getStatus() != null) {
+            userModel.setStatus(request.getStatus());
+        }
 
-        UserModel newUserModel = this.userRepository.save(userModel);
+        UserModel savedUser = this.userRepository.save(userModel);
         AccountResponse response = new AccountResponse();
-        response.setId(newUserModel.getId());
-        response.setEmail(newUserModel.getEmail());
-        response.setRole(newUserModel.getRole());
-        response.setType(newUserModel.getType());
-        response.setStatus(newUserModel.getStatus());
+        response.setId(savedUser.getId());
+        response.setEmail(savedUser.getEmail());
+        response.setRole(savedUser.getRole());
+        response.setType(savedUser.getType());
+        response.setStatus(savedUser.getStatus());
         return response;
     }
 
@@ -150,16 +170,17 @@ public class UserService {
             response.setProfileDetail(detail);
         }
         if (appointmentModels != null) {
-            List<DetailResponse.AppointmentDetail> appointmentDetails = appointmentModels.stream().map(appointmentModel -> {
-                DetailResponse.AppointmentDetail detail = new DetailResponse.AppointmentDetail();
-                detail.setFullName(appointmentModel.getFullName());
-                detail.setPhone(appointmentModel.getPhone());
-                detail.setTime(appointmentModel.getTime());
-                detail.setNote(appointmentModel.getNote());
-                detail.setStatus(appointmentModel.getStatus());
-                detail.setCreatedAt(appointmentModel.getCreatedAt().toString());
-                return detail;
-            }).toList();
+            List<DetailResponse.AppointmentDetail> appointmentDetails = appointmentModels.stream()
+                    .map(appointmentModel -> {
+                        DetailResponse.AppointmentDetail detail = new DetailResponse.AppointmentDetail();
+                        detail.setFullName(appointmentModel.getFullName());
+                        detail.setPhone(appointmentModel.getPhone());
+                        detail.setTime(appointmentModel.getTime());
+                        detail.setNote(appointmentModel.getNote());
+                        detail.setStatus(appointmentModel.getStatus());
+                        detail.setCreatedAt(appointmentModel.getCreatedAt().toString());
+                        return detail;
+                    }).toList();
             response.setAppointmentDetails(appointmentDetails);
         }
 

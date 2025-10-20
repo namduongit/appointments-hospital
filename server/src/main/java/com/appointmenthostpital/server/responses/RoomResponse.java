@@ -8,6 +8,14 @@ public class RoomResponse {
     private Long departmentId;
     private String departmentName;
 
+    public RoomResponse(Long id, String name, String status, Long departmentId, String departmentName) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
+    }
+
     public Long getId() {
         return id;
     }

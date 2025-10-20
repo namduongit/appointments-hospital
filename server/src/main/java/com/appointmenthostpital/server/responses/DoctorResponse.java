@@ -3,7 +3,7 @@ package com.appointmenthostpital.server.responses;
 public class DoctorResponse {
     private Long id;
     private String email;
-    
+
     private String image;
     private String fullName;
     private String gender;
@@ -15,6 +15,22 @@ public class DoctorResponse {
 
     private Long departmentId;
     private String departmentName;
+
+    public DoctorResponse(Long id, String email, String image, String fullName, String gender, String phone,
+            String birthDate, String degree, String workDay, String status, Long departmentId, String departmentName) {
+        this.id = id;
+        this.email = email;
+        this.image = image;
+        this.fullName = fullName;
+        this.gender = gender;
+        this.phone = phone;
+        this.birthDate = birthDate;
+        this.degree = degree;
+        this.workDay = workDay;
+        this.status = status;
+        this.departmentId = departmentId;
+        this.departmentName = departmentName;
+    }
 
     public Long getId() {
         return id;

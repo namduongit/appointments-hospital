@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.appointmenthostpital.server.converts.RoomConvert;
 import com.appointmenthostpital.server.dtos.admin.AdminRoomDTO;
-import com.appointmenthostpital.server.models.DepartmentModel;
 import com.appointmenthostpital.server.models.RoomModel;
 import com.appointmenthostpital.server.repositories.RoomRepository;
 import com.appointmenthostpital.server.responses.RoomResponse;
@@ -24,55 +24,30 @@ public class RoomService {
     }
 
     public List<RoomResponse> handleGetRoomList() {
-        List <RoomModel> roomModels = this.roomRepository.findAll();
-        return roomModels.stream().map(roomModel -> {
-            RoomResponse response = new RoomResponse();
-            response.setId(roomModel.getId());
-            response.setName(roomModel.getName());
-            response.setStatus(roomModel.getStatus());
-            response.setDepartmentId(roomModel.getDepartmentModel().getId());
-            response.setDepartmentName(roomModel.getDepartmentModel().getName());
-            return response;
-        }).toList();
+        List <RoomModel> models = this.roomRepository.findAll();
+        return models.stream().map(RoomConvert::convertToResponse).toList();
     }
 
     public RoomResponse handleCreateRoom(AdminRoomDTO.CreateRoomRequest request) {
-        RoomModel roomModel = new RoomModel();
-        roomModel.setName(request.getName());
-        roomModel.setStatus(request.getStatus());
+        RoomModel model = new RoomModel();
+        model.setName(request.getName());
+        model.setStatus(request.getStatus());
 
-        roomModel.setDepartmentModel(this.departmentService.getDepartmentById(request.getDepartmentId()));
-        roomModel = this.roomRepository.save(roomModel);
+        model.setDepartmentModel(this.departmentService.getDepartmentById(request.getDepartmentId()));
+        model = this.roomRepository.save(model);
 
-        RoomResponse response = new RoomResponse();
-        response.setId(roomModel.getId());
-        response.setName(roomModel.getName());
-        response.setStatus(roomModel.getStatus());
-        response.setDepartmentId(roomModel.getDepartmentModel().getId());
-        response.setDepartmentName(roomModel.getDepartmentModel().getName());
-        return response;
+        return RoomConvert.convertToResponse(model);
     }
 
     public RoomResponse handleUpdateRoom(Long id, AdminRoomDTO.UpdateRoomRequest request) {
-        RoomModel roomModel = this.getRoomById(id);
-        DepartmentModel departmentModel = this.departmentService.getDepartmentById(request.getDepartmentId());
-        
-        roomModel.setName(request.getName());
-        roomModel.setStatus(request.getStatus());
-        roomModel.setDepartmentModel(departmentModel);
-        roomModel = this.roomRepository.save(roomModel);
-
-        RoomResponse response = new RoomResponse();
-        response.setId(roomModel.getId());
-        response.setName(roomModel.getName());
-        response.setStatus(roomModel.getStatus());
-        response.setDepartmentId(roomModel.getDepartmentModel().getId());
-        response.setDepartmentName(roomModel.getDepartmentModel().getName());
-        return response;
+        RoomModel model = this.getRoomById(id);
+        RoomConvert.convertFromUpdateRequest(request, model);
+        model = this.roomRepository.save(model);
+        return RoomConvert.convertToResponse(model);
     }
 
     public void handleDeleteRoom(Long id) {
-        RoomModel roomModel = this.getRoomById(id);
-        this.roomRepository.delete(roomModel);
+        RoomModel model = this.getRoomById(id);
+        this.roomRepository.delete(model);
     }
 }

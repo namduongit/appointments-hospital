@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import person from "../../../assets/images/auth/person.png"
-import AccountDetail from "../../../components/patient/account.detail";
-import HistoryDetail from "../../../components/patient/history.detail";
-import MedicineDetail from "../../../components/patient/medicine.detail";
-import SettingDetail from "../../../components/patient/setting.detail";
-import AppointmentDetail from "../../../components/patient/appointment.detail";
+import AccountDetail from "../../../components/patient/account.patient";
+import HistoryDetail from "../../../components/patient/history.patient";
+import MedicineDetail from "../../../components/patient/medicine.patient";
+import SettingDetail from "../../../components/patient/setting.patient";
+import AppointmentDetail from "../../../components/patient/appointment.patient";
 
-import { getUserDetail } from "../../../services/_user.service";
+import { getUserDetail } from "../../../services/user.service";
 
 import useCallApi from "../../../hooks/useCallApi";
-import type { ProfileDetailResponse, AccountDetailResponse, AppointmentDetailResponse } from "../../../responses/_user.response";
+import type { ProfileDetailResponse, AccountDetailResponse, AppointmentDetailResponse } from "../../../responses/user.response";
 
 const AccountPage = () => {
     const { execute } = useCallApi();

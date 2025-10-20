@@ -105,6 +105,18 @@ const AdminAppointmentsPage = () => {
         handleGetDoctorList();
     }, []);
 
+    const stats = {
+        totalAppointments: appointments.length,
+        pendingAppointments: appointments.filter(a => a.status === 'PENDING').length,
+        confirmedAppointments: appointments.filter(a => a.status === 'CONFIRMED').length,
+        cancelledAppointments: appointments.filter(a => a.status === 'CANCELLED').length,
+        completedAppointments: appointments.filter(a => a.status === 'COMPLETED').length,
+        todayAppointments: appointments.filter(a => {
+            const today = new Date().toDateString();
+            return new Date(a.createdAt).toDateString() === today;
+        }).length
+    };
+
     return (
         <main className="appointments-page p-4 sm:p-6">
             <div className="appointments-page__wrap max-w-full">
@@ -113,7 +125,55 @@ const AdminAppointmentsPage = () => {
                         Quản lý lịch hẹn
                     </h3>
                     <div className="text-sm text-gray-600">
-                        Tổng: <span className="font-semibold text-blue-600">{appointments.length}</span> lịch hẹn
+                        <div>Tổng: <span className="font-semibold text-blue-600">{stats.totalAppointments}</span> lịch hẹn</div>
+                        <div>Hôm nay: <span className="font-semibold text-green-600">{stats.todayAppointments}</span></div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <i className="fa-solid fa-calendar text-blue-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Tổng lịch hẹn</p>
+                                <p className="text-lg font-semibold">{stats.totalAppointments}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-yellow-100 rounded-lg">
+                                <i className="fa-solid fa-clock text-yellow-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Chờ xác nhận</p>
+                                <p className="text-lg font-semibold">{stats.pendingAppointments}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <i className="fa-solid fa-check-circle text-green-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Đã xác nhận</p>
+                                <p className="text-lg font-semibold">{stats.confirmedAppointments}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <i className="fa-solid fa-calendar-check text-purple-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Hôm nay</p>
+                                <p className="text-lg font-semibold">{stats.todayAppointments}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -159,7 +219,7 @@ const AdminAppointmentsPage = () => {
                             </select>
                         </div>
                     </div>
-                    <div className="appointments__options flex justify-end items-center">
+                    <div className="appointments__options flex justify-end items-center gap-2">
                         <button className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center">
                             <i className="fa-solid fa-plus me-2"></i>
                             <span>Thêm lịch hẹn</span>

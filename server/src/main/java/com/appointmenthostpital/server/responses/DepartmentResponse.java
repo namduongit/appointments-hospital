@@ -12,6 +12,15 @@ public class DepartmentResponse {
 
     private List<AppointmentResponse> appointments;
 
+    public DepartmentResponse(Long id, String name, List<RoomResponse> rooms, List<DoctorResponse> doctors,
+            List<AppointmentResponse> appointments) {
+        this.id = id;
+        this.name = name;
+        this.rooms = rooms;
+        this.doctors = doctors;
+        this.appointments = appointments;
+    }
+
     public Long getId() {
         return id;
     }

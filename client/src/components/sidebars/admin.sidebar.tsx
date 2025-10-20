@@ -5,9 +5,12 @@ const navLinks = [
     { id:"home", href: '/admin', label: 'Trang chủ', icon: 'fa-solid fa-chart-line' },
     { id:"accounts", href: '/admin/accounts', label: 'Quản lý tài khoản', icon: 'fa-solid fa-users' },
     { id:"doctor-profile", href: '/admin/doctors-profile', label: 'Quản lý bác sĩ', icon: 'fa-solid fa-user-doctor' },
-    { id:"assitor-profile", href: '/admin/assitors-profile', label: 'Quản lý nhân viên', icon: 'fa-solid fa-user-nurse' },
     { id:"appointment", href: '/admin/appointments', label: 'Quản lý lịch hẹn', icon: 'fa-solid fa-calendar-check' },
-    { id:"department-room", href: '/admin/department-room', label: 'Quản lý phòng khám', icon: 'fa-solid fa-warehouse' }
+    { id:"department-room", href: '/admin/department-room', label: 'Quản lý phòng khám', icon: 'fa-solid fa-warehouse' },
+    { id: "medical-package", href: '/admin/medical-package', label: 'Quản lý gói dịch vụ', icon: 'fa-solid fa-hand-holding-medical' },
+    { id: "medicine-dashboard", href: '/admin/medicine-dashboard', label: 'Tổng quan thuốc', icon: 'fa-solid fa-chart-pie' },
+    { id: "medicine", href: '/admin/medicine', label: 'Quản lý thuốc', icon: 'fa-solid fa-pills' },
+    { id: "inventory", href: '/admin/inventory', label: 'Nhập xuất kho', icon: 'fa-solid fa-boxes-stacked' },
 ];
 
 const AdminSidebar = () => {

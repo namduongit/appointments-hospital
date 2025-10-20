@@ -14,7 +14,7 @@ import { deleteAppointment } from "../../../services/appointment.service";
 
 import useCallApi from "../../../hooks/useCallApi";
 
-type AppointmentTable = {
+type AppointmentTableProps = {
     appointments: AppointmentResponse[],
     departments: DepartmentResponse[],
     rooms: RoomResponse[],
@@ -22,7 +22,7 @@ type AppointmentTable = {
     onSuccess?: () => void
 }
 
-const AppointmentTable = (props: AppointmentTable) => {
+const AppointmentTable = (props: AppointmentTableProps) => {
     const { appointments, departments, rooms, doctors, onSuccess } = props;
 
     const { execute, notify, doFunc } = useCallApi();

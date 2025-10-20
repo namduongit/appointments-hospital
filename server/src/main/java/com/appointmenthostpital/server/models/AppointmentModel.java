@@ -138,12 +138,4 @@ public class AppointmentModel {
     public void setDoctorModel(UserModel doctorModel) {
         this.doctorModel = doctorModel;
     }
-
-    @Override
-    public String toString() {
-        return "AppointmentModel [id=" + id + ", fullName=" + fullName + ", phone=" + phone + ", time=" + time
-                + ", note=" + note + ", status=" + status + ", createdAt=" + createdAt + ", userModel=" + userModel
-                + ", departmentModel=" + departmentModel + ", roomModel=" + roomModel + ", doctorModel=" + doctorModel
-                + "]";
-    }
 }

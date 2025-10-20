@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appointmenthostpital.server.dtos.RestResponse;
-import com.appointmenthostpital.server.dtos.admin.AdminUserDTO;
+import com.appointmenthostpital.server.dtos.admin.AdminAccountDTO;
 import com.appointmenthostpital.server.responses.AccountResponse;
 import com.appointmenthostpital.server.services.UserService;
 import com.appointmenthostpital.server.utils.HttpStatusResponse;
@@ -27,12 +27,6 @@ public class AccountController {
         @Autowired
         private UserService userService;
 
-        /**
-         * Get accounts list
-         * 
-         * @param null
-         * @return
-         */
         @GetMapping("")
         public ResponseEntity<RestResponse<List<AccountResponse>>> handleGetAccountList() {
                 List<AccountResponse> userModels = this.userService.handleGetAccountList();
@@ -40,15 +34,9 @@ public class AccountController {
                                 userModels, HttpStatusResponse.SUCCESS_MESSAGE, null));
         }
 
-        /**
-         * Create new account
-         * 
-         * @param AdminUserDTO.CreateAccountRequest
-         * @return
-         */
         @PostMapping("")
         public ResponseEntity<RestResponse<AccountResponse>> handleCreateAccount(
-                        @Valid @RequestBody AdminUserDTO.CreateAccountRequest request) {
+                        @Valid @RequestBody AdminAccountDTO.CreateAccountRequest request) {
                 AccountResponse response = this.userService.handleCreateAccount(request);
                 return ResponseEntity.ok().body(new RestResponse<AccountResponse>(
                                 HttpStatusResponse.CREATED,
@@ -58,15 +46,9 @@ public class AccountController {
                                 null));
         }
 
-        /**
-         * Delete account
-         * 
-         * @param id
-         * @return
-         */
         @DeleteMapping("/{id}")
         public ResponseEntity<RestResponse<?>> handleDeleteAccount(
-                        @PathVariable(required = true) Long id) {
+                        @PathVariable(name = "id", required = true) Long id) {
                 this.userService.deleteById(id);
                 return ResponseEntity.ok().body(new RestResponse<>(
                                 HttpStatusResponse.OK,
@@ -76,18 +58,11 @@ public class AccountController {
                                 null));
         }
 
-        /**
-         * Update account
-         * 
-         * @param AdminUserDTO.UpdateAccountRequest
-         * @param id
-         * @return
-         */
         @PutMapping("/{id}")
         public ResponseEntity<RestResponse<AccountResponse>> handleUpdateAccount(
-                        @RequestBody AdminUserDTO.UpdateAccountRequest request,
-                        @PathVariable(name = "id", required = true) Long id) {
-                AccountResponse response = this.userService.handleUpdateAccount(request, id);
+                        @RequestBody AdminAccountDTO.UpdateAccountRequest request,
+                        @Valid @PathVariable(name = "id", required = true) Long id) {
+                AccountResponse response = this.userService.handleUpdateAccount(id, request);
                 return ResponseEntity.ok().body(new RestResponse<AccountResponse>(
                                 HttpStatusResponse.OK,
                                 true,

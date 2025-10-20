@@ -25,13 +25,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/doctors")
 public class DoctorController {
         @Autowired
-        DoctorService doctorService;
+        private DoctorService doctorService;
 
-        /**
-         * Get list of doctors
-         * 
-         * @return
-         */
         @GetMapping("")
         public ResponseEntity<RestResponse<List<DoctorResponse>>> handleGetDoctorList() {
                 List<DoctorResponse> doctorModels = this.doctorService.handleGetDoctorList();
@@ -39,12 +34,6 @@ public class DoctorController {
                                 doctorModels, HttpStatusResponse.SUCCESS_MESSAGE, null));
         }
 
-        /**
-         * Create a new doctor
-         * 
-         * @param request
-         * @return
-         */
         @PostMapping("")
         public ResponseEntity<RestResponse<DoctorResponse>> handleCreateDoctor(
                         @Valid @RequestBody AdminDoctorDTO.CreateDoctorRequest request) {
@@ -54,28 +43,15 @@ public class DoctorController {
                                 response, HttpStatusResponse.SUCCESS_MESSAGE, null));
         }
 
-        /**
-         * Update a doctor
-         * 
-         * @param id
-         * @param request
-         * @return
-         */
         @PutMapping("/{id}")
         public ResponseEntity<RestResponse<DoctorResponse>> handleUpdateDoctor(
                         @PathVariable(name = "id", required = true) Long id,
-                        @RequestBody AdminDoctorDTO.UpdateDoctorRequest request) {
+                        @Valid @RequestBody AdminDoctorDTO.UpdateDoctorRequest request) {
                 DoctorResponse response = doctorService.handleUpdateDoctor(id, request);
                 return ResponseEntity.ok(new RestResponse<DoctorResponse>(200, true,
                                 response, HttpStatusResponse.SUCCESS_MESSAGE, null));
         }
 
-        /**
-         * Delete a doctor
-         * 
-         * @param id
-         * @return
-         */
         @DeleteMapping("/{id}")
         public ResponseEntity<RestResponse<?>> handleDeleteDoctor(@PathVariable(name = "id", required = true) Long id) {
                 this.doctorService.handleDeleteDoctor(id);

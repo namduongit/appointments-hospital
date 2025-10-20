@@ -2,9 +2,8 @@ import { useState } from 'react';
 
 const navLinks = [
   { href: '/doctor', label: 'Trang chủ' },
-  { href: '/doctor/patients', label: 'Bệnh nhân' },
   { href: '/doctor/appointments', label: 'Lịch khám' },
-  { href: '/doctor/orders', label: 'Kê thuốc' },
+  { href: '/doctor/orders', label: 'Phiếu khám' },
   { href: '/doctor/messages', label: 'Tin nhắn' },
   { href: '/doctor/profile', label: 'Cá nhân' },
 ];

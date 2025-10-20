@@ -3,9 +3,12 @@ package com.appointmenthostpital.server.services;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.appointmenthostpital.server.converts.DoctorConvert;
 import com.appointmenthostpital.server.dtos.admin.AdminDoctorDTO;
+import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
 import com.appointmenthostpital.server.exceptions.PasswordNotValidException;
 import com.appointmenthostpital.server.models.DepartmentModel;
 import com.appointmenthostpital.server.models.DoctorProfileModel;
@@ -25,34 +28,17 @@ public class DoctorService {
     @Autowired
     private DepartmentService departmentService;
 
+     @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public DoctorProfileModel getDoctorById(Long id) {
         return this.doctorProfileRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy bác sĩ"));
+                .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy bác sĩ"));
     }
 
     public List<DoctorResponse> handleGetDoctorList() {
-        List<DoctorProfileModel> doctorProfileModels = this.doctorProfileRepository.findAll();
-        List<DoctorResponse> doctorResponses = doctorProfileModels.stream().map(doctorProfileModel -> {
-            DoctorResponse response = new DoctorResponse();
-            response.setId(doctorProfileModel.getId());
-            response.setEmail(doctorProfileModel.getUserModel().getEmail());
-
-            response.setImage(doctorProfileModel.getImage());
-            response.setFullName(doctorProfileModel.getFullName());
-            response.setPhone(doctorProfileModel.getPhone());
-            response.setBirthDate(doctorProfileModel.getBirthDate());
-            response.setGender(doctorProfileModel.getGender());
-            response.setDegree(doctorProfileModel.getDegree());
-            response.setWorkDay(doctorProfileModel.getWorkDay());
-            response.setStatus(doctorProfileModel.getStatus());
-
-            if (doctorProfileModel.getDepartmentModel() != null) {
-                response.setDepartmentId(doctorProfileModel.getDepartmentModel().getId());
-                response.setDepartmentName(doctorProfileModel.getDepartmentModel().getName());
-            }
-            return response;
-        }).toList();
-        return doctorResponses;
+        List<DoctorProfileModel> models = this.doctorProfileRepository.findAll();
+        return models.stream().map(DoctorConvert::convertToResponse).toList();
     }
 
     public DoctorResponse handleCreateDoctor(AdminDoctorDTO.CreateDoctorRequest request) {
@@ -60,7 +46,7 @@ public class DoctorService {
             throw new PasswordNotValidException("Mật khẩu xác nhận không khớp");
         }
 
-        String encodePassword = ValidPassword.encodePassword(request.getPassword());
+        String encodePassword = this.passwordEncoder.encode(request.getPassword());
 
         UserModel userModel = new UserModel();
         userModel.setEmail(request.getEmail());
@@ -84,77 +70,19 @@ public class DoctorService {
         userModel = this.userService.save(userModel);
         doctorProfileModel = this.doctorProfileRepository.save(doctorProfileModel);
 
-        DoctorResponse response = new DoctorResponse();
-        response.setEmail(userModel.getEmail());
-
-        response.setId(doctorProfileModel.getId());
-        response.setImage(doctorProfileModel.getImage());
-        response.setFullName(doctorProfileModel.getFullName());
-        response.setBirthDate(doctorProfileModel.getBirthDate());
-        response.setGender(doctorProfileModel.getGender());
-        response.setPhone(doctorProfileModel.getPhone());
-        response.setDegree(doctorProfileModel.getDegree());
-        response.setWorkDay(doctorProfileModel.getWorkDay());
-        response.setStatus(doctorProfileModel.getStatus());
-
-        response.setDepartmentId(departmentModel.getId());
-        response.setDepartmentName(departmentModel.getName());
-
-        return response;
+        return DoctorConvert.convertToResponse(doctorProfileModel);
     }
 
     public DoctorResponse handleUpdateDoctor(Long id, AdminDoctorDTO.UpdateDoctorRequest request) {
-        DoctorProfileModel doctorProfileModel = this.getDoctorById(id);
-
-        if (request.getImage() != null) {
-            doctorProfileModel.setImage(request.getImage());
-        }
-        if (request.getFullName() != null) {
-            doctorProfileModel.setFullName(request.getFullName());
-        }
-        if (request.getBirthDate() != null) {
-            doctorProfileModel.setBirthDate(request.getBirthDate());
-        }
-        if (request.getGender() != null) {
-            doctorProfileModel.setGender(request.getGender());
-        }
-        if (request.getPhone() != null) {
-            doctorProfileModel.setPhone(request.getPhone());
-        }
-        if (request.getDegree() != null) {
-            doctorProfileModel.setDegree(request.getDegree());
-        }
-        if (request.getWorkDay() != null) {
-            doctorProfileModel.setWorkDay(request.getWorkDay());
-        }
-        if (request.getStatus() != null) {
-            doctorProfileModel.setStatus(request.getStatus());
-        }
-
-        if (request.getDepartmentId() != null) {
-            DepartmentModel departmentModel = this.departmentService.getDepartmentById(request.getDepartmentId());
-            doctorProfileModel.setDepartmentModel(departmentModel);
-        }
-
-        doctorProfileModel = this.doctorProfileRepository.save(doctorProfileModel);
-
-        DoctorResponse response = new DoctorResponse();
-        response.setId(doctorProfileModel.getId());
-        response.setEmail(doctorProfileModel.getUserModel().getEmail());
-        response.setFullName(doctorProfileModel.getFullName());
-        response.setBirthDate(doctorProfileModel.getBirthDate());
-        response.setGender(doctorProfileModel.getGender());
-        response.setPhone(doctorProfileModel.getPhone());
-        response.setDegree(doctorProfileModel.getDegree());
-        response.setDepartmentId(doctorProfileModel.getDepartmentModel().getId());
-        response.setDepartmentName(doctorProfileModel.getDepartmentModel().getName());
-
-        return response;
+        DoctorProfileModel model = this.getDoctorById(id);
+        DoctorConvert.convertFromRequest(model, request);
+        model = this.doctorProfileRepository.save(model);
+        return DoctorConvert.convertToResponse(model);
     }
 
     public void handleDeleteDoctor(Long id) {
-        DoctorProfileModel doctorProfileModel = this.getDoctorById(id);
-        UserModel userModel = doctorProfileModel.getUserModel();
+        DoctorProfileModel model = this.getDoctorById(id);
+        UserModel userModel = model.getUserModel();
         this.userService.delete(userModel);
     }
 }

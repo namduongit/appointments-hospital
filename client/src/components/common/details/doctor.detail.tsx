@@ -1,8 +1,6 @@
 import { motion } from "motion/react";
 import { formatNumberPhone } from "../../../utils/formatNumber.util";
 import { formatDateVi } from "../../../utils/formatDate.util";
-import { useState } from "react";
-import EditCalendarModal from "../edits/calendar.edit";
 import type { DoctorResponse } from "../../../responses/doctor.response";
 
 type DoctorDetail = {
@@ -12,9 +10,7 @@ type DoctorDetail = {
 }
 
 const DoctorDetail = (props: DoctorDetail) => {
-    const { doctorSelect, setShowDetail, onSuccess } = props;
-    
-    const [showCalendar, setShowCalendar] = useState<boolean>(false);
+    const { doctorSelect, setShowDetail } = props;
 
     const getStatusColor = (status: string) => {
         return status === 'AVAILABLE' ? 'bg-green-100 text-green-800' :
@@ -104,23 +100,9 @@ const DoctorDetail = (props: DoctorDetail) => {
 
                             </div>
                         </div>
-
-                        <div className="flex gap-2 flex-col">
-                            <button className="w-full px-3 py-2 rounded font-bold text-white bg-blue-600 hover:bg-blue-700 shadow cursor-pointer transition-colors flex items-center justify-center gap-2"
-                            onClick={() => setShowCalendar(true)}
-                            >
-                                <i className="fa-solid fa-calendar-days"></i>
-                                <span>Thông tin lịch làm việc</span>
-                            </button>
-
-                            <button className="w-full px-3 py-2 rounded font-bold text-white bg-green-600 hover:bg-green-700 shadow cursor-pointer transition-colors">
-                                Đổi mật khẩu
-                            </button>
-                        </div>
                     </div>
                 </div>
             </motion.div>
-            {showCalendar && (<EditCalendarModal setShowCalendar={setShowCalendar} setShowDetail={setShowDetail} workDay={doctorSelect.workDay ?? ""} doctorId={doctorSelect.id} onSuccess={onSuccess} />)}
         </div>
     )
 };

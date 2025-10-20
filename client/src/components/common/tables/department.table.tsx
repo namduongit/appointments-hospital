@@ -4,12 +4,12 @@ import TablePagination from "../others/pagination";
 
 import type { DepartmentResponse } from "../../../responses/department.response";
 
-type DepartmentTable = {
+type DepartmentTableProps = {
     departments: DepartmentResponse[];
     onSuccess?: () => void;
 }
 
-const DepartmentTable = (props: DepartmentTable) => {
+const DepartmentTable = (props: DepartmentTableProps) => {
     const { departments } = props;
 
     const [page, setPage] = useState<number>(1);
@@ -41,10 +41,6 @@ const DepartmentTable = (props: DepartmentTable) => {
 
                                     <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
                                         <i className="fa-solid fa-wrench"></i>
-                                    </button>
-
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                                        <i className="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
                             </td>

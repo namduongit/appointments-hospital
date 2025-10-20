@@ -40,7 +40,7 @@ public class UserModel {
     @JsonManagedReference
     private DoctorProfileModel doctorProfileModel;
 
-    @OneToMany(mappedBy = "userModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "userModel")
     @JsonManagedReference
     private List<AppointmentModel> userAppointments = new ArrayList<>();
 
@@ -144,13 +144,5 @@ public class UserModel {
 
     public void setDoctorAppointments(List<AppointmentModel> doctorAppointments) {
         this.doctorAppointments = doctorAppointments;
-    }
-
-    @Override
-    public String toString() {
-        return "UserModel [id=" + id + ", email=" + email + ", password=" + password + ", role=" + role + ", type="
-                + type + ", status=" + status + ", userProfileModel=" + userProfileModel + ", doctorProfileModel="
-                + doctorProfileModel + ", userAppointmets=" + userAppointments + ", doctorAppointments="
-                + doctorAppointments + "]";
     }
 }

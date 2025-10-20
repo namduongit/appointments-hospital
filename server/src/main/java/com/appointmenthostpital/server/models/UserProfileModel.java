@@ -72,10 +72,4 @@ public class UserProfileModel {
     public void setUserModel(UserModel userModel) {
         this.userModel = userModel;
     }
-
-    @Override
-    public String toString() {
-        return "UserProfileModel [id=" + id + ", fullName=" + fullName + ", phone=" + phone + ", address=" + address
-                + ", birthDate=" + birthDate + ", userModel=" + userModel + "]";
-    }
 }

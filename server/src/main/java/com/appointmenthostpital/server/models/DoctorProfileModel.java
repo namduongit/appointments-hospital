@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
@@ -16,7 +17,9 @@ import jakarta.persistence.Table;
 public class DoctorProfileModel {
     @Id
     private Long id;
+    @Lob
     private String image;
+    @Column(nullable = false)
     private String fullName;
     @Column(columnDefinition = "enum ('MALE', 'FEMALE', 'OTHER') default 'OTHER'")
     private String gender = "OTHER";
@@ -124,12 +127,5 @@ public class DoctorProfileModel {
 
     public void setDepartmentModel(DepartmentModel departmentModel) {
         this.departmentModel = departmentModel;
-    }
-
-    @Override
-    public String toString() {
-        return "DoctorProfileModel [id=" + id + ", image=" + image + ", fullName=" + fullName + ", gender=" + gender
-                + ", phone=" + phone + ", birthDate=" + birthDate + ", degree=" + degree + ", workDay=" + workDay
-                + ", status=" + status + ", userModel=" + userModel + ", departmentModel=" + departmentModel + "]";
     }
 }

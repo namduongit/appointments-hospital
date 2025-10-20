@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import { AppProvider } from "./contexts/appProvider";
+import { ProductionProvider } from "./contexts/production.context";
 import "./assets/index.css";
 
 import PatientLayout from "./layouts/patient/layout";
@@ -16,13 +16,17 @@ const DoctorLayout = lazy(() => import("./layouts/doctor/layout"));
 const DoctorHomePage = lazy(() => import("./pages/doctor/home/home.page"));
 const DoctorLoginPage = lazy(() => import("./pages/doctor/login/login.page"));
 const DoctorAppointmentPage = lazy(() => import("./pages/doctor/appointment/appointment.page"));
+const DoctorProfilePage = lazy(() => import("./pages/doctor/profile/profile.page"));
 
 const AdminLayout = lazy(() => import("./layouts/admin/layout"));
-const AdminAccountsPage = lazy(() => import("./pages/admin/account/account.page"));
-const AdminDoctorsPage = lazy(() => import("./pages/admin/doctor/doctor.page"));
-const AdminCalendarPage = lazy(() => import("./pages/admin/calendar/calendar.page"));
+const AdminAccountPage = lazy(() => import("./pages/admin/account/account.page"));
+const AdminDoctorPage = lazy(() => import("./pages/admin/doctor/doctor.page"));
 const AdminAppointmentsPage = lazy(() => import("./pages/admin/appointment/appointment.page"));
 const AdminDepartmentPage = lazy(() => import("./pages/admin/department/department.page"));
+const AdminMedicinePage = lazy(() => import("./pages/admin/medicine/medicine.page"));
+const AdminInventoryPage = lazy(() => import("./pages/admin/inventory/inventory.page"));
+const AdminMedicineDashboardPage = lazy(() => import("./pages/admin/medicine-dashboard/medicine-dashboard.page"));
+const AdminMedicalPackagePage = lazy(() => import("./pages/admin/medical-package/medical-package.page"));
 
 const LoginPage = lazy(() => import("./pages/patient/login/login.page"));
 const RegisterPage = lazy(() => import("./pages/patient/register/register.page"));
@@ -77,6 +81,10 @@ const router = createBrowserRouter([
         path: "appointments",
         Component: DoctorAppointmentPage
       },
+      {
+        path: "profile",
+        Component: DoctorProfilePage
+      }
     ]
   },
   {
@@ -85,15 +93,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "accounts",
-        Component: AdminAccountsPage
+        Component: AdminAccountPage
       },
       {
         path: "doctors-profile",
-        Component: AdminDoctorsPage
-      },
-      {
-        path: "assitors-profile",
-        Component: AdminCalendarPage
+        Component: AdminDoctorPage
       },
       {
         path: "appointments",
@@ -102,6 +106,22 @@ const router = createBrowserRouter([
       {
         path: "department-room",
         Component: AdminDepartmentPage
+      },
+      {
+        path: "medicine-dashboard",
+        Component: AdminMedicineDashboardPage
+      },
+      {
+        path: "medicine",
+        Component: AdminMedicinePage
+      },
+      {
+        path: "inventory",
+        Component: AdminInventoryPage
+      },
+      {
+        path: "medical-package",
+        Component: AdminMedicalPackagePage
       }
     ]
   },
@@ -109,9 +129,9 @@ const router = createBrowserRouter([
 
 // Render app
 createRoot(document.getElementById("root")!).render(
-  <AppProvider>
+  <ProductionProvider>
     <Suspense fallback={<RotateLoading />}>
       <RouterProvider router={router} />
     </Suspense>
-  </AppProvider>
+  </ProductionProvider>
 );

@@ -22,15 +22,15 @@ public class DepartmentModel {
     @Column(nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "departmentModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "departmentModel", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<RoomModel> roomModels;
 
-    @OneToMany(mappedBy = "departmentModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "departmentModel", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<DoctorProfileModel> doctorProfileModels;
 
-    @OneToMany(mappedBy = "departmentModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "departmentModel", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<AppointmentModel> appointmentModels;
 
@@ -84,11 +84,5 @@ public class DepartmentModel {
 
     public void setAppointmentModels(List<AppointmentModel> appointmentModels) {
         this.appointmentModels = appointmentModels;
-    }
-
-    @Override
-    public String toString() {
-        return "DepartmentModel [id=" + id + ", name=" + name + ", roomModels=" + roomModels + ", doctorProfileModels="
-                + doctorProfileModels + ", appointmentModels=" + appointmentModels + "]";
     }
 }
