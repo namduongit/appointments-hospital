@@ -1,14 +1,28 @@
-import { useEffect, useState } from "react";
-import { transactionTypes, transactionStatus } from "../../../constants/medicine.constant";
-import { sampleInventoryTransactions } from "../../../data/medicine.sample";
+import { useEffect, useState, useMemo } from "react";
+import { transactionStatus } from "../../../constants/medicine.constant";
 
-import type { InventoryTransactionResponse } from "../../../responses/inventory-transaction.response";
+import type { ImportTicketResponse } from "../../../responses/import-ticket.response";
+import type { MedicineResponse } from "../../../responses/medicine.response";
+import useCallApi from "../../../hooks/useCallApi";
+import { getMedicineList } from "../../../services/medicine.service";
+import AddImport from "../../../components/common/adds/import-ticket.add";
+import AddExport from "../../../components/common/adds/export-ticket.add";
+import type { ExportTicketResponse } from "../../../responses/export-ticket.response";
+import { getImportTicketList } from "../../../services/import-ticket.service";
+import { getExportTicketList } from "../../../services/export-ticket.service";
+import ImportTicketsTable from "../../../components/common/tables/import-tickets-table";
+import ExportTicketsTable from "../../../components/common/tables/export-tickets-table";
 
 const AdminInventoryPage = () => {
+    const { execute } = useCallApi();
+
     const [select, setSelect] = useState<string>("all");
 
-    const [transactions, setTransactions] = useState<InventoryTransactionResponse[]>([]);
-    const [transactionsFilter, setTransactionsFilter] = useState<InventoryTransactionResponse[]>([]);
+    const [importTickets, setImportTickets] = useState<ImportTicketResponse[]>([]);
+
+    const [exportTickets, setExportTickets] = useState<ExportTicketResponse[]>([]);
+
+    const [medicines, setMedicines] = useState<MedicineResponse[]>([]);
 
     const [isOpenCreateImport, setIsOpenCreateImport] = useState<boolean>(false);
     const [isOpenCreateExport, setIsOpenCreateExport] = useState<boolean>(false);
@@ -16,76 +30,119 @@ const AdminInventoryPage = () => {
     const [searchForm, setSearchForm] = useState({
         input: "",
         status: "",
-        type: ""
+        type: "",
+        dateFrom: "",
+        dateTo: ""
     });
 
-    const handleSearchFormChange = (field: keyof typeof searchForm, value: string) => {
-        setSearchForm(prev => ({
-            ...prev,
-            [field]: value
-        }));
+    const handleChangeSearch = (field: keyof typeof searchForm, value: string) => {
+        setSearchForm(prev => ({ ...prev, [field]: value }));
     }
 
-    // Tính toán thống kê
-    const stats = {
-        totalTransactions: transactions.length,
-        totalImports: transactions.filter(t => t.type === 'import').length,
-        totalExports: transactions.filter(t => t.type === 'export').length,
-        totalValue: transactions.reduce((sum, t) => sum + t.totalAmount, 0),
-        pendingTransactions: transactions.filter(t => t.status === 'pending').length
-    };
+    const handleSearch = () => {
+        
+    }
 
-    useEffect(() => {
-        let filtered = transactions.filter(transaction => {
-            const matchesInput =
-                searchForm.input === "" ||
-                transaction.medicineName?.toLowerCase().includes(searchForm.input.toLowerCase()) ||
-                transaction.id?.toString().includes(searchForm.input) ||
-                transaction.reference?.toLowerCase().includes(searchForm.input.toLowerCase()) ||
-                transaction.supplierName?.toLowerCase().includes(searchForm.input.toLowerCase()) ||
-                transaction.customerName?.toLowerCase().includes(searchForm.input.toLowerCase());
+    const filteredImportTickets = useMemo(() => {
+        return importTickets.filter(ticket => {
+            const matchInput = !searchForm.input || 
+                ticket.id.toString().includes(searchForm.input.toLowerCase()) ||
+                ticket.performedBy.toLowerCase().includes(searchForm.input.toLowerCase()) ||
+                (ticket.supplierName && ticket.supplierName.toLowerCase().includes(searchForm.input.toLowerCase())) ||
+                ticket.items.some(item => 
+                    item.medicineName.toLowerCase().includes(searchForm.input.toLowerCase()) ||
+                    item.medicineId.toString().includes(searchForm.input.toLowerCase())
+                );
 
-            const matchesStatus =
-                searchForm.status === "" || transaction.status === searchForm.status;
+            const matchStatus = !searchForm.status || ticket.status === searchForm.status;
 
-            const matchesType =
-                searchForm.type === "" || transaction.type === searchForm.type;
+            const matchDateFrom = !searchForm.dateFrom || 
+                new Date(ticket.createdAt) >= new Date(searchForm.dateFrom);
 
-            const matchesSelect = 
-                select === "all" || 
-                (select === "import" && transaction.type === "import") ||
-                (select === "export" && transaction.type === "export") ||
-                (select === "adjustment" && transaction.type === "adjustment");
+            const matchDateTo = !searchForm.dateTo || 
+                new Date(ticket.createdAt) <= new Date(searchForm.dateTo + 'T23:59:59');
 
-            return matchesInput && matchesStatus && matchesType && matchesSelect;
+            return matchInput && matchStatus && matchDateFrom && matchDateTo;
         });
+    }, [importTickets, searchForm]);
 
-        setTransactionsFilter(filtered);
-    }, [searchForm, transactions, select]);
+    const filteredExportTickets = useMemo(() => {
+        return exportTickets.filter(ticket => {
+            const matchInput = !searchForm.input || 
+                ticket.id.toString().includes(searchForm.input.toLowerCase()) ||
+                ticket.performedBy.toLowerCase().includes(searchForm.input.toLowerCase()) ||
+                ticket.items.some(item => 
+                    item.medicineName.toLowerCase().includes(searchForm.input.toLowerCase()) ||
+                    item.medicineId.toString().includes(searchForm.input.toLowerCase())
+                );
+
+            const matchStatus = !searchForm.status || ticket.status === searchForm.status;
+
+            const matchDateFrom = !searchForm.dateFrom || 
+                new Date(ticket.createdAt) >= new Date(searchForm.dateFrom);
+
+            const matchDateTo = !searchForm.dateTo || 
+                new Date(ticket.createdAt) <= new Date(searchForm.dateTo + 'T23:59:59');
+
+            return matchInput && matchStatus && matchDateFrom && matchDateTo;
+        });
+    }, [exportTickets, searchForm]);
+
+    const handleGetImportTicketList = async () => {
+        const restResponse = await execute(getImportTicketList());
+        if (restResponse?.result) {
+            const data: ImportTicketResponse[] = restResponse.data;
+            setImportTickets(Array.isArray(data) ? data : []);
+        }
+    }
+
+    const handleGetExportTicketList = async () => {
+        const restResponse = await execute(getExportTicketList());
+        if (restResponse?.result) {
+            const data: ExportTicketResponse[] = restResponse.data;
+            setExportTickets(Array.isArray(data) ? data : []);
+        }
+    }
+
+    const handleGetMedicineList = async () => {
+        const restResponse = await execute(getMedicineList());
+        if (restResponse?.result) {
+            const data: MedicineResponse[] = restResponse.data;
+            setMedicines(Array.isArray(data) ? data : []);
+        }
+    }
+
+    const handleSuccessImport = () => {
+        handleGetImportTicketList();
+        handleGetMedicineList();
+    }
+
+    const handleSuccessExport = () => {
+        handleGetExportTicketList();
+        handleGetMedicineList();
+    }
+
+    const getTicketTotalAmount = (t: ImportTicketResponse | ExportTicketResponse) => {
+        const asAny = t as any;
+        if (typeof asAny.totalAmount === "number") return asAny.totalAmount;
+        if (typeof asAny.totalPrice === "number") return asAny.totalPrice;
+        if (typeof asAny.amount === "number") return asAny.amount;
+        return 0;
+    };
+
+    const stats = {
+        totalTransactions: filteredImportTickets.length + filteredExportTickets.length,
+        totalImports: filteredImportTickets.length,
+        totalExports: filteredExportTickets.length,
+        totalValue: filteredImportTickets.reduce((sum, t) => sum + getTicketTotalAmount(t), 0) + filteredExportTickets.reduce((sum, t) => sum + getTicketTotalAmount(t), 0),
+        pendingTransactions: filteredImportTickets.filter(t => t.status === 'PENDING').length + filteredExportTickets.filter(t => t.status === 'PENDING').length
+    };
 
     useEffect(() => {
-        // Load dữ liệu mẫu
-        setTransactions(sampleInventoryTransactions);
-        setTransactionsFilter(sampleInventoryTransactions);
+        handleGetImportTicketList();
+        handleGetExportTicketList();
+        handleGetMedicineList();
     }, []);
-
-    const getTypeDisplay = (type: string) => {
-        switch(type) {
-            case 'import': return { text: 'Nhập hàng', color: 'bg-green-100 text-green-800' };
-            case 'export': return { text: 'Xuất hàng', color: 'bg-red-100 text-red-800' };
-            case 'adjustment': return { text: 'Điều chỉnh', color: 'bg-yellow-100 text-yellow-800' };
-            default: return { text: type, color: 'bg-gray-100 text-gray-800' };
-        }
-    };
-
-    const getStatusDisplay = (status: string) => {
-        switch(status) {
-            case 'completed': return { text: 'Hoàn thành', color: 'bg-green-100 text-green-800' };
-            case 'pending': return { text: 'Chờ xử lý', color: 'bg-yellow-100 text-yellow-800' };
-            case 'cancelled': return { text: 'Đã hủy', color: 'bg-red-100 text-red-800' };
-            default: return { text: status, color: 'bg-gray-100 text-gray-800' };
-        }
-    };
 
     return (
         <main className="p-4 sm:p-6">
@@ -100,7 +157,6 @@ const AdminInventoryPage = () => {
                     </div>
                 </div>
 
-                {/* Thống kê tổng quan */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                         <div className="flex items-center">
@@ -149,233 +205,206 @@ const AdminInventoryPage = () => {
                 </div>
 
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
-                    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
-                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:space-x-3">
-                            <div className="appointments__filter__item relative flex-1">
-                                <i className="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
-                                <input
-                                    type="text"
-                                    value={searchForm.input}
-                                    onChange={(event) => handleSearchFormChange("input", event.target.value)}
-                                    className="border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                    placeholder="Tìm kiếm theo thuốc, mã giao dịch..."
-                                />
+                    <div className="grid gap-4">
+
+                        <div className="grid gap-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                            <div className="appointments__filter__item relative">
+                                <label className="block text-xs text-gray-600 mb-1">Tìm kiếm:</label>
+                                <div className="relative">
+                                    <i className="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                                    <input
+                                        type="text"
+                                        value={searchForm.input}
+                                        onChange={(event) => handleChangeSearch("input", event.target.value)}
+                                        className="border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                        placeholder="Tìm kiếm theo thuốc, mã giao dịch..."
+                                        onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                                    />
+                                </div>
                             </div>
 
-                            <div className="flex-1">
-                                <select
-                                    className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                    value={searchForm.type}
-                                    onChange={(event) => handleSearchFormChange("type", event.target.value)}
-                                >
-                                    <option value="">Loại giao dịch</option>
-                                    {transactionTypes.map((type) => (
-                                        <option key={type.id} value={type.value}>
-                                            {type.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div className="flex-1">
+                            <div>
+                                <label className="block text-xs text-gray-600 mb-1">Trạng thái:</label>
                                 <select
                                     className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                     value={searchForm.status}
-                                    onChange={(event) => handleSearchFormChange("status", event.target.value)}
+                                    onChange={(event) => handleChangeSearch("status", event.target.value)}
                                 >
-                                    <option value="">Trạng thái</option>
+                                    <option value="">Tất cả trạng thái</option>
                                     {transactionStatus.map((status) => (
-                                        <option key={status.id} value={status.value}>
+                                        <option key={status.id} value={status.value.toUpperCase()}>
                                             {status.name}
                                         </option>
                                     ))}
                                 </select>
                             </div>
+
+                            <div>
+                                <label className="block text-xs text-gray-600 mb-1">Từ ngày:</label>
+                                <input
+                                    type="date"
+                                    value={searchForm.dateFrom}
+                                    onChange={(event) => handleChangeSearch("dateFrom", event.target.value)}
+                                    className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-gray-600 mb-1">Đến ngày:</label>
+                                <input
+                                    type="date"
+                                    value={searchForm.dateTo}
+                                    onChange={(event) => handleChangeSearch("dateTo", event.target.value)}
+                                    className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                />
+                            </div>
+
                         </div>
 
-                        <div className="flex justify-end items-center gap-2">
+                        <div className="flex gap-2 mt-4">
+                            <button
+                                onClick={handleSearch}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm font-medium flex items-center gap-2"
+                            >
+                                <i className="fa-solid fa-search"></i>
+                                Tìm kiếm
+                            </button>
+                            <button
+                                onClick={() => setSearchForm({
+                                    input: "",
+                                    status: "",
+                                    type: "",
+                                    dateFrom: "",
+                                    dateTo: ""
+                                })}
+                                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition text-sm"
+                            >
+                                <i className="fa-solid fa-refresh me-1"></i>
+                                Xóa bộ lọc
+                            </button>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="flex bg-gray-100 rounded-lg p-1">
                                 <button
-                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                        select === "all" ? "bg-white text-blue-600 shadow" : "text-gray-600"
-                                    }`}
+                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${select === "all" ? "bg-white text-blue-600 shadow" : "text-gray-600"
+                                        }`}
                                     onClick={() => setSelect("all")}
                                 >
                                     Tất cả
                                 </button>
                                 <button
-                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                        select === "import" ? "bg-white text-blue-600 shadow" : "text-gray-600"
-                                    }`}
+                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${select === "import" ? "bg-white text-blue-600 shadow" : "text-gray-600"
+                                        }`}
                                     onClick={() => setSelect("import")}
                                 >
                                     Nhập hàng
                                 </button>
                                 <button
-                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
-                                        select === "export" ? "bg-white text-blue-600 shadow" : "text-gray-600"
-                                    }`}
+                                    className={`px-3 py-1 rounded text-sm font-medium transition-colors ${select === "export" ? "bg-white text-blue-600 shadow" : "text-gray-600"
+                                        }`}
                                     onClick={() => setSelect("export")}
                                 >
                                     Xuất hàng
                                 </button>
                             </div>
-                            <button 
-                                className="font-semibold bg-green-600 text-white hover:text-green-600 hover:bg-white hover:ring-3 hover:ring-green-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
-                                onClick={() => setIsOpenCreateImport(true)}
-                            >
-                                <i className="fa-solid fa-download me-2"></i>
-                                <span>Nhập hàng</span>
-                            </button>
-                            <button 
-                                className="font-semibold bg-red-600 text-white hover:text-red-600 hover:bg-white hover:ring-3 hover:ring-red-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
-                                onClick={() => setIsOpenCreateExport(true)}
-                            >
-                                <i className="fa-solid fa-upload me-2"></i>
-                                <span>Xuất hàng</span>
-                            </button>
+
+                            <div className="flex gap-2">
+                                <button
+                                    className="font-semibold bg-green-600 text-white hover:text-green-600 hover:bg-white hover:ring-2 hover:ring-green-600 px-4 py-2 rounded shadow cursor-pointer flex items-center text-sm transition-all"
+                                    onClick={() => setIsOpenCreateImport(true)}
+                                >
+                                    <i className="fa-solid fa-download me-2"></i>
+                                    <span>Nhập hàng</span>
+                                </button>
+                                <button
+                                    className="font-semibold bg-red-600 text-white hover:text-red-600 hover:bg-white hover:ring-2 hover:ring-red-600 px-4 py-2 rounded shadow cursor-pointer flex items-center text-sm transition-all"
+                                    onClick={() => setIsOpenCreateExport(true)}
+                                >
+                                    <i className="fa-solid fa-upload me-2"></i>
+                                    <span>Xuất hàng</span>
+                                </button>
+                            </div>
                         </div>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between mb-4">
+                    <div className="text-sm text-gray-600">
+                        Hiển thị <strong>{filteredImportTickets.length + filteredExportTickets.length}</strong> / {importTickets.length + exportTickets.length} giao dịch
                     </div>
                 </div>
 
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
                         <div className="p-4">
-                            <h4 className="text-lg font-semibold mb-4">Lịch sử giao dịch ({transactionsFilter.length})</h4>
+                            <div className="flex justify-between items-center mb-4">
+                                <h4 className="text-lg font-semibold">
+                                    {select === "all" && "Lịch sử giao dịch"}
+                                    {select === "import" && "Phiếu nhập hàng"}
+                                    {select === "export" && "Phiếu xuất hàng"}
+                                    <span className="text-sm font-normal text-gray-500 ml-2">
+                                        {select === "all" && `(${filteredImportTickets.length + filteredExportTickets.length} / ${importTickets.length + exportTickets.length} giao dịch)`}
+                                        {select === "import" && `(${filteredImportTickets.length} / ${importTickets.length} phiếu nhập)`}
+                                        {select === "export" && `(${filteredExportTickets.length} / ${exportTickets.length} phiếu xuất)`}
+                                    </span>
+                                </h4>
+
+                            </div>
                             <div className="space-y-4">
-                                {transactionsFilter.map((transaction) => {
-                                    const typeDisplay = getTypeDisplay(transaction.type);
-                                    const statusDisplay = getStatusDisplay(transaction.status);
-                                    
-                                    return (
-                                        <div key={transaction.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                                            <div className="flex justify-between items-start">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-3 mb-2">
-                                                        <h5 className="font-semibold text-lg text-blue-700">#{transaction.id}</h5>
-                                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${typeDisplay.color}`}>
-                                                            {typeDisplay.text}
-                                                        </span>
-                                                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusDisplay.color}`}>
-                                                            {statusDisplay.text}
-                                                        </span>
-                                                    </div>
-                                                    
-                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Thuốc:</span>
-                                                            <p className="font-medium">{transaction.medicineName}</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Số lượng:</span>
-                                                            <p className={`font-medium ${transaction.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                                                {transaction.quantity > 0 ? '+' : ''}{transaction.quantity}
-                                                            </p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Đơn giá:</span>
-                                                            <p className="font-medium">{transaction.unitPrice.toLocaleString()}đ</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Tổng tiền:</span>
-                                                            <p className="font-medium text-blue-600">{transaction.totalAmount.toLocaleString()}đ</p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-3">
-                                                        {transaction.reference && (
-                                                            <div>
-                                                                <span className="text-xs text-gray-500">Mã tham chiếu:</span>
-                                                                <p className="font-medium text-sm">{transaction.reference}</p>
-                                                            </div>
-                                                        )}
-                                                        {transaction.batchNumber && (
-                                                            <div>
-                                                                <span className="text-xs text-gray-500">Số lô:</span>
-                                                                <p className="font-medium text-sm">{transaction.batchNumber}</p>
-                                                            </div>
-                                                        )}
-                                                        {transaction.supplierName && (
-                                                            <div>
-                                                                <span className="text-xs text-gray-500">Nhà cung cấp:</span>
-                                                                <p className="font-medium text-sm">{transaction.supplierName}</p>
-                                                            </div>
-                                                        )}
-                                                        {transaction.customerName && (
-                                                            <div>
-                                                                <span className="text-xs text-gray-500">Khách hàng:</span>
-                                                                <p className="font-medium text-sm">{transaction.customerName}</p>
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Lý do:</span>
-                                                            <p className="font-medium text-sm">{transaction.reason}</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Người thực hiện:</span>
-                                                            <p className="font-medium text-sm">{transaction.performedBy}</p>
-                                                        </div>
-                                                        <div>
-                                                            <span className="text-xs text-gray-500">Ngày tạo:</span>
-                                                            <p className="font-medium text-sm">{new Date(transaction.createdAt).toLocaleDateString('vi-VN')}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="flex items-center gap-2 ml-4">
-                                                    <button className="p-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                                                        <i className="fa-solid fa-info"></i>
-                                                    </button>
-                                                    <button className="p-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                                                        <i className="fa-solid fa-wrench"></i>
-                                                    </button>
-                                                    <button className="p-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                                                        <i className="fa-solid fa-print"></i>
-                                                    </button>
-                                                </div>
+                                {select === "all" && (
+                                    <>
+                                        {filteredImportTickets.length > 0 && (
+                                            <div>
+                                                <h5 className="text-lg font-medium text-gray-900 mb-3 flex items-center">
+                                                    <i className="fa-solid fa-download text-green-600 mr-2"></i>
+                                                    Phiếu nhập hàng ({filteredImportTickets.length})
+                                                </h5>
+                                                <ImportTicketsTable importTickets={filteredImportTickets} reload={handleGetImportTicketList} />
                                             </div>
-                                        </div>
-                                    );
-                                })}
+                                        )}
+                                        {filteredExportTickets.length > 0 && (
+                                            <div className="mt-8">
+                                                <h5 className="text-lg font-medium text-gray-900 mb-3 flex items-center">
+                                                    <i className="fa-solid fa-upload text-red-600 mr-2"></i>
+                                                    Phiếu xuất hàng ({filteredExportTickets.length})
+                                                </h5>
+                                                <ExportTicketsTable exportTickets={filteredExportTickets} reload={handleGetExportTicketList} />
+                                            </div>
+                                        )}
+                                        {filteredImportTickets.length === 0 && filteredExportTickets.length === 0 && (
+                                            <div className="text-center py-12">
+                                                <div className="mx-auto h-24 w-24 text-gray-300 mb-4">
+                                                    <i className="fa-solid fa-box-open text-6xl"></i>
+                                                </div>
+                                                <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy giao dịch nào</h3>
+                                                <p className="text-gray-500">Không có giao dịch nào phù hợp với bộ lọc hiện tại.</p>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                                {select === "import" && <ImportTicketsTable importTickets={filteredImportTickets} reload={handleGetImportTicketList} />}
+                                {select === "export" && <ExportTicketsTable exportTickets={filteredExportTickets} reload={handleGetExportTicketList} />}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Modal nhập hàng */}
             {isOpenCreateImport && (
-                <div className="fixed inset-0 bg-gray-500/50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                        <h2 className="text-xl font-bold mb-4 text-green-700">Phiếu nhập hàng</h2>
-                        <p>Form nhập hàng đang được phát triển...</p>
-                        <button 
-                            onClick={() => setIsOpenCreateImport(false)}
-                            className="mt-4 px-4 py-2 bg-gray-300 rounded"
-                        >
-                            Đóng
-                        </button>
-                    </div>
-                </div>
+                <AddImport
+                    medicines={medicines}
+                    onClose={() => setIsOpenCreateImport(false)}
+                    onSuccess={handleSuccessImport}
+                />
             )}
 
-            {/* Modal xuất hàng */}
             {isOpenCreateExport && (
-                <div className="fixed inset-0 bg-gray-500/50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
-                        <h2 className="text-xl font-bold mb-4 text-red-700">Phiếu xuất hàng</h2>
-                        <p>Form xuất hàng đang được phát triển...</p>
-                        <button 
-                            onClick={() => setIsOpenCreateExport(false)}
-                            className="mt-4 px-4 py-2 bg-gray-300 rounded"
-                        >
-                            Đóng
-                        </button>
-                    </div>
-                </div>
+                <AddExport
+                    medicines={medicines}
+                    onClose={() => setIsOpenCreateExport(false)}
+                    onSuccess={handleSuccessExport}
+                />
             )}
 
         </main >

@@ -20,7 +20,7 @@ const AdminMedicalPackagePage = () => {
         price: ""
     });
 
-    const handleSearchFormChange = (field: keyof typeof searchForm, value: string) => {
+    const handleChangeSearch = (field: keyof typeof searchForm, value: string) => {
         setSearchForm(prev => ({
             ...prev,
             [field]: value
@@ -44,13 +44,23 @@ const AdminMedicalPackagePage = () => {
 
             const matchesStatus = searchForm.status === "" || medicalPackage.status === searchForm.status;
 
-            const matchesPrice = searchForm.price === "" ||
-                (searchForm.price === "ASC" ? true : searchForm.price === "DESC" ? true : false);
+            return matchesInput && matchesStatus;
+        }));
+        if (searchForm.price !== "") {
+            const sortedPackages = [...medicalPackagesFilter].sort((a, b) => {
+                if (searchForm.price === "ASC") {
+                    return (a.price || 0) - (b.price || 0);
+                } else if (searchForm.price === "DESC") {
+                    return (b.price || 0) - (a.price || 0);
+                }
+                return 0;
+            }
+            );
+            setMedicalPackagesFilter(sortedPackages);
+        }
 
-            return matchesInput && matchesStatus && matchesPrice;
-        }))
     }, [searchForm, medicalPackages]);
-            
+
     useEffect(() => {
         handleGetMedicalPackageList();
     }, []);
@@ -60,7 +70,7 @@ const AdminMedicalPackagePage = () => {
         activePackages: medicalPackages.filter(p => p.status === 'ACTIVE').length,
         inactivePackages: medicalPackages.filter(p => p.status === 'INACTIVE').length,
         totalValue: medicalPackages.reduce((sum, p) => sum + (p.price || 0), 0),
-        averagePrice: medicalPackages.length > 0 ? 
+        averagePrice: medicalPackages.length > 0 ?
             medicalPackages.reduce((sum, p) => sum + (p.price || 0), 0) / medicalPackages.length : 0,
         popularPackages: medicalPackages.filter(p => p.status === 'ACTIVE').slice(0, 3)
     };
@@ -143,7 +153,7 @@ const AdminMedicalPackagePage = () => {
                             <input
                                 type="text"
                                 value={searchForm.input}
-                                onChange={(e) => handleSearchFormChange("input", e.target.value)}
+                                onChange={(e) => handleChangeSearch("input", e.target.value)}
                                 className="border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 placeholder="Tìm kiếm theo tên hoặc id ..."
                             />
@@ -153,8 +163,8 @@ const AdminMedicalPackagePage = () => {
                             <select
                                 className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 value={searchForm.status}
-                                onChange={(e) => handleSearchFormChange("status", e.target.value)}
-                                >
+                                onChange={(e) => handleChangeSearch("status", e.target.value)}
+                            >
                                 <option value="">Chọn trạng thái</option>
                                 {medicalPackageStatus.map((status) => (
                                     <option key={status.id} value={status.value}>{status.name}</option>
@@ -166,8 +176,8 @@ const AdminMedicalPackagePage = () => {
                             <select
                                 className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 value={searchForm.price}
-                                onChange={(e) => handleSearchFormChange("price", e.target.value)}
-                                >
+                                onChange={(e) => handleChangeSearch("price", e.target.value)}
+                            >
                                 <option value="">Sắp xếp tiền theo</option>
                                 {moneyStatus.map((status) => (
                                     <option key={status.id} value={status.value}>{status.name}</option>

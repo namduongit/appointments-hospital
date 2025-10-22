@@ -108,3 +108,39 @@ export const medicalPackageStatus = [
         value: "INACTIVE"
     }
 ];
+
+export const inventoryTransactionStatus = [
+    {
+        id: 1,
+        name: "Chờ xử lý",
+        value: "PENDING"
+    },
+    {
+        id: 2,
+        name: "Đã hoàn thành",
+        value: "COMPLETED"
+    },
+    {
+        id: 3,
+        name: "Đã hủy",
+        value: "CANCELLED"
+    }
+];
+
+export const inventoryTransactionType = [
+    {
+        id: 1,
+        name: "Nhập kho",
+        value: "IMPORT"
+    },
+    {
+        id: 2,
+        name: "Xuất kho",
+        value: "EXPORT"
+    },
+    {
+        id: 3,
+        name: "Điều chỉnh",
+        value: "ADJUSTMENT"
+    }
+]

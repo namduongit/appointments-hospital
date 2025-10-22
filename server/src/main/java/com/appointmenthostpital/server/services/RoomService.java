@@ -29,25 +29,25 @@ public class RoomService {
     }
 
     public RoomResponse handleCreateRoom(AdminRoomDTO.CreateRoomRequest request) {
-        RoomModel model = new RoomModel();
-        model.setName(request.getName());
-        model.setStatus(request.getStatus());
-
-        model.setDepartmentModel(this.departmentService.getDepartmentById(request.getDepartmentId()));
-        model = this.roomRepository.save(model);
-
-        return RoomConvert.convertToResponse(model);
+        RoomModel roomModel = new RoomModel();
+        RoomConvert.convertFromCreateRequest(roomModel, request);
+        
+        roomModel.setDepartmentModel(this.departmentService.getDepartmentById(request.getDepartmentId()));
+        roomModel = this.roomRepository.save(roomModel);
+        return RoomConvert.convertToResponse(roomModel);
     }
 
     public RoomResponse handleUpdateRoom(Long id, AdminRoomDTO.UpdateRoomRequest request) {
-        RoomModel model = this.getRoomById(id);
-        RoomConvert.convertFromUpdateRequest(request, model);
-        model = this.roomRepository.save(model);
-        return RoomConvert.convertToResponse(model);
+        RoomModel roomModel = this.getRoomById(id);
+        roomModel.setDepartmentModel(this.departmentService.getDepartmentById(request.getDepartmentId()));
+
+        RoomConvert.convertFromUpdateRequest(roomModel, request);
+        roomModel = this.roomRepository.save(roomModel);
+        return RoomConvert.convertToResponse(roomModel);
     }
 
     public void handleDeleteRoom(Long id) {
-        RoomModel model = this.getRoomById(id);
-        this.roomRepository.delete(model);
+        RoomModel roomModel = this.getRoomById(id);
+        this.roomRepository.delete(roomModel);
     }
 }

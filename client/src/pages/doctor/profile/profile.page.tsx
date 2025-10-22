@@ -79,7 +79,7 @@ const DoctorProfilePage = () => {
             fullName: formData.fullName,
             gender: formData.gender,
             phone: formData.phone,
-            birthDate: formData.birthDate,
+            birthDay: formData.birthDate,
             degree: formData.degree,
             departmentId: formData.departmentId
         };
@@ -132,7 +132,6 @@ const DoctorProfilePage = () => {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <form onSubmit={handleSubmit}>
                         <div className="p-6">
-                            {/* Avatar Section */}
                             <div className="flex flex-col items-center mb-6">
                                 <div className="relative">
                                     <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gray-200">
@@ -162,9 +161,7 @@ const DoctorProfilePage = () => {
                                 </div>
                             </div>
 
-                            {/* Form Fields */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Email (Read-only) */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Email
@@ -177,7 +174,6 @@ const DoctorProfilePage = () => {
                                     />
                                 </div>
 
-                                {/* Full Name */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Họ và tên <span className="text-red-500">*</span>
@@ -194,7 +190,6 @@ const DoctorProfilePage = () => {
                                     />
                                 </div>
 
-                                {/* Gender */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Giới tính
@@ -216,7 +211,6 @@ const DoctorProfilePage = () => {
                                     </select>
                                 </div>
 
-                                {/* Phone */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Số điện thoại <span className="text-red-500">*</span>
@@ -233,7 +227,6 @@ const DoctorProfilePage = () => {
                                     />
                                 </div>
 
-                                {/* Birth Date */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Ngày sinh
@@ -249,7 +242,6 @@ const DoctorProfilePage = () => {
                                     />
                                 </div>
 
-                                {/* Department */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Khoa
@@ -271,7 +263,6 @@ const DoctorProfilePage = () => {
                                     </select>
                                 </div>
 
-                                {/* Degree */}
                                 <div className="md:col-span-2">
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Bằng cấp/Chuyên môn
@@ -288,7 +279,6 @@ const DoctorProfilePage = () => {
                                     />
                                 </div>
 
-                                {/* Work Day (Read-only) */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Ngày bắt đầu làm việc
@@ -301,7 +291,6 @@ const DoctorProfilePage = () => {
                                     />
                                 </div>
 
-                                {/* Status (Read-only) */}
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-2">
                                         Trạng thái
@@ -320,7 +309,6 @@ const DoctorProfilePage = () => {
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
                         {isEditing && (
                             <div className="px-6 py-4 bg-gray-50 border-t flex gap-3 justify-end">
                                 <button

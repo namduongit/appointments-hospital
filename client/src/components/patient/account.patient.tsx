@@ -1,17 +1,17 @@
 import { useEffect, useState, type FormEvent } from "react";
 import useCallApi from "../../hooks/useCallApi";
-import type { ProfileDetailResponse } from "../../responses/user.response";
+import type { UserDetailResponse } from "../../responses/user.response";
 import { updateProfileDetail } from "../../services/user.service";
 
-type AccountDetail = {
-    profileDetail: ProfileDetailResponse,
+type AccountPatientProps = {
+    userDetail: UserDetailResponse,
     email: string,
     onSuccess?: () => void
 }
 
-const AccountDetail = (props: AccountDetail) => {
+const AccountPatient = (props: AccountPatientProps) => {
     const { execute, notify, loading } = useCallApi();
-    const { profileDetail, email, onSuccess } = props;
+    const { userDetail, email, onSuccess } = props;
 
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -29,10 +29,10 @@ const AccountDetail = (props: AccountDetail) => {
     const handleCancel = () => {
         setIsEditing(false);
         setSubmitData({
-            fullName: profileDetail.fullName,
-            phone: profileDetail.phone,
-            address: profileDetail.address,
-            birthDate: profileDetail.birthDate
+            fullName: userDetail.fullName,
+            phone: userDetail.phone,
+            address: userDetail.address,
+            birthDate: userDetail.birthDate
         });
     }
 
@@ -48,12 +48,12 @@ const AccountDetail = (props: AccountDetail) => {
 
     useEffect(() => {
         setSubmitData({
-            fullName: profileDetail.fullName,
-            phone: profileDetail.phone,
-            address: profileDetail.address,
-            birthDate: profileDetail.birthDate
+            fullName: userDetail.fullName || "",
+            phone: userDetail.phone || "",
+            address: userDetail.address || "",
+            birthDate: userDetail.birthDate || ""
         });
-    }, [profileDetail]);
+    }, [userDetail]);
 
     return (
         <div className="space-y-6">
@@ -179,4 +179,4 @@ const AccountDetail = (props: AccountDetail) => {
     )
 }
 
-export default AccountDetail;
+export default AccountPatient;

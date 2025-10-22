@@ -67,7 +67,6 @@ const AddMedicalPackage = (props: AddMedicalPackageProps) => {
                                 onChange={(e) => handleChangeSubmit("name", e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Nhập tên gói dịch vụ"
-                                required
                             />
                         </div>
                     </div>
@@ -79,7 +78,6 @@ const AddMedicalPackage = (props: AddMedicalPackageProps) => {
                         <div className="relative">
                             <input
                                 type="number"
-                                required
                                 min="0"
                                 step="1000"
                                 value={submitData.price}
@@ -88,7 +86,7 @@ const AddMedicalPackage = (props: AddMedicalPackageProps) => {
                                 className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <div className="text-xs text-gray-500 mt-1">
-                                {Number(submitData.price) > 0 && `≈ ${formatPriceVND(Number(submitData.price))} VND`}
+                                {Number(submitData.price) > 0 && `≈ ${formatPriceVND(Number(submitData.price))}`}
                             </div>
                         </div>
                     </div>
@@ -104,7 +102,6 @@ const AddMedicalPackage = (props: AddMedicalPackageProps) => {
                                 onChange={(e) => handleChangeSubmit("description", e.target.value)}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Nhập mô tả"
-                                required
                             ></textarea>
                         </div>
                     </div>
@@ -118,7 +115,6 @@ const AddMedicalPackage = (props: AddMedicalPackageProps) => {
                             value={submitData.status}
                             onChange={(e) => handleChangeSubmit("status", e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
                         >
                             <option value="">Chọn trạng thái</option>
                             {medicalPackageStatus.map(status => (

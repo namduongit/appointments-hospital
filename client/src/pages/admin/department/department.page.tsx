@@ -226,7 +226,7 @@ const AdminDepartmentPage = () => {
 
                 <div className="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
-                        {select === "department" && <DepartmentTable departments={departmentsFilter} />}
+                        {select === "department" && <DepartmentTable departments={departmentsFilter} onSuccess={handleGetDepartmentList} />}
                         {select === "room" && <RoomTable rooms={roomsFilter} departments={departments} onSuccess={handleGetRoomList} />}
                     </div>
                 </div>

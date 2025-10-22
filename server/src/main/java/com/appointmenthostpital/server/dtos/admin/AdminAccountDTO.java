@@ -3,24 +3,23 @@ package com.appointmenthostpital.server.dtos.admin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public class AdminAccountDTO {
     public static class CreateAccountRequest {
-        @NotNull(message = "Không được để trống email")
-        @NotBlank(message = "Không được để trống email")
+        @NotNull(message = "Yêu cầu nhập email")
+        @NotBlank(message = "Email không được để trống")
         @Pattern(regexp = "^[A-Za-z].{5,}@gmail\\.com$", message = "Email không đúng định dạng")
         private String email;
-        @NotNull(message = "Không được để trống email")
-        @NotBlank(message = "Không được để trống mật khẩu")
-        @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 kí tự")
+
+        @NotNull(message = "Yêu cầu nhập mật khẩu")
+        @NotBlank(message = "Mật khẩu không được để trống")
         private String password;
-        @NotNull(message = "Không được để trống email")
-        @NotBlank(message = "Không được để trống mật khẩu xác nhận")
-        @Size(min = 8, message = "Mật khẩu phải có ít nhất 8 kí tự")
+
+        @NotNull(message = "Yêu cầu nhập mật khẩu xác nhận")
+        @NotBlank(message = "Mật khẩu xác nhận không được để trống")
         private String passwordConfirm;
-        @NotNull(message = "Không được để trống email")
-        @NotBlank(message = "Quyền tài khoản không được để trống")
+
+        @NotNull(message = "Yêu cầu nhập quyền tài khoản")
         @Pattern(regexp = "USER|ASSISTOR|DOCTOR|ADMIN", message = "Quyền tài khoản không đúng")
         private String role;
 
@@ -58,11 +57,16 @@ public class AdminAccountDTO {
     }
 
     public static class UpdateAccountRequest {
-        @NotBlank(message = "Không được để trống mật khẩu")
+        @NotNull(message = "Yêu cầu nhập mật khẩu")
+        @NotBlank(message = "Mật khẩu không được để trống")
         private String password;
-        @NotBlank(message = "Quyền tài khoản không được để trống")
+
+        @NotNull(message = "Yêu cầu nhập quyền tài khoản")
+        @Pattern(regexp = "USER|ASSISTOR|DOCTOR|ADMIN", message = "Quyền tài khoản không đúng")
         private String role;
-        @NotBlank(message = "Trạng thái tài khoản không được để trống")
+
+        @NotNull(message = "Yêu cầu nhập trạng thái tài khoản")
+        @Pattern(regexp = "ACTIVE|INACTIVE", message = "Trạng thái tài khoản không đúng")
         private String status;
 
         public String getPassword() {

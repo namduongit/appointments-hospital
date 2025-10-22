@@ -33,8 +33,8 @@ public class AppointmentModel {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name = "user_id")
-    private UserModel userModel;
+    @JoinColumn(name = "account_id")
+    private AccountModel accountModel;
 
     @ManyToOne
     @JsonBackReference
@@ -49,7 +49,7 @@ public class AppointmentModel {
     @ManyToOne
     @JsonBackReference
     @JoinColumn(name = "doctor_id")
-    private UserModel doctorModel;
+    private AccountModel doctorModel;
 
     public Long getId() {
         return id;
@@ -107,12 +107,12 @@ public class AppointmentModel {
         this.createdAt = createdAt;
     }
 
-    public UserModel getUserModel() {
-        return userModel;
+    public AccountModel getAccountModel() {
+        return accountModel;
     }
 
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
+    public void setAccountModel(AccountModel accountModel) {
+        this.accountModel = accountModel;
     }
 
     public DepartmentModel getDepartmentModel() {
@@ -131,11 +131,11 @@ public class AppointmentModel {
         this.roomModel = roomModel;
     }
 
-    public UserModel getDoctorModel() {
+    public AccountModel getDoctorModel() {
         return doctorModel;
     }
 
-    public void setDoctorModel(UserModel doctorModel) {
+    public void setDoctorModel(AccountModel doctorModel) {
         this.doctorModel = doctorModel;
     }
 }

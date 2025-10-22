@@ -6,12 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import com.appointmenthostpital.server.models.UserModel;
+import com.appointmenthostpital.server.models.AccountModel;
 
 @Service
 public class UserDetailService implements UserDetailsService {
     @Autowired
-    private UserService userService;
+    private AccountService accountService;
 
     /** @Note
      * This method is used to load user-specific data during authentication.
@@ -27,7 +27,7 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel userModel = this.userService.getUserByEmail(username);
+        AccountModel userModel = this.accountService.getUserByEmail(username);
         return User
         .withUsername(userModel.getEmail())
         .password(userModel.getPassword())

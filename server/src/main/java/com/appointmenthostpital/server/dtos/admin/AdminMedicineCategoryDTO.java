@@ -6,12 +6,14 @@ import jakarta.validation.constraints.Size;
 
 public class AdminMedicineCategoryDTO {
     public static class CreateCategoryRequest {
+        @NotNull(message = "Yêu cầu nhập tên danh mục")
         @NotBlank(message = "Tên danh mục không được để trống")
-        @Size(max = 255, message = "Tên danh mục không được vượt quá 255 ký tự")
-        @NotNull(message = "Tên danh mục không được để trống")
+        @Size(max = 50, message = "Tên danh mục không được vượt quá 50 ký tự")
         private String name;
 
-        @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
+        @NotNull(message = "Yêu cầu nhập mô tả danh mục")
+        @NotBlank(message = "Mô tả danh mục không được để trống")
+        @Size(max = 100, message = "Mô tả không được vượt quá 100 ký tự")
         private String description;
 
         public String getName() {

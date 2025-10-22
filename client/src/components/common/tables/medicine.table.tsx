@@ -1,33 +1,50 @@
 import { useState } from "react";
 import TablePagination from "../others/pagination";
+import MedicineDetail from "../details/medicine.detail";
+import EditMedicine from "../edits/medicine.edit";
 
 import type { MedicineResponse } from "../../../responses/medicine.response";
+import type { MedicineCategoryResponse } from "../../../responses/medicine-category.response";
 
 type MedicineTableProps = {
     medicines: MedicineResponse[];
+    categories?: MedicineCategoryResponse[];
     onSuccess?: () => void;
 }
 
 const MedicineTable = (props: MedicineTableProps) => {
-    const { medicines } = props;
+    const { medicines, categories = [], onSuccess } = props;
 
     const [page, setPage] = useState<number>(1);
     const [row, setRow] = useState<number>(5);
+    const [showDetail, setShowDetail] = useState<boolean>(false);
+    const [showEdit, setShowEdit] = useState<boolean>(false);
+    const [selectedMedicine, setSelectedMedicine] = useState<MedicineResponse | null>(null);
+
+    const handleShowDetail = (medicine: MedicineResponse) => {
+        setSelectedMedicine(medicine);
+        setShowDetail(true);
+    };
+
+    const handleShowEdit = (medicine: MedicineResponse) => {
+        setSelectedMedicine(medicine);
+        setShowEdit(true);
+    };
 
     const getStatusColor = (status: string) => {
         switch(status) {
-            case 'active': return 'bg-green-100 text-green-800';
-            case 'out_of_stock': return 'bg-red-100 text-red-800';
-            case 'inactive': return 'bg-gray-100 text-gray-800';
+            case 'ACTIVE': return 'bg-green-100 text-green-800';
+            case 'OUT_OF_STOCK': return 'bg-red-100 text-red-800';
+            case 'INACTIVE': return 'bg-gray-100 text-gray-800';
             default: return 'bg-gray-100 text-gray-800';
         }
     };
 
     const getStatusText = (status: string) => {
         switch(status) {
-            case 'active': return 'Hoạt động';
-            case 'out_of_stock': return 'Hết hàng';
-            case 'inactive': return 'Không hoạt động';
+            case 'ACTIVE': return 'Hoạt động';
+            case 'OUT_OF_STOCK': return 'Hết hàng';
+            case 'INACTIVE': return 'Không hoạt động';
             default: return status;
         }
     };
@@ -75,16 +92,20 @@ const MedicineTable = (props: MedicineTableProps) => {
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-600 text-center">
                                 <div className="flex items-center justify-center gap-3">
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                                    <button 
+                                        className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                                        onClick={() => handleShowDetail(medicine)}
+                                        title="Xem chi tiết"
+                                    >
                                         <i className="fa-solid fa-info"></i>
                                     </button>
 
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                                    <button 
+                                        className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                                        onClick={() => handleShowEdit(medicine)}
+                                        title="Chỉnh sửa"
+                                    >
                                         <i className="fa-solid fa-wrench"></i>
-                                    </button>
-
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                                        <i className="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -102,6 +123,22 @@ const MedicineTable = (props: MedicineTableProps) => {
                 </tbody>
             </table>
             <TablePagination array={medicines} page={page} row={row} setPage={setPage} setRow={setRow} />
+            
+            {showDetail && selectedMedicine && (
+                <MedicineDetail
+                    medicineSelect={selectedMedicine}
+                    setShowDetail={setShowDetail}
+                />
+            )}
+            
+            {showEdit && selectedMedicine && (
+                <EditMedicine
+                    medicineSelect={selectedMedicine}
+                    categories={categories}
+                    setShowEdit={setShowEdit}
+                    onSuccess={onSuccess}
+                />
+            )}
         </>
     )
 }

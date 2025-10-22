@@ -32,3 +32,9 @@ export const updateMedicalPackage = async (id: number, params: UpdateMedicalPack
     return restResponse;
 }
 
+export const changeMedicalPackageStatus = async (id: number, status: string) => {
+    const response = await api.put(`/api/medical-packages/${id}/status`, { status });
+    const restResponse: RestResponse = response.data;
+    return restResponse;
+}
+

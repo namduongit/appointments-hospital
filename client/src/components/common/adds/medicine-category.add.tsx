@@ -2,13 +2,13 @@ import { useState } from "react";
 import useCallApi from "../../../hooks/useCallApi";
 import { createMedicineCategory } from "../../../services/medicine.service";
 
-type AddMedicineCategoryModalProps = {
-    setIsOpenCreateCategory: (isOpenCreateCategory: boolean) => void;
+type AddMedicineCategoryProps = {
+    onClose: () => void;
     onSuccess?: () => void;
 }
 
-const AddMedicineCategoryModal = (props: AddMedicineCategoryModalProps) => {
-    const { setIsOpenCreateCategory, onSuccess } = props;
+const AddMedicineCategory = (props: AddMedicineCategoryProps) => {
+    const { onClose, onSuccess } = props;
 
     const { execute, notify, loading } = useCallApi();
 
@@ -23,7 +23,7 @@ const AddMedicineCategoryModal = (props: AddMedicineCategoryModalProps) => {
 
     const handleClose = () => {
         setSubmitData({ name: "", description: "" });
-        setIsOpenCreateCategory(false);
+        onClose();
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -42,7 +42,7 @@ const AddMedicineCategoryModal = (props: AddMedicineCategoryModalProps) => {
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-gray-800">Thêm loại thuốc mới</h2>
                     <button
-                        onClick={() => setIsOpenCreateCategory(false)}
+                        onClick={handleClose}
                         className="text-gray-500 hover:text-gray-700 text-xl font-bold"
                         disabled={loading}
                     >
@@ -82,7 +82,7 @@ const AddMedicineCategoryModal = (props: AddMedicineCategoryModalProps) => {
                     <div className="flex gap-3 pt-4">
                         <button
                             type="button"
-                            onClick={() => setIsOpenCreateCategory(false)}
+                            onClick={handleClose}
                             className="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition"
                             disabled={loading}
                         >
@@ -102,4 +102,4 @@ const AddMedicineCategoryModal = (props: AddMedicineCategoryModalProps) => {
     );
 };
 
-export default AddMedicineCategoryModal;
+export default AddMedicineCategory;

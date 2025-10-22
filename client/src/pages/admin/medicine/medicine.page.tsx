@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { medicineStatus, medicineCategoryStatus } from "../../../constants/medicine.constant";
 import MedicineTable from "../../../components/common/tables/medicine.table";
 import MedicineCategoryTable from "../../../components/common/tables/medicine-category.table";
-import AddMedicineModal from "../../../components/common/adds/medicine.add";
-import AddMedicineCategoryModal from "../../../components/common/adds/medicine-category.add";
+import AddMedicine from "../../../components/common/adds/medicine.add";
+import AddMedicineCategory from "../../../components/common/adds/medicine-category.add";
 
 import type { MedicineResponse } from "../../../responses/medicine.response";
 import type { MedicineCategoryResponse } from "../../../responses/medicine-category.response";
@@ -51,14 +51,6 @@ const AdminMedicinePage = () => {
         }
     }
 
-    const handleRefreshData = () => {
-        if (select === "medicine") {
-            handleGetMedicineList();
-        } else {
-            handleGetMedicineCategoryList();
-        }
-    }
-
     useEffect(() => {
         if (select === "medicine") {
             setMedicinesFilter(
@@ -94,6 +86,19 @@ const AdminMedicinePage = () => {
         handleGetMedicineList();
     }, []);
 
+    const stats = {
+        totalMedicines: medicines.length,
+        totalCategories: categories.length,
+        activeMedicines: medicines.filter(m => m.status === 'active').length,
+        inactiveMedicines: medicines.filter(m => m.status === 'inactive').length,
+        outOfStockMedicines: medicines.filter(m => m.status === 'out_of_stock').length,
+        lowStockMedicines: medicines.filter(m => m.currentStock <= m.minStock).length,
+        totalCurrentStock: medicines.reduce((sum, m) => sum + (m.currentStock || 0), 0),
+        averagePrice: medicines.length > 0 ? 
+            medicines.reduce((sum, m) => sum + (m.price || 0), 0) / medicines.length : 0,
+        totalValue: medicines.reduce((sum, m) => sum + (m.price * m.currentStock || 0), 0),
+    };
+
     return (
         <main className="p-4 sm:p-6">
             <div className="max-w-full">
@@ -102,8 +107,77 @@ const AdminMedicinePage = () => {
                         Quản lý thuốc & loại thuốc
                     </h3>
                     <div className="text-sm text-gray-600">
-                        <div>Tổng: <span className="font-semibold text-blue-600">{medicines.length}</span> thuốc</div>
-                        <div>Tổng: <span className="font-semibold text-blue-600">{categories.length}</span> loại thuốc</div>
+                        <div>Tổng: <span className="font-semibold text-blue-600">{stats.totalMedicines}</span> thuốc</div>
+                        <div>Tổng: <span className="font-semibold text-blue-600">{stats.totalCategories}</span> loại thuốc</div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <i className="fa-solid fa-pills text-blue-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Tổng thuốc</p>
+                                <p className="text-lg font-semibold">{stats.totalMedicines}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <i className="fa-solid fa-tags text-purple-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Loại thuốc</p>
+                                <p className="text-lg font-semibold">{stats.totalCategories}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <i className="fa-solid fa-check-circle text-green-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Đang hoạt động</p>
+                                <p className="text-lg font-semibold">{stats.activeMedicines}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-red-100 rounded-lg">
+                                <i className="fa-solid fa-exclamation-triangle text-red-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Hết hàng</p>
+                                <p className="text-lg font-semibold">{stats.outOfStockMedicines}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-yellow-100 rounded-lg">
+                                <i className="fa-solid fa-exclamation-circle text-yellow-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Sắp hết</p>
+                                <p className="text-lg font-semibold">{stats.lowStockMedicines}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-orange-100 rounded-lg">
+                                <i className="fa-solid fa-box text-orange-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Tồn kho</p>
+                                <p className="text-lg font-semibold">{stats.totalCurrentStock.toLocaleString()}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -146,42 +220,34 @@ const AdminMedicinePage = () => {
                         </div>
                     </div>
                     <div className="flex justify-end items-center gap-2">
-                        {select === "medicine" ? (
-                            <button
-                                className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
-                                onClick={() => setIsOpenCreateMedicine(true)}
-                            >
-                                <i className="fa-solid fa-plus me-2"></i>
-                                <span>Thêm thuốc</span>
-                            </button>
-                        ) : (
-                            <button
-                                className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
-                                onClick={() => setIsOpenCreateCategory(true)}
-                            >
-                                <i className="fa-solid fa-plus me-2"></i>
-                                <span>Thêm loại thuốc</span>
-                            </button>
-                        )}
+                        <button
+                            className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
+                            onClick={() => setIsOpenCreateMedicine(true)}
+                        >
+                            <i className="fa-solid fa-plus me-2"></i>
+                            <span>Thêm thuốc</span>
+                        </button>
+
+                        <button
+                            className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
+                            onClick={() => setIsOpenCreateCategory(true)}
+                        >
+                            <i className="fa-solid fa-plus me-2"></i>
+                            <span>Thêm loại thuốc</span>
+                        </button>
                     </div>
                 </div>
 
                 <div className="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
-                        {select === "medicine" && <MedicineTable medicines={medicinesFilter} />}
-                        {select === "category" && <MedicineCategoryTable categories={categoriesFilter} />}
+                        {select === "medicine" && <MedicineTable medicines={medicinesFilter} categories={categories} onSuccess={handleGetMedicineList} />}
+                        {select === "category" && <MedicineCategoryTable categories={categoriesFilter} onSuccess={handleGetMedicineCategoryList} />}
                     </div>
                 </div>
             </div>
 
-            <AddMedicineModal
-                isOpen={isOpenCreateMedicine}
-                onClose={() => setIsOpenCreateMedicine(false)}
-                onSuccess={handleRefreshData}
-            />
-            {isOpenCreateCategory && (<AddMedicineCategoryModal setIsOpenCreateCategory={() => setIsOpenCreateCategory(false)} onSuccess={handleRefreshData} />)}
-
-
+            {isOpenCreateMedicine && (<AddMedicine onClose={() => setIsOpenCreateMedicine(false)} categories={categories} onSuccess={handleGetMedicineList} />)}
+            {isOpenCreateCategory && (<AddMedicineCategory onClose={() => setIsOpenCreateCategory(false)} onSuccess={handleGetMedicineCategoryList} />)}
         </main >
     )
 }

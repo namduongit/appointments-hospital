@@ -15,10 +15,13 @@ public class MedicineCategoryConvert {
         );
     }
 
-    public static MedicineCategoryModel convertFromCreateRequest(AdminMedicineCategoryDTO.CreateCategoryRequest request) {
-        return new MedicineCategoryModel(
-            request.getName(),
-            request.getDescription()
-        );
+    public static void convertFromCreateRequest(MedicineCategoryModel model, AdminMedicineCategoryDTO.CreateCategoryRequest request) {
+        model.setName(request.getName());
+        model.setDescription(request.getDescription());
     }
+
+    public static void convertFromUpdateRequest(MedicineCategoryModel model, AdminMedicineCategoryDTO.UpdateCategoryRequest request) {
+        model.setName(request.getName());
+        model.setDescription(request.getDescription());
+    }   
 }

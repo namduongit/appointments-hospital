@@ -49,11 +49,11 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/auth/*").permitAll()
             .requestMatchers("/api/public/**").authenticated()
-            .requestMatchers("/api/accounts/**").hasRole("ADMIN")
-            .requestMatchers("/api/departments/**").hasRole("ADMIN")
-            .requestMatchers("/api/doctors/**").hasRole("ADMIN")
-            .requestMatchers("/api/rooms/**").hasRole("ADMIN")
-            .requestMatchers("/api/appointments/**").hasRole("ADMIN")
+            .requestMatchers("/api/accounts/**").hasRole("USER")
+            .requestMatchers("/api/departments/**").hasRole("USER")
+            .requestMatchers("/api/doctors/**").hasRole("USER")
+            .requestMatchers("/api/rooms/**").hasRole("USER")
+            .requestMatchers("/api/appointments/**").hasRole("USER")
             .anyRequest().authenticated()
         );
         http.oauth2ResourceServer(oauth2r -> oauth2r

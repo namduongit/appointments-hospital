@@ -1,28 +1,21 @@
-export type ProfileDetailResponse = {
+export type UserDetailResponse = {
     fullName: string,
     phone: string,
     address: string,
     birthDate: string
 }
 
-export type AppointmentDetailResponse = {
-    fullName: string,
-    phone: string,
-    time: string,
-    note: string,
-    status: string
-    createdAt: string
-}
-
-type AccountDetailResponse = {
-    id: number,
+type ProfileDetailResponse = {
     email: string,
     role: string,
     type: string,
     status: string,
-
-    profileDetail: ProfileDetailResponse
-    appointmentDetails: AppointmentDetailResponse[]
+    profile: UserDetailResponse
 }
 
-export type { AccountDetailResponse };
+export type { ProfileDetailResponse };
+
+/**
+ * @description This file contains the type definitions for user profile responses.
+ * @used This responses type is used in roles: USER, ASSISTOR and ADMIN
+ */

@@ -1,5 +1,7 @@
 package com.appointmenthostpital.server.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,12 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.appointmenthostpital.server.dtos.RestResponse;
 import com.appointmenthostpital.server.dtos.user.UserAppointmentDTO;
 import com.appointmenthostpital.server.dtos.user.UserUpdateDTO;
-import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
-import com.appointmenthostpital.server.models.AppointmentModel;
-import com.appointmenthostpital.server.models.UserModel;
-import com.appointmenthostpital.server.responses.AccountResponse;
+import com.appointmenthostpital.server.responses.AccountDetail;
 import com.appointmenthostpital.server.responses.AppointmentResponse;
-import com.appointmenthostpital.server.services.AppointmentService;
 import com.appointmenthostpital.server.services.UserService;
 import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
@@ -30,74 +28,49 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private AppointmentService appointmentService;
-
     @GetMapping("/details")
-    public ResponseEntity<RestResponse<AccountResponse>> handleGetDetail(Authentication authentication) {
-        AccountResponse response = this.userService.handleGetAccountDetail(authentication);
-        return ResponseEntity.ok().body(
-                new RestResponse<AccountResponse>(
-                        HttpStatusResponse.OK,
-                        true,
-                        response,
-                        HttpStatusResponse.SUCCESS_MESSAGE,
-                        null));
+    public ResponseEntity<RestResponse<AccountDetail.ProfileDetailResponse>> handleGetAccountDetail(Authentication authentication) {
+    AccountDetail.ProfileDetailResponse response = this.userService.handleGetAccountDetail(authentication);
+        return ResponseEntity.status(HttpStatusResponse.OK).body(new RestResponse<AccountDetail.ProfileDetailResponse>(
+                HttpStatusResponse.OK,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
     }
 
     @PutMapping("/details")
-    public ResponseEntity<RestResponse<AccountResponse>> handleUpdateProfile(
-            Authentication authentication,
-            @Valid @RequestBody UserUpdateDTO.UpdateProfileRequest updateRequest) {
-        AccountResponse response = this.userService.handleUpdateProfile(authentication,
-                updateRequest);
-
-        return ResponseEntity.ok().body(
-                new RestResponse<AccountResponse>(
-                        HttpStatusResponse.OK,
-                        true,
-                        response,
-                        HttpStatusResponse.SUCCESS_MESSAGE,
-                        null));
+    public ResponseEntity<RestResponse<AccountDetail.ProfileDetailResponse>> handleUpdateProfile(Authentication authentication, 
+    @Valid @RequestBody UserUpdateDTO.UpdateProfileRequest request) {
+        AccountDetail.ProfileDetailResponse response = this.userService.handleUpdateProfile(authentication, request);
+        return ResponseEntity.status(HttpStatusResponse.OK).body(new RestResponse<AccountDetail.ProfileDetailResponse>(
+                HttpStatusResponse.OK,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
     }
 
-    /**
-     * Create new appointment
-     * 
-     * @param authentication
-     * @param request
-     * @return
-     */
     @PostMapping("/appointments")
-    public ResponseEntity<RestResponse<AppointmentResponse>> handleCreateAppointment(
-            Authentication authentication,
-            @Valid @RequestBody UserAppointmentDTO.CreateAppointmentRequest request) {
+    public ResponseEntity<RestResponse<AppointmentResponse>> handeCreateAppointment(Authentication authentication,
+    @Valid @RequestBody UserAppointmentDTO.CreateAppointmentRequest request) {
+        AppointmentResponse response = this.userService.handleCreateAppointment(authentication, request);
+        return ResponseEntity.status(HttpStatusResponse.CREATED).body(new RestResponse<AppointmentResponse>(
+                HttpStatusResponse.CREATED,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
+    }
 
-        String email = authentication.getName();
-        UserModel userModel = this.userService.getUserByEmail(email);
-
-        if (userModel == null) {
-            throw new NotFoundResourceException("Không tìm thấy tài khoản");
-        }
-
-        System.out.println("Data from client: " + request.getFullName() + ", " + request.getPhone() + ", "
-                + request.getDate() + ", " + request.getTime() + ", " + request.getNote());
-
-        AppointmentModel appointment = new AppointmentModel();
-        appointment.setFullName(request.getFullName());
-        appointment.setPhone(request.getPhone());
-        appointment.setTime("Ngày: " + request.getDate() + ", Giờ: " + request.getTime());
-        appointment.setNote(request.getNote());
-        appointment.setUserModel(userModel);
-
-        AppointmentResponse response = this.appointmentService.handleCreateAppointment(appointment);
-        
-        return ResponseEntity.ok().body(
-                new RestResponse<AppointmentResponse>(
-                        HttpStatusResponse.CREATED,
-                        true,
-                        response,
-                        HttpStatusResponse.SUCCESS_MESSAGE,
-                        null));
+    @GetMapping("/appointments")
+    public ResponseEntity<RestResponse<List<AppointmentResponse>>> handleGetAppointmentList(Authentication authentication) {
+        List<AppointmentResponse> response = this.userService.handleGetAppointmentList(authentication);
+        return ResponseEntity.status(HttpStatusResponse.OK).body(new RestResponse<List<AppointmentResponse>>(
+                HttpStatusResponse.OK,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
     }
 }

@@ -44,7 +44,7 @@ public class MedicalPackageController {
                 HttpStatusResponse.SUCCESS_MESSAGE,
                 null));
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<RestResponse<MedicalPackageResponse>> handleUpdateMedicalPackage(
             @PathVariable(name = "id") Long id,
@@ -58,4 +58,16 @@ public class MedicalPackageController {
                 null));
     }
 
+    @PutMapping("/{id}/status")
+    public ResponseEntity<RestResponse<MedicalPackageResponse>> handleChangeMedicalPackageStatus(
+            @PathVariable(name = "id") Long id,
+            @Valid @RequestBody AdminMedicalPackageDTO.ChangeMedicalPackageStatusRequest request) {
+        MedicalPackageResponse response = this.medicalPackageService.handleChangeMedicalPackageStatus(id, request);
+        return ResponseEntity.ok().body(new RestResponse<MedicalPackageResponse>(
+                HttpStatusResponse.OK,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
+    }
 }

@@ -58,8 +58,8 @@ const DoctorTable = (props: DoctorTableProps) => {
                         <tr key={doctor.id} className={`${idx % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors`}>
                             <td className="px-4 py-3 text-sm text-gray-700 font-medium"># {doctor.id}</td>
                             <td className="px-4 py-3 text-sm text-gray-700 font-medium">{doctor.email}</td>
-                            <td className={`px-4 py-3 text-sm text-gray-700 font-medium ${!doctor.fullName && 'italic'}`}>{doctor.fullName ?? "Chưa cập nhật"}</td>
-                            <td className={`px-4 py-3 text-sm text-gray-700 font-medium ${!doctor.departmentName && 'italic'}`}>{doctor.departmentName ? doctor.departmentName : "Chưa có khoa"}</td>
+                            <td className={`px-4 py-3 text-sm text-gray-700 font-medium ${!doctor.fullName && 'italic'}`}>{(doctor.fullName && doctor.fullName !== "") ? doctor.fullName : "Chưa cập nhật"}</td>
+                            <td className={`px-4 py-3 text-sm text-gray-700 font-medium ${!doctor.departmentName && 'italic'}`}>{(doctor.departmentName && doctor.departmentName !== "") ? doctor.departmentName : "Chưa có khoa"}</td>
                             <td className="px-4 py-3 text-sm text-gray-700 font-medium">
                                 {doctor.status === 'AVAILABLE' && <span className="px-2 py-1 rounded-full bg-green-100 text-green-800 text-xs font-semibold">Đang làm</span>}
                                 {doctor.status === 'OFFLINE' && <span className="px-2 py-1 rounded-full bg-red-100 text-red-800 text-xs font-semibold">Tạm nghỉ</span>}

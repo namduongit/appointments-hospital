@@ -15,7 +15,7 @@ import { getDoctorList } from "../../../services/doctor.service";
 import useCallApi from "../../../hooks/useCallApi";
 
 const AdminAppointmentsPage = () => {
-    const { execute, doFunc } = useCallApi();
+    const { execute } = useCallApi();
 
     const [appointments, setAppointment] = useState<AppointmentResponse[]>([]);
     const [appointmentsFilter, setAppointmentsFilter] = useState<AppointmentResponse[]>([]);
@@ -36,43 +36,35 @@ const AdminAppointmentsPage = () => {
 
     const handleGetAppointmentList = async () => {
         const restResponse = await execute(getAppointmentList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: AppointmentResponse[] = restResponse.data;
-                setAppointment(Array.isArray(data) ? data : []);
-                setAppointmentsFilter(Array.isArray(data) ? data : []);
-            }
-        })
+        if (restResponse?.result) {
+            const data: AppointmentResponse[] = restResponse.data;
+            setAppointment(Array.isArray(data) ? data : []);
+            setAppointmentsFilter(Array.isArray(data) ? data : []);
+        }
     }
 
     const handleGetDepartmentList = async () => {
         const restResponse = await execute(getDepartmentList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: DepartmentResponse[] = restResponse.data;
-                setDepartments(Array.isArray(data) ? data : []);
-            }
-        })
+        if (restResponse?.result) {
+            const data: DepartmentResponse[] = restResponse.data;
+            setDepartments(Array.isArray(data) ? data : []);
+        }
     }
 
     const handleGetRoomList = async () => {
         const restResponse = await execute(getRoomList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: RoomResponse[] = restResponse.data;
-                setRooms(Array.isArray(data) ? data : []);
-            }
-        })
+        if (restResponse?.result) {
+            const data: RoomResponse[] = restResponse.data;
+            setRooms(Array.isArray(data) ? data : []);
+        }
     }
 
     const handleGetDoctorList = async () => {
         const restResponse = await execute(getDoctorList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: DoctorResponse[] = restResponse.data;
-                setDoctors(Array.isArray(data) ? data : []);
-            }
-        })
+        if (restResponse?.result) {
+            const data: DoctorResponse[] = restResponse.data;
+            setDoctors(Array.isArray(data) ? data : []);
+        }
     }
 
     useEffect(() => {

@@ -19,14 +19,15 @@ const DoctorAppointmentPage = lazy(() => import("./pages/doctor/appointment/appo
 const DoctorProfilePage = lazy(() => import("./pages/doctor/profile/profile.page"));
 
 const AdminLayout = lazy(() => import("./layouts/admin/layout"));
+const AdminDashboardPage = lazy(() => import("./pages/admin/dashboard/dashboard.page"));
 const AdminAccountPage = lazy(() => import("./pages/admin/account/account.page"));
 const AdminDoctorPage = lazy(() => import("./pages/admin/doctor/doctor.page"));
 const AdminAppointmentsPage = lazy(() => import("./pages/admin/appointment/appointment.page"));
 const AdminDepartmentPage = lazy(() => import("./pages/admin/department/department.page"));
 const AdminMedicinePage = lazy(() => import("./pages/admin/medicine/medicine.page"));
 const AdminInventoryPage = lazy(() => import("./pages/admin/inventory/inventory.page"));
-const AdminMedicineDashboardPage = lazy(() => import("./pages/admin/medicine-dashboard/medicine-dashboard.page"));
 const AdminMedicalPackagePage = lazy(() => import("./pages/admin/medical-package/medical-package.page"));
+const AdminMedicineDashboardPage = lazy(() => import("./pages/admin/medicine-dashboard/medicine-dashboard.page"));
 
 const LoginPage = lazy(() => import("./pages/patient/login/login.page"));
 const RegisterPage = lazy(() => import("./pages/patient/register/register.page"));
@@ -91,6 +92,7 @@ const router = createBrowserRouter([
     path: "/admin",
     Component: AdminLayout,
     children: [
+      { index: true, Component: AdminDashboardPage },
       {
         path: "accounts",
         Component: AdminAccountPage
@@ -108,10 +110,6 @@ const router = createBrowserRouter([
         Component: AdminDepartmentPage
       },
       {
-        path: "medicine-dashboard",
-        Component: AdminMedicineDashboardPage
-      },
-      {
         path: "medicine",
         Component: AdminMedicinePage
       },
@@ -122,6 +120,10 @@ const router = createBrowserRouter([
       {
         path: "medical-package",
         Component: AdminMedicalPackagePage
+      },
+      {
+        path: "medicine-dashboard",
+        Component: AdminMedicineDashboardPage
       }
     ]
   },

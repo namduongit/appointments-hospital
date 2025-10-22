@@ -27,7 +27,7 @@ public class MedicineCategoryModel {
     
     @OneToMany(mappedBy = "categoryModel", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<MedicineInventoryModel> medicines;
+    private List<MedicineModel> medicines;
 
     public MedicineCategoryModel() {
     }
@@ -62,11 +62,11 @@ public class MedicineCategoryModel {
         this.description = description;
     }
 
-    public List<MedicineInventoryModel> getMedicines() {
+    public List<MedicineModel> getMedicines() {
         return medicines;
     }
 
-    public void setMedicines(List<MedicineInventoryModel> medicines) {
+    public void setMedicines(List<MedicineModel> medicines) {
         this.medicines = medicines;
     }
 }

@@ -53,7 +53,7 @@ const EditMedicalPackage = (props: EditMedicalPackage) => {
                         onClick={() => setShowEdit(false)}
                         className="text-gray-500 hover:text-gray-700 text-xl"
                     >
-                        ×
+                        x
                     </button>
                 </div>
 

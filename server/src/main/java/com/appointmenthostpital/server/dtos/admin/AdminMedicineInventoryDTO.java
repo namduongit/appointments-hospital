@@ -1,41 +1,41 @@
 package com.appointmenthostpital.server.dtos.admin;
 
-import java.util.Date;
-
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class AdminMedicineInventoryDTO {
 
     public static class CreateMedicineRequest {
+        @NotNull(message = "Yêu cầu nhập tên thuốc")
         @NotBlank(message = "Tên thuốc không được để trống")
-        @Size(max = 255, message = "Tên thuốc không được vượt quá 255 ký tự")
+        @Size(max = 50, message = "Tên thuốc không được vượt quá 50 ký tự")
         private String name;
 
-        @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
+        @NotNull(message = "Yêu cầu nhập mô tả thuốc này")
+        @NotBlank(message = "Mô tả thuốc không được để trống")
+        @Size(max = 100, message = "Mô tả không được vượt quá 100 ký tự")
         private String description;
 
+        @NotNull(message = "Yêu cầu nhập đơn vị")
         @NotBlank(message = "Đơn vị tính không được để trống")
         private String unit;
 
         @NotNull(message = "Giá bán không được để trống")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Giá bán phải lớn hơn 0")
+        @Min(value = 0, message = "Giá bán phải lớn hơn hoặc bằng 0")
         private Long price;
 
         @NotNull(message = "Giá nhập không được để trống")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Giá nhập phải lớn hơn 0")
+        @Min(value = 0, message = "Giá nhập phải lớn hơn 0")
         private Long costPrice;
 
         private String barcode;
 
         private String manufacturer;
 
-        private Date expiryDate;
-
-        private String status = "active";
+        private String status = "ACTIVE";
 
         @Min(value = 0, message = "Số lượng hiện tại không được âm")
         private Integer currentStock = 0;
@@ -46,7 +46,7 @@ public class AdminMedicineInventoryDTO {
         @Min(value = 1, message = "Số lượng tối đa phải lớn hơn 0")
         private Integer maxStock = 1000;
 
-        @NotNull(message = "ID danh mục không được để trống")
+        @NotNull(message = "Yêu cầu nhập mã danh mục")
         private Long categoryId;
 
         public String getName() {
@@ -105,14 +105,6 @@ public class AdminMedicineInventoryDTO {
             this.manufacturer = manufacturer;
         }
 
-        public Date getExpiryDate() {
-            return expiryDate;
-        }
-
-        public void setExpiryDate(Date expiryDate) {
-            this.expiryDate = expiryDate;
-        }
-
         public String getStatus() {
             return status;
         }
@@ -155,10 +147,12 @@ public class AdminMedicineInventoryDTO {
     }
 
     public static class UpdateMedicineRequest {
+        @NotNull(message = "Yêu cầu nhập tên thuốc")
         @NotBlank(message = "Tên thuốc không được để trống")
         @Size(max = 255, message = "Tên thuốc không được vượt quá 255 ký tự")
         private String name;
 
+        @NotNull(message = "Yêu cầu nhập mô tả thuốc này")
         @Size(max = 500, message = "Mô tả không được vượt quá 500 ký tự")
         private String description;
 
@@ -166,27 +160,28 @@ public class AdminMedicineInventoryDTO {
         private String unit;
 
         @NotNull(message = "Giá bán không được để trống")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Giá bán phải lớn hơn 0")
+        @Min(value = 0, message = "Giá bán phải lớn hơn 0")
         private Long price;
 
         @NotNull(message = "Giá nhập không được để trống")
-        @DecimalMin(value = "0.0", inclusive = false, message = "Giá nhập phải lớn hơn 0")
+        @Min(value = 0, message = "Giá nhập phải lớn hơn 0")
         private Long costPrice;
 
-        private String barcode;
-
+        @NotNull(message = "Yêu cầu nhập nhà sản xuất")
+        @NotBlank(message = "Nhà sản xuất không được để trống")
         private String manufacturer;
 
-        private Date expiryDate;
-
+        @NotNull(message = "Yêu cầu nhập trạng thái thuốc")
+        @Pattern(regexp = "ACTIVE|INACTIVE|OUT_OF_STOCK", message = "Trạng thái thuốc không hợp lệ")
         private String status;
 
-        @Min(value = 0, message = "Số lượng hiện tại không được âm")
-        private Integer currentStock;
-
+        @NotNull(message = "Yêu cầu nhập số lượng tối thiểu")
+        @NotBlank(message = "Số lượng tối thiểu không được để trống")
         @Min(value = 0, message = "Số lượng tối thiểu không được âm")
         private Integer minStock;
 
+        @NotNull(message = "Yêu cầu nhập số lượng tối đa")
+        @NotBlank(message = "Số lượng tối đa không được để trống")
         @Min(value = 1, message = "Số lượng tối đa phải lớn hơn 0")
         private Integer maxStock;
 
@@ -233,14 +228,6 @@ public class AdminMedicineInventoryDTO {
             this.costPrice = costPrice;
         }
 
-        public String getBarcode() {
-            return barcode;
-        }
-
-        public void setBarcode(String barcode) {
-            this.barcode = barcode;
-        }
-
         public String getManufacturer() {
             return manufacturer;
         }
@@ -249,28 +236,12 @@ public class AdminMedicineInventoryDTO {
             this.manufacturer = manufacturer;
         }
 
-        public Date getExpiryDate() {
-            return expiryDate;
-        }
-
-        public void setExpiryDate(Date expiryDate) {
-            this.expiryDate = expiryDate;
-        }
-
         public String getStatus() {
             return status;
         }
 
         public void setStatus(String status) {
             this.status = status;
-        }
-
-        public Integer getCurrentStock() {
-            return currentStock;
-        }
-
-        public void setCurrentStock(Integer currentStock) {
-            this.currentStock = currentStock;
         }
 
         public Integer getMinStock() {

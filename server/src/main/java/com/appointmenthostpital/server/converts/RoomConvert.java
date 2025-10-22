@@ -1,17 +1,10 @@
 package com.appointmenthostpital.server.converts;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.appointmenthostpital.server.dtos.admin.AdminRoomDTO;
 import com.appointmenthostpital.server.models.RoomModel;
 import com.appointmenthostpital.server.responses.RoomResponse;
-import com.appointmenthostpital.server.services.DepartmentService;
 
-@Service
 public class RoomConvert {
-    @Autowired
-    private static DepartmentService departmentService;
     public static RoomResponse convertToResponse(RoomModel model) {
         return new RoomResponse(
             model.getId(),
@@ -22,9 +15,13 @@ public class RoomConvert {
         );
     }
 
-    public static void convertFromUpdateRequest(AdminRoomDTO.UpdateRoomRequest request, RoomModel roomModel) {
+    public static void convertFromCreateRequest(RoomModel roomModel, AdminRoomDTO.CreateRoomRequest request) {
         roomModel.setName(request.getName());
         roomModel.setStatus(request.getStatus());
-        roomModel.setDepartmentModel(departmentService.getDepartmentById(request.getDepartmentId()));
+    }
+
+    public static void convertFromUpdateRequest(RoomModel roomModel, AdminRoomDTO.UpdateRoomRequest request) {
+        roomModel.setName(request.getName());
+        roomModel.setStatus(request.getStatus());
     }
 }

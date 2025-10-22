@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.appointmenthostpital.server.converts.MedicalPackageConvert;
 import com.appointmenthostpital.server.dtos.admin.AdminMedicalPackageDTO;
 import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
 
@@ -20,61 +21,39 @@ public class MedicalPackageService {
     private MedicalPackageRepository medicalPackageRepository;
 
     public MedicalPackageModel getMedicalPackageModel(Long id) {
-        return this.medicalPackageRepository.findById(id).orElseThrow(() -> new NotFoundResourceException("Không tìm thấy gói dịch vụ y tế"));
+        return this.medicalPackageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy gói dịch vụ y tế"));
     }
 
     public List<MedicalPackageResponse> handleGetMedicalPackageList() {
         List<MedicalPackageModel> medicalPackageModels = this.medicalPackageRepository.findAll();
-        return medicalPackageModels.stream().map(medicalPackageModel -> {
-            MedicalPackageResponse response = new MedicalPackageResponse();
-            response.setId(medicalPackageModel.getId());
-            response.setName(medicalPackageModel.getName());
-            response.setDescription(medicalPackageModel.getDescription());
-            response.setStatus(medicalPackageModel.getStatus());
-            response.setPrice(medicalPackageModel.getPrice());
-            return response;
-        }).toList();
+        return medicalPackageModels.stream().map(MedicalPackageConvert::convertToResponse).toList();
     }
 
-    public MedicalPackageResponse handleCreateMedicalPackage(AdminMedicalPackageDTO.CreateMedicalPackageRequest request) {
+    public MedicalPackageResponse handleCreateMedicalPackage(
+            AdminMedicalPackageDTO.CreateMedicalPackageRequest request) {
         MedicalPackageModel medicalPackageModel = new MedicalPackageModel();
-        medicalPackageModel.setName(request.getName());
-        medicalPackageModel.setDescription(request.getDescription());
-        medicalPackageModel.setStatus(request.getStatus());
-        medicalPackageModel.setPrice(request.getPrice());
+        MedicalPackageConvert.convertFromCreateRequest(medicalPackageModel, request);
 
-        MedicalPackageModel savedMedicalPackageModel = this.medicalPackageRepository.save(medicalPackageModel);
-
-        MedicalPackageResponse response = new MedicalPackageResponse();
-        response.setId(savedMedicalPackageModel.getId());
-        response.setName(savedMedicalPackageModel.getName());
-        response.setDescription(savedMedicalPackageModel.getDescription());
-        response.setStatus(savedMedicalPackageModel.getStatus());
-        response.setPrice(savedMedicalPackageModel.getPrice());
-        return response;
+        medicalPackageModel = this.medicalPackageRepository.save(medicalPackageModel);
+        return MedicalPackageConvert.convertToResponse(medicalPackageModel);
     }
 
-    public MedicalPackageResponse handleUpdateMedicalPackage(Long id, AdminMedicalPackageDTO.UpdateMedicalPackageRequest request) {
+    public MedicalPackageResponse handleUpdateMedicalPackage(Long id,
+            AdminMedicalPackageDTO.UpdateMedicalPackageRequest request) {
         MedicalPackageModel medicalPackageModel = this.getMedicalPackageModel(id);
-        if (request.getName() != null)
-            medicalPackageModel.setName(request.getName());
-        if (request.getDescription() != null)
-            medicalPackageModel.setDescription(request.getDescription());
-        if (request.getStatus() != null)
-            medicalPackageModel.setStatus(request.getStatus());
-        if (request.getPrice() != null)
-            medicalPackageModel.setPrice(request.getPrice());
+        MedicalPackageConvert.convertFromUpdateRequest(medicalPackageModel, request);
 
-        MedicalPackageModel updatedMedicalPackageModel = this.medicalPackageRepository.save(medicalPackageModel);
-
-        MedicalPackageResponse response = new MedicalPackageResponse();
-        response.setId(updatedMedicalPackageModel.getId());
-        response.setName(updatedMedicalPackageModel.getName());
-        response.setDescription(updatedMedicalPackageModel.getDescription());
-        response.setStatus(updatedMedicalPackageModel.getStatus());
-        response.setPrice(updatedMedicalPackageModel.getPrice());
-        return response;
+        medicalPackageModel = this.medicalPackageRepository.save(medicalPackageModel);
+        return MedicalPackageConvert.convertToResponse(medicalPackageModel);
     }
 
+    public MedicalPackageResponse handleChangeMedicalPackageStatus(Long id,
+            AdminMedicalPackageDTO.ChangeMedicalPackageStatusRequest request) {
+        MedicalPackageModel medicalPackageModel = this.getMedicalPackageModel(id);
+        medicalPackageModel.setStatus(request.getStatus());
 
+        medicalPackageModel = this.medicalPackageRepository.save(medicalPackageModel);
+        return MedicalPackageConvert.convertToResponse(medicalPackageModel);
+    }
 }

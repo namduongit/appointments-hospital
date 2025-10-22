@@ -17,6 +17,8 @@ public class HttpStatusResponse {
     public static final int BAD_GATEWAY = 502;
     public static final int SERVICE_UNAVAILABLE = 503;
 
+    public static final int CONFLICT = 409;
+
     // Message
     public static final String BAD_MESSAGE = "BAD REQUEST";
     public static final String SUCCESS_MESSAGE = "REQUEST SUCCESS";
@@ -32,5 +34,7 @@ public class HttpStatusResponse {
     public static final String ACCESS_DENIED_MESSAGE = "ACCESS DENIED";
 
     public static final String METHOD_NOT_ALLOWED = "HTTP METHOD NOT ALLOWED";
+
+    public static final String CONFLICT_MESSAGE = "CONFLICT";
 
 }

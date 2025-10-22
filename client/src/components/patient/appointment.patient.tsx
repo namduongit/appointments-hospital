@@ -1,13 +1,13 @@
 import { useState } from "react";
 import TablePagination from "../common/others/pagination";
-import type { AppointmentDetailResponse } from "../../responses/user.response";
+import type { AppointmentResponse } from "../../responses/appointment.response";
 
-type AppointmentDetail = {
-    appointmentDetails: AppointmentDetailResponse[]
+type AppointmentPatientProps = {
+    appointments: AppointmentResponse[]
 }
 
-const AppointmentDetail = (props: AppointmentDetail) => {
-    const { appointmentDetails } = props;
+const AppointmentPatient = (props: AppointmentPatientProps) => {
+    const { appointments } = props;
 
     const [row, setRow] = useState<number>(5);
     const [page, setPage] = useState<number>(1);
@@ -16,43 +16,43 @@ const AppointmentDetail = (props: AppointmentDetail) => {
         <div className="space-y-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Lịch hẹn khám</h2>
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                {(appointmentDetails && appointmentDetails.length > 0) ? (
+                {(appointments && appointments.length > 0) ? (
                     <div className="space-y-4">
-                        {appointmentDetails.slice((page - 1) * row, page * row).map((AppointmentDetail, index) => (
+                        {appointments.slice((page - 1) * row, page * row).map((appointment, index) => (
                             <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                                 <div className="flex justify-between items-start">
                                     <div className="flex-1">
                                         <p className="text-sm text-gray-600 mt-1">
-                                            Bệnh nhân: {AppointmentDetail.fullName}
+                                            Bệnh nhân: {appointment.fullName}
                                         </p>
                                         <p className="text-sm text-gray-600">
-                                            Thời gian: {AppointmentDetail.time}
+                                            Thời gian: {appointment.time}
                                         </p>
                                         <p className="text-sm text-gray-600">
-                                            Số điện thoại: {AppointmentDetail.phone}
+                                            Số điện thoại: {appointment.phone}
                                         </p>
-                                        {AppointmentDetail.note && (
+                                        {appointment.note && (
                                             <p className="text-sm text-gray-600">
-                                                Ghi chú: {AppointmentDetail.note}
+                                                Ghi chú: {appointment.note}
                                             </p>
                                         )}
                                     </div>
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${AppointmentDetail.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                        AppointmentDetail.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
-                                            AppointmentDetail.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                                                AppointmentDetail.status === 'CANCELED' ? 'bg-red-100 text-red-800' :
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${appointment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                        appointment.status === 'CONFIRMED' ? 'bg-blue-100 text-blue-800' :
+                                            appointment.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                                                appointment.status === 'CANCELED' ? 'bg-red-100 text-red-800' :
                                                     'bg-gray-100 text-gray-800'
                                         }`}>
-                                        {AppointmentDetail.status === 'PENDING' ? 'Chờ xác nhận' :
-                                            AppointmentDetail.status === 'CONFIRMED' ? 'Đã xác nhận' :
-                                                AppointmentDetail.status === 'COMPLETED' ? 'Hoàn thành' :
-                                                    AppointmentDetail.status === 'CANCELED' ? 'Đã hủy' :
-                                                        AppointmentDetail.status}
+                                        {appointment.status === 'PENDING' ? 'Chờ xác nhận' :
+                                            appointment.status === 'CONFIRMED' ? 'Đã xác nhận' :
+                                                appointment.status === 'COMPLETED' ? 'Hoàn thành' :
+                                                    appointment.status === 'CANCELED' ? 'Đã hủy' :
+                                                        appointment.status}
                                     </span>
                                 </div>
                             </div>
                         ))}
-                        <TablePagination array={appointmentDetails} row={row} page={page} setRow={setRow} setPage={setPage}  />
+                        <TablePagination array={appointments} row={row} page={page} setRow={setRow} setPage={setPage}  />
                     </div>
                 ) : (
                     <div className="text-center py-12">
@@ -68,4 +68,4 @@ const AppointmentDetail = (props: AppointmentDetail) => {
     )
 }
 
-export default AppointmentDetail;
+export default AppointmentPatient;

@@ -14,17 +14,18 @@ type CreateDoctorParams = {
 }
 
 type UpdateDoctorParams = {
-    image?: string,
-    fullName?: string,
-    gender?: string,
-    phone?: string,
-    birthDate?: string,
-    workDay?: string,
+    image: string,
+    fullName: string,
+    gender: string,
+    phone: string,
+    birthDate: string,
+    
+    workDate?: string,
 
-    degree?: string,
-    status?: string,
+    degree: string,
+    status: string,
 
-    departmentId?: string,
+    departmentId: string,
 }
 
 export const getDoctorList = async () => {
@@ -59,6 +60,12 @@ export const getDoctorProfile = async () => {
 
 export const updateDoctorProfile = async (params: UpdateDoctorParams) => {
     const response = await api.put('/api/doctors/profile', params);
+    const restResponse: RestResponse = await response.data;
+    return restResponse;
+}
+
+export const updateDoctorWorkDate = async (workDate: string) => {
+    const response = await api.put('/api/doctors/profile/work-date', { workDate });
     const restResponse: RestResponse = await response.data;
     return restResponse;
 }

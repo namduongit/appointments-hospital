@@ -37,8 +37,7 @@ public class DepartmentModel {
     public DepartmentModel() {
     }
 
-    public DepartmentModel(Long id, String name, List<RoomModel> roomModels,
-            List<DoctorProfileModel> doctorProfileModels, List<AppointmentModel> appointmentModels) {
+    public DepartmentModel(Long id, String name, List<RoomModel> roomModels, List<DoctorProfileModel> doctorProfileModels, List<AppointmentModel> appointmentModels) {
         this.id = id;
         this.name = name;
         this.roomModels = roomModels;

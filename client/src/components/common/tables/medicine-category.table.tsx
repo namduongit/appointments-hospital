@@ -1,5 +1,7 @@
 import { useState } from "react";
 import TablePagination from "../others/pagination";
+import MedicineCategoryDetail from "../details/medicine-category.detail";
+import EditMedicineCategory from "../edits/medicine-category.edit";
 
 import type { MedicineCategoryResponse } from "../../../responses/medicine-category.response";
 
@@ -9,10 +11,23 @@ type MedicineCategoryTableProps = {
 }
 
 const MedicineCategoryTable = (props: MedicineCategoryTableProps) => {
-    const { categories } = props;
+    const { categories, onSuccess } = props;
 
     const [page, setPage] = useState<number>(1);
     const [row, setRow] = useState<number>(5);
+    const [showDetail, setShowDetail] = useState<boolean>(false);
+    const [showEdit, setShowEdit] = useState<boolean>(false);
+    const [selectedCategory, setSelectedCategory] = useState<MedicineCategoryResponse | null>(null);
+
+    const handleShowDetail = (category: MedicineCategoryResponse) => {
+        setSelectedCategory(category);
+        setShowDetail(true);
+    };
+
+    const handleShowEdit = (category: MedicineCategoryResponse) => {
+        setSelectedCategory(category);
+        setShowEdit(true);
+    };
 
     return (
         <>
@@ -35,16 +50,20 @@ const MedicineCategoryTable = (props: MedicineCategoryTableProps) => {
                             <td className="px-4 py-3 text-sm font-medium text-blue-600">{category.medicineCount || 0} thuốc</td>
                             <td className="px-4 py-3 text-sm text-gray-600 text-center">
                                 <div className="flex items-center justify-center gap-3">
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                                    <button 
+                                        className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                                        onClick={() => handleShowDetail(category)}
+                                        title="Xem chi tiết"
+                                    >
                                         <i className="fa-solid fa-info"></i>
                                     </button>
 
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
+                                    <button 
+                                        className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                                        onClick={() => handleShowEdit(category)}
+                                        title="Chỉnh sửa"
+                                    >
                                         <i className="fa-solid fa-wrench"></i>
-                                    </button>
-
-                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                                        <i className="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
@@ -62,6 +81,21 @@ const MedicineCategoryTable = (props: MedicineCategoryTableProps) => {
                 </tbody>
             </table>
             <TablePagination array={categories} page={page} row={row} setPage={setPage} setRow={setRow} />
+            
+            {showDetail && selectedCategory && (
+                <MedicineCategoryDetail
+                    medicineCategorySelect={selectedCategory}
+                    setShowDetail={setShowDetail}
+                />
+            )}
+            
+            {showEdit && selectedCategory && (
+                <EditMedicineCategory
+                    medicineCategorySelect={selectedCategory}
+                    setShowEdit={setShowEdit}
+                    onSuccess={onSuccess}
+                />
+            )}
         </>
     )
 }

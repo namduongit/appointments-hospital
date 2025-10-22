@@ -84,7 +84,7 @@ const AddDoctor = (props: AddDoctorProps) => {
                         onClick={handleClose}
                         className="text-gray-500 hover:text-gray-700 text-xl w-8 h-8 flex items-center justify-center"
                     >
-                        ×
+                        x
                     </button>
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">

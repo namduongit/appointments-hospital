@@ -153,9 +153,7 @@ const DoctorExaminationPage = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Patient Information & Examination Form */}
                     <div className="space-y-6">
-                        {/* Patient Info Card */}
                         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <i className="fa-solid fa-user-injured mr-2 text-blue-600"></i>
@@ -213,7 +211,6 @@ const DoctorExaminationPage = () => {
                             </div>
                         </div>
 
-                        {/* Examination Form */}
                         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <i className="fa-solid fa-stethoscope mr-2 text-blue-600"></i>
@@ -263,9 +260,7 @@ const DoctorExaminationPage = () => {
                         </div>
                     </div>
 
-                    {/* Medical Packages Selection */}
                     <div className="space-y-6">
-                        {/* Package Search */}
                         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <i className="fa-solid fa-medical-kit mr-2 text-blue-600"></i>
@@ -306,7 +301,6 @@ const DoctorExaminationPage = () => {
                             </div>
                         </div>
 
-                        {/* Selected Packages & Bill */}
                         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                             <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                 <i className="fa-solid fa-receipt mr-2 text-blue-600"></i>

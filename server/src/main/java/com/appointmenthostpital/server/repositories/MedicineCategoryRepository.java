@@ -7,4 +7,5 @@ import com.appointmenthostpital.server.models.MedicineCategoryModel;
 
 @Repository
 public interface MedicineCategoryRepository extends JpaRepository<MedicineCategoryModel, Long> {
+
 }

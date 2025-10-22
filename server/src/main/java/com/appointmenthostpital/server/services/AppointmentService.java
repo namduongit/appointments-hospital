@@ -18,33 +18,48 @@ public class AppointmentService {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @Autowired
+    private AccountService accountService;
+
+    @Autowired
+    private DepartmentService departmentService;
+
+    @Autowired
+    private RoomService roomService;
+
     public AppointmentModel getAppointmentById(Long id) {
         return this.appointmentRepository.findById(id).orElseThrow(() -> new NotFoundResourceException("Không tìm thấy lịch hẹn"));
     }
 
-    public AppointmentResponse handleCreateAppointment(AppointmentModel appointment) {
-        return AppointmentConvert.convertToResponse(this.appointmentRepository.save(appointment));
+    public AppointmentModel createAppointment(AppointmentModel appointmentModel) {
+        return this.appointmentRepository.save(appointmentModel);
     }
 
     public List<AppointmentResponse> handleGetAppointmentList() {
-        List<AppointmentModel> models = this.appointmentRepository.findAll();
-        return models.stream().map(AppointmentConvert::convertToResponse).toList();
+        List<AppointmentModel> appointmentModels = this.appointmentRepository.findAll();
+        return appointmentModels.stream().map(AppointmentConvert::convertToResponse).toList();
     }
 
     public AppointmentResponse handleUpdateAppointment(Long id, AdminAppointmentDTO.UpdateAppointmentRequest request) {
-        AppointmentModel model = this.getAppointmentById(id);
-        if (model.getStatus().equals("COMPLETED") || model.getStatus().equals("CANCELLED")) {
+        AppointmentModel appointmentModel = this.getAppointmentById(id);
+        if (appointmentModel.getStatus().equals("COMPLETED") || appointmentModel.getStatus().equals("CANCELLED")) {
             throw new NotAllowedException("Không thể cập nhật lịch hẹn đã hoàn thành hoặc đã hủy");
         }
-        AppointmentConvert.convertFromUpdateRequest(request, model);
-        return AppointmentConvert.convertToResponse(model);
+
+        appointmentModel.setDepartmentModel(departmentService.getDepartmentById(request.getDepartmentId()));
+        appointmentModel.setDoctorModel(accountService.getUserById(request.getDoctorId()));
+        appointmentModel.setRoomModel(roomService.getRoomById(request.getRoomId()));
+
+        AppointmentConvert.convertFromUpdateRequest(appointmentModel, request);
+        appointmentModel = this.appointmentRepository.save(appointmentModel);
+        return AppointmentConvert.convertToResponse(appointmentModel);
     }
 
     public void handleDeleteAppointment(Long id) {
-        AppointmentModel model = this.getAppointmentById(id);
-        if (model.getStatus().equals("COMPLETED") || model.getStatus().equals("CANCELLED")) {
+        AppointmentModel appointmentModel = this.getAppointmentById(id);
+        if (appointmentModel.getStatus().equals("COMPLETED") || appointmentModel.getStatus().equals("CANCELLED")) {
             throw new NotAllowedException("Không thể xóa lịch hẹn đã hoàn thành hoặc đã hủy");
         }
-        this.appointmentRepository.delete(model);
+        this.appointmentRepository.delete(appointmentModel);
     }
 }

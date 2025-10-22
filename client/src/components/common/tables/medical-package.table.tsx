@@ -5,7 +5,7 @@ import type { MedicalPackageResponse } from "../../../responses/medical-package.
 import EditMedicalPackage from "../edits/medical-package.edit";
 import { formatPriceVND } from "../../../utils/formatNumber.util";
 import MedicalPackageDetail from "../details/medical-package.detail";
-import { updateMedicalPackage } from "../../../services/medical-package.service";
+import { changeMedicalPackageStatus } from "../../../services/medical-package.service";
 import useCallApi from "../../../hooks/useCallApi";
 
 type MedicalPackageTableProps = {
@@ -36,7 +36,7 @@ const MedicalPackageTable = (props: MedicalPackageTableProps) => {
     }
 
     const handleChangeStatus = async (medicalPackageSelect: MedicalPackageResponse, status: string) => {
-        const restResponse = await execute(updateMedicalPackage(medicalPackageSelect.id, { status }));
+        const restResponse = await execute(changeMedicalPackageStatus(medicalPackageSelect.id,  status ));
         notify(restResponse!, status === "INACTIVE" ? "Tạm dừng gói dịch vụ thành công" : "Kích hoạt gói dịch vụ thành công");
         if (restResponse?.result) {
             onSuccess?.();

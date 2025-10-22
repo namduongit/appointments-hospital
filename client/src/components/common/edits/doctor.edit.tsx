@@ -95,7 +95,7 @@ const EditDoctor = (props: EditDoctor) => {
                         x
                     </button>
                 </div>
-                <form className="flex gap-4 items-center" onSubmit={handleSubmit} >
+                <form className="flex gap-10 items-center" onSubmit={handleSubmit} >
                     <div className="flex-3">
                         <div className="flex justify-center relative">
                             {(selectedImage || submitData.image) ? (
@@ -163,8 +163,8 @@ const EditDoctor = (props: EditDoctor) => {
                                     <input
                                         type="text"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        required
                                         value={submitData.fullName}
+                                        placeholder="Nhập họ và tên"
                                         onChange={(e) => handleChangeSubmit("fullName", e.target.value)}
                                     />
                                 </div>
@@ -176,7 +176,6 @@ const EditDoctor = (props: EditDoctor) => {
                                 <select
                                     name="role"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
                                     value={submitData.gender}
                                     onChange={(e) => handleChangeSubmit("gender", e.target.value)}
                                 >
@@ -210,9 +209,9 @@ const EditDoctor = (props: EditDoctor) => {
                                 </label>
                                 <div className="relative">
                                     <input
-                                        type="text"
+                                        type="tel"
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        required
+                                        placeholder="0123 456 789"
                                         value={submitData.phone}
                                         onChange={(e) => handleChangeSubmit("phone", e.target.value)}
                                     />
@@ -228,7 +227,6 @@ const EditDoctor = (props: EditDoctor) => {
                                 <select
                                     name="role"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
                                     value={submitData.departmentId}
                                     onChange={(e) => handleChangeSubmit("departmentId", e.target.value)}
                                 >
@@ -247,7 +245,6 @@ const EditDoctor = (props: EditDoctor) => {
                                 <select
                                     name="role"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    required
                                     value={submitData.status}
                                     onChange={(e) => handleChangeSubmit("status", e.target.value)}
                                 >
@@ -258,6 +255,21 @@ const EditDoctor = (props: EditDoctor) => {
                                         </option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+
+                        <div className="relative">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Học vị
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    placeholder="Thạc sĩ, Tiến sĩ..."
+                                    value={submitData.degree}
+                                    onChange={(e) => handleChangeSubmit("degree", e.target.value)}
+                                />
                             </div>
                         </div>
 

@@ -27,6 +27,12 @@ export const updateProfileDetail = async (params: UpdateProfileDetailParams) => 
     return restResponse;
 }
 
+export const getAppointmentList = async () => {
+    const response = await api.get("/api/public/appointments");
+    const restResponse: RestResponse = response.data;
+    return restResponse;
+}
+
 export const createAppointment = async (params: CreateAppointmentParams) => {
     const response = await api.post("/api/public/appointments", params);
     const restResponse: RestResponse = response.data;

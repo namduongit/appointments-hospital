@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "services")
+@Table(name = "medical_packages")
 public class MedicalPackageModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

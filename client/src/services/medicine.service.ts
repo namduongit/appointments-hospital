@@ -2,7 +2,36 @@ import { api, type RestResponse } from "../api/api";
 
 type CreateMedicineCategoryParams = {
     name: string, 
-    description?: string
+    description: string
+}
+
+type CreateMedicineParams = {
+    name: string,
+    description: string,
+    unit: string,
+
+    price: string,
+    costPrice: string,
+
+    manufacturer: string,
+
+    minStock: string,
+    maxStock: string,
+
+    categoryId: string
+}
+
+type UpdateMedicineParams = {
+    name: string,
+    description: string,
+    unit: string,
+    price: number,
+    costPrice: number,
+    manufacturer: string,
+    status: string,
+    minStock: number,
+    maxStock: number,
+    categoryId: number
 }
 
 export const getMedicineCategoryList = async () => {
@@ -33,46 +62,20 @@ export const deleteMedicineCategory = async (id: number) => {
     return restResponse;
 }
 
-// Medicine Services
 export const getMedicineList = async () => {
     const response = await api.get("/api/medicines");
     const restResponse: RestResponse = response.data;
     return restResponse;
 }
 
-export const createMedicine = async (medicineData: {
-    name: string;
-    description?: string;
-    unit: string;
-    price: number;
-    costPrice: number;
-    barcode?: string;
-    manufacturer?: string;
-    expiryDate?: string;
-    minStock: number;
-    maxStock: number;
-    categoryId: number;
-}) => {
-    const response = await api.post("/api/medicines", medicineData);
+export const createMedicine = async (params: CreateMedicineParams) => {
+    const response = await api.post("/api/medicines", params);
     const restResponse: RestResponse = response.data;
     return restResponse;
 }
 
-export const updateMedicine = async (id: number, medicineData: {
-    name?: string;
-    description?: string;
-    unit?: string;
-    price?: number;
-    costPrice?: number;
-    barcode?: string;
-    manufacturer?: string;
-    expiryDate?: string;
-    status?: string;
-    minStock?: number;
-    maxStock?: number;
-    categoryId?: number;
-}) => {
-    const response = await api.put(`/api/medicines/${id}`, medicineData);
+export const updateMedicine = async (id: number, params: UpdateMedicineParams) => {
+    const response = await api.put(`/api/medicines/${id}`, params);
     const restResponse: RestResponse = response.data;
     return restResponse;
 }

@@ -19,7 +19,6 @@ public class DoctorProfileModel {
     private Long id;
     @Lob
     private String image;
-    @Column(nullable = false)
     private String fullName;
     @Column(columnDefinition = "enum ('MALE', 'FEMALE', 'OTHER') default 'OTHER'")
     private String gender = "OTHER";
@@ -32,14 +31,23 @@ public class DoctorProfileModel {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "account_id")
     @JsonBackReference
-    private UserModel userModel;
+    private AccountModel accountModel;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
     @JsonBackReference
     private DepartmentModel departmentModel;
+
+    public DoctorProfileModel() {
+        this.image = "";
+        this.fullName = "";
+        this.phone = "";
+        this.birthDate = "";
+        this.degree = "";
+        this.workDay = "";
+    }
 
     public Long getId() {
         return id;
@@ -113,12 +121,12 @@ public class DoctorProfileModel {
         this.status = status;
     }
 
-    public UserModel getUserModel() {
-        return userModel;
+    public AccountModel getAccountModel() {
+        return accountModel;
     }
 
-    public void setUserModel(UserModel userModel) {
-        this.userModel = userModel;
+    public void setAccountModel(AccountModel accountModel) {
+        this.accountModel = accountModel;
     }
 
     public DepartmentModel getDepartmentModel() {
