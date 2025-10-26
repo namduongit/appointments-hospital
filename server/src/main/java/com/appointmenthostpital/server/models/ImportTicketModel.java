@@ -42,6 +42,9 @@ public class ImportTicketModel {
     @JoinColumn(name = "account_id")
     @JsonBackReference
     private AccountModel performedBy;
+
+    @Column(nullable = false)
+    private Long totalAmount;
     
     @OneToMany(mappedBy = "importTicket", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -90,6 +93,14 @@ public class ImportTicketModel {
 
     public void setPerformedBy(AccountModel performedBy) {
         this.performedBy = performedBy;
+    }
+
+    public Long getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Long totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
     public String getStatus() {

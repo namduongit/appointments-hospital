@@ -87,10 +87,11 @@ const DoctorTable = (props: DoctorTableProps) => {
                         </tr>
                     )) : (
                         <tr>
-                            <td colSpan={6} className="px-4 py-3 text-sm text-gray-600 text-center">
-                                <div className="flex justify-center items-center gap-3">
-                                    <i className="fa-solid fa-inbox"></i>
-                                    <span>Không tìm thấy dữ liệu</span>
+                            <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                                <div className="flex flex-col items-center">
+                                    <i className="fa-solid fa-user-doctor text-4xl mb-3 text-gray-300"></i>
+                                    <p className="text-lg font-medium">Không có bác sĩ nào</p>
+                                    <p className="text-sm mt-1">Chưa có dữ liệu để hiển thị</p>
                                 </div>
                             </td>
                         </tr>

@@ -29,6 +29,11 @@ public class AccountService {
                 .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy tài khoản"));
     }
 
+    public AccountModel getAccountById(Long id) {
+        return this.userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy tài khoản"));
+    }
+
     public AccountModel getUserByEmail(String email) {
         AccountModel userModel = this.userRepository.findByEmail(email);
         if (userModel == null) {

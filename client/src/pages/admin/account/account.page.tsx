@@ -4,11 +4,10 @@ import { useEffect, useState } from "react";
 import AddAccount from "../../../components/common/adds/account.add";
 import AccountTable from "../../../components/common/tables/account.table";
 
-import type { AccountResponse } from "../../../responses/account.response";
-
 import { getAccountList } from "../../../services/account.service";
 
 import useCallApi from "../../../hooks/useCallApi";
+import type { AccountResponse } from "../../../responses/account.response";
 
 const AdminAccountPage = () => {
     const { execute } = useCallApi();

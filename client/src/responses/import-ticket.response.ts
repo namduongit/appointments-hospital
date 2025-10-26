@@ -1,12 +1,4 @@
-type ImportTicketItemResponse = {
-    id: number,
-    medicineId: number,
-    medicineName: string,
-    quantity: number,
-    unitPrice: number,
-    totalPrice: number
-}
-
+import type { ImportTicketItemResponse } from "./import-ticket-item.response";
 
 type ImportTicketResponse = {
     id: number,
@@ -14,9 +6,11 @@ type ImportTicketResponse = {
     reason: string,
     performedBy: string,
     status: string,
+    
     items: ImportTicketItemResponse[],
-    createdAt: string,
-    updatedAt: string
+
+    createdAt: Date,
+    updatedAt: Date
 }
 
 export type { ImportTicketResponse };

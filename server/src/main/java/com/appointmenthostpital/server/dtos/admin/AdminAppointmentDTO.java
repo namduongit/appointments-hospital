@@ -85,4 +85,18 @@ public class AdminAppointmentDTO {
             this.roomId = roomId;
         }
     }
+
+    public static class ChangeStatusRequest {
+        @NotNull(message = "Yêu cầu nhập trạng thái")
+        @Pattern(regexp = "PENDING|CONFIRMED|CANCELLED|COMPLETED", message = "Trạng thái không đúng")
+        private String status;
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+    }
 }

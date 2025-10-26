@@ -1,9 +1,4 @@
-type ExportTicketItemResponse = {
-    id: number,
-    medicineId: number,
-    medicineName: string,
-    quantity: number,
-}
+import type { ExportTicketItemResponse } from "./export-ticket-item.response"
 
 type ExportTicketResponse = {
     id: number,
@@ -11,8 +6,9 @@ type ExportTicketResponse = {
     performedBy: string,
     status: string,
     items: ExportTicketItemResponse[],
-    createdAt: string,
-    updatedAt: string
+
+    createdAt: Date,
+    updatedAt: Date
 }
 
 export type { ExportTicketResponse };

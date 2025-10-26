@@ -8,7 +8,3 @@ type RoomResponse = {
 }
 
 export type { RoomResponse };
-
-/**
- * @description This file contains the type definitions for room responses.
- */

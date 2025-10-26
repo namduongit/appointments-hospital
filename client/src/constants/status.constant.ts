@@ -30,7 +30,7 @@ export const appointmentStatus = [
     {
         id: 4,
         name: "Đã hủy",
-        value: "CANCELED"
+        value: "CANCELLED"
     }
 ];
 
@@ -142,5 +142,41 @@ export const inventoryTransactionType = [
         id: 3,
         name: "Điều chỉnh",
         value: "ADJUSTMENT"
+    }
+];
+
+export const prescriptionInvoiceStatus = [
+    {
+        id: 1,
+        name: "Chờ xử lý",
+        value: "PENDING"
+    },
+    {
+        id: 2,
+        name: "Đã hoàn thành",
+        value: "COMPLETED"
+    },
+    {
+        id: 3,
+        name: "Đã hủy",
+        value: "CANCELLED"
+    }
+];
+
+export const serviceInvoiceStatus = [
+    {
+        id: 1,
+        name: "Chờ xử lý",
+        value: "PENDING"
+    },
+    {
+        id: 2,
+        name: "Đã hoàn thành",
+        value: "COMPLETED"
+    },
+    {
+        id: 3,
+        name: "Đã hủy",
+        value: "CANCELLED"
     }
 ]

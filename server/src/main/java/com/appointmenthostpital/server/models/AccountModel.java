@@ -48,7 +48,6 @@ public class AccountModel {
     @JsonManagedReference
     private List<AppointmentModel> doctorAppointments = new ArrayList<>();
 
-    // Import and Export ticket
     @OneToMany(mappedBy = "performedBy")
     @JsonManagedReference
     private List<ImportTicketModel> importTickets = new ArrayList<>();
@@ -57,22 +56,23 @@ public class AccountModel {
     @JsonManagedReference
     private List<ExportTicketModel> exportTickets = new ArrayList<>();
 
-    public AccountModel() {
-    }
+    @OneToMany(mappedBy = "patientAccountModel")
+    @JsonManagedReference
+    private List<ServiceInvoiceModel> patientServiceInvoices = new ArrayList<>();
 
-    public AccountModel(Long id, String email, String password, String role, String type, String status,
-            UserProfileModel userProfileModel, DoctorProfileModel doctorProfileModel,
-            List<AppointmentModel> userAppointmets, List<AppointmentModel> doctorAppointments) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.type = type;
-        this.status = status;
-        this.userProfileModel = userProfileModel;
-        this.doctorProfileModel = doctorProfileModel;
-        this.userAppointments = userAppointmets;
-        this.doctorAppointments = doctorAppointments;
+    @OneToMany(mappedBy = "doctorAccountModel")
+    @JsonManagedReference
+    private List<ServiceInvoiceModel> doctorServiceInvoices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "patientAccountModel")
+    @JsonManagedReference
+    private List<PrescriptionInvoiceModel> patientPrescriptionInvoices = new ArrayList<>();
+
+    @OneToMany(mappedBy = "doctorAccountModel")
+    @JsonManagedReference
+    private List<PrescriptionInvoiceModel> doctorPrescriptionInvoices = new ArrayList<>();  
+
+    public AccountModel() {
     }
 
     public Long getId() {
@@ -153,5 +153,29 @@ public class AccountModel {
 
     public void setDoctorAppointments(List<AppointmentModel> doctorAppointments) {
         this.doctorAppointments = doctorAppointments;
+    }
+
+    public List<ImportTicketModel> getImportTickets() {
+        return importTickets;
+    }
+
+    public void setImportTickets(List<ImportTicketModel> importTickets) {
+        this.importTickets = importTickets;
+    }
+
+    public List<ExportTicketModel> getExportTickets() {
+        return exportTickets;
+    }
+
+    public void setExportTickets(List<ExportTicketModel> exportTickets) {
+        this.exportTickets = exportTickets;
+    }
+
+    public List<ServiceInvoiceModel> getPatientServiceInvoices() {
+        return patientServiceInvoices;
+    }
+
+    public void setPatientServiceInvoices(List<ServiceInvoiceModel> patientServiceInvoices) {
+        this.patientServiceInvoices = patientServiceInvoices;
     }
 }

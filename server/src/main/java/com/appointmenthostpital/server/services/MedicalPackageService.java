@@ -25,6 +25,11 @@ public class MedicalPackageService {
                 .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy gói dịch vụ y tế"));
     }
 
+    public MedicalPackageModel getMedicalPackageById(Long id) {
+        return this.medicalPackageRepository.findById(id)
+                .orElseThrow(() -> new NotFoundResourceException("Không tìm thấy gói dịch vụ y tế"));
+    }
+
     public List<MedicalPackageResponse> handleGetMedicalPackageList() {
         List<MedicalPackageModel> medicalPackageModels = this.medicalPackageRepository.findAll();
         return medicalPackageModels.stream().map(MedicalPackageConvert::convertToResponse).toList();

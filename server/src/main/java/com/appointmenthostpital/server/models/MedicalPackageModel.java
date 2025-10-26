@@ -1,10 +1,18 @@
 package com.appointmenthostpital.server.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,24 +21,24 @@ public class MedicalPackageModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String name;
+    
     @Column(nullable = false)
     private String description;
-    @Column(columnDefinition = "enum('ACTIVE', 'INACTIVE') default 'ACTIVE'")
-    private String status = "ACTIVE";
+    
     @Column(nullable = false)
     private Long price;
 
-    public MedicalPackageModel() {
-    }
+    @Column(columnDefinition = "enum('ACTIVE', 'INACTIVE') default 'ACTIVE'")
+    private String status = "ACTIVE";
 
-    public MedicalPackageModel(Long id, String name, String description, String status, Long price) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.price = price;
+    @OneToMany(mappedBy = "medicalPackageModel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<ServiceInvoiceDetailModel> serviceInvoiceDetails = new ArrayList<>();
+
+    public MedicalPackageModel() {
     }
 
     public Long getId() {
@@ -71,5 +79,13 @@ public class MedicalPackageModel {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public List<ServiceInvoiceDetailModel> getServiceInvoiceDetails() {
+        return serviceInvoiceDetails;
+    }
+
+    public void setServiceInvoiceDetails(List<ServiceInvoiceDetailModel> serviceInvoiceDetails) {
+        this.serviceInvoiceDetails = serviceInvoiceDetails;
     }
 }

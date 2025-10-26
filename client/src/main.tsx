@@ -11,15 +11,22 @@ import RotateLoading from "./components/common/others/loading";
 const AssistorLayout = lazy(() => import("./layouts/assistor/layout"));
 const AssistorHomePage = lazy(() => import("./pages/assistor/home/home.page"));
 const AssistorAppointmentPage = lazy(() => import("./pages/assistor/appointment/appointment.page"));
+const AssistorPrescriptionInvoicePage = lazy(() => import("./pages/assistor/prescription-invoice/prescription-invoice.page"));
+const AssistorServiceInvoicePage = lazy(() => import("./pages/assistor/service-invoice/service-invoice.page"));
+const AssistorMedicinePage = lazy(() => import("./pages/assistor/medicine/medicine.page"));
+const AssistorMedicalPackagePage = lazy(() => import("./pages/assistor/medical-package/medical-package.page"));
 
 const DoctorLayout = lazy(() => import("./layouts/doctor/layout"));
 const DoctorHomePage = lazy(() => import("./pages/doctor/home/home.page"));
 const DoctorLoginPage = lazy(() => import("./pages/doctor/login/login.page"));
 const DoctorAppointmentPage = lazy(() => import("./pages/doctor/appointment/appointment.page"));
 const DoctorProfilePage = lazy(() => import("./pages/doctor/profile/profile.page"));
+const CreatePrescriptionInvoicePage = lazy(() => import("./pages/doctor/prescription-invoice/create-prescription-invoice.page"));
+const CreateServiceInvoicePage = lazy(() => import("./pages/doctor/service-invoice/create-service-invoice.page"));
 
 const AdminLayout = lazy(() => import("./layouts/admin/layout"));
 const AdminDashboardPage = lazy(() => import("./pages/admin/dashboard/dashboard.page"));
+const AdminMedicineDashboardPage = lazy(() => import("./pages/admin/medicine-dashboard/medicine-dashboard.page"));
 const AdminAccountPage = lazy(() => import("./pages/admin/account/account.page"));
 const AdminDoctorPage = lazy(() => import("./pages/admin/doctor/doctor.page"));
 const AdminAppointmentsPage = lazy(() => import("./pages/admin/appointment/appointment.page"));
@@ -27,7 +34,9 @@ const AdminDepartmentPage = lazy(() => import("./pages/admin/department/departme
 const AdminMedicinePage = lazy(() => import("./pages/admin/medicine/medicine.page"));
 const AdminInventoryPage = lazy(() => import("./pages/admin/inventory/inventory.page"));
 const AdminMedicalPackagePage = lazy(() => import("./pages/admin/medical-package/medical-package.page"));
-const AdminMedicineDashboardPage = lazy(() => import("./pages/admin/medicine-dashboard/medicine-dashboard.page"));
+const AdminPrescriptionInvoicePage = lazy(() => import("./pages/admin/prescription-invoice/prescription-invoice.page"));
+const AdminServiceInvoicePage = lazy(() => import("./pages/admin/service-invoice/service-invoice.page"));
+
 
 const LoginPage = lazy(() => import("./pages/patient/login/login.page"));
 const RegisterPage = lazy(() => import("./pages/patient/register/register.page"));
@@ -66,6 +75,22 @@ const router = createBrowserRouter([
       {
         path: "appointments",
         Component: AssistorAppointmentPage
+      },
+      {
+        path: "prescription-invoices",
+        Component: AssistorPrescriptionInvoicePage
+      },
+      {
+        path: "service-invoices",
+        Component: AssistorServiceInvoicePage
+      },
+      {
+        path: "medicines",
+        Component: AssistorMedicinePage
+      },
+      {
+        path: "medical-packages",
+        Component: AssistorMedicalPackagePage
       }
     ]
   },
@@ -79,8 +104,16 @@ const router = createBrowserRouter([
         Component: DoctorLoginPage
       },
       {
-        path: "appointments",
+        path: "appointment",
         Component: DoctorAppointmentPage
+      },
+      {
+        path: "create-service-invoice",
+        Component: CreateServiceInvoicePage
+      },
+      {
+        path: "create-prescription-invoice",
+        Component: CreatePrescriptionInvoicePage
       },
       {
         path: "profile",
@@ -93,6 +126,10 @@ const router = createBrowserRouter([
     Component: AdminLayout,
     children: [
       { index: true, Component: AdminDashboardPage },
+      {
+        path: "medicine-dashboard",
+        Component: AdminMedicineDashboardPage
+      },
       {
         path: "accounts",
         Component: AdminAccountPage
@@ -122,8 +159,12 @@ const router = createBrowserRouter([
         Component: AdminMedicalPackagePage
       },
       {
-        path: "medicine-dashboard",
-        Component: AdminMedicineDashboardPage
+        path: "prescription-invoice",
+        Component: AdminPrescriptionInvoicePage
+      },
+      {
+        path: "service-invoice",
+        Component: AdminServiceInvoicePage
       }
     ]
   },

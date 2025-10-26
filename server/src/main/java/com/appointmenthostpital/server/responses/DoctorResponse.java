@@ -16,20 +16,7 @@ public class DoctorResponse {
     private Long departmentId;
     private String departmentName;
 
-    public DoctorResponse(Long id, String email, String image, String fullName, String gender, String phone,
-            String birthDate, String degree, String workDay, String status, Long departmentId, String departmentName) {
-        this.id = id;
-        this.email = email;
-        this.image = image;
-        this.fullName = fullName;
-        this.gender = gender;
-        this.phone = phone;
-        this.birthDate = birthDate;
-        this.degree = degree;
-        this.workDay = workDay;
-        this.status = status;
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
+    public DoctorResponse() {
     }
 
     public Long getId() {

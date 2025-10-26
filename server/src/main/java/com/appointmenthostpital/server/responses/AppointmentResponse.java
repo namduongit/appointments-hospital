@@ -20,23 +20,7 @@ public class AppointmentResponse {
     private Long roomId;
     private String roomName;
 
-    public AppointmentResponse(Long id, String fullName, String phone, String time, String note, String status,
-            String createdAt, String email, Long departmentId, String departmentName, Long doctorId, String doctorName,
-            Long roomId, String roomName) {
-        this.id = id;
-        this.fullName = fullName;
-        this.phone = phone;
-        this.time = time;
-        this.note = note;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.email = email;
-        this.departmentId = departmentId;
-        this.departmentName = departmentName;
-        this.doctorId = doctorId;
-        this.doctorName = doctorName;
-        this.roomId = roomId;
-        this.roomName = roomName;
+    public AppointmentResponse() {
     }
 
     public Long getId() {

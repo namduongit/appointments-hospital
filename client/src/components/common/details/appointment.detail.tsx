@@ -15,7 +15,7 @@ const AppointmentDetail = (props: AppointmentDetail) => {
             case 'PENDING': return 'text-yellow-800';
             case 'CONFIRMED': return 'text-green-700';
             case 'COMPLETED': return 'text-blue-700';
-            case 'CANCELED': return 'text-red-700';
+            case 'CANCELLED': return 'text-red-700';
             default: return 'text-gray-700';
         }
     }
@@ -25,7 +25,7 @@ const AppointmentDetail = (props: AppointmentDetail) => {
             case 'PENDING': return 'Chưa xác nhận';
             case 'CONFIRMED': return 'Đã xác nhận';
             case 'COMPLETED': return 'Đã hoàn thành';
-            case 'CANCELED': return 'Đã hủy';
+            case 'CANCELLED': return 'Đã hủy';
             default: return status;
         }
     }

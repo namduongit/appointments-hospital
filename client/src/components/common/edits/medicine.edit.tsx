@@ -23,7 +23,6 @@ const EditMedicine = (props: EditMedicine) => {
         description: "",
         unit: "",
         price: "",
-        costPrice: "",
         minStock: "",
         maxStock: "",
         manufacturer: "",
@@ -41,7 +40,6 @@ const EditMedicine = (props: EditMedicine) => {
             description: medicineSelect.description || "",
             unit: medicineSelect.unit || "",
             price: medicineSelect.price ? medicineSelect.price.toString() : "",
-            costPrice: medicineSelect.costPrice ? medicineSelect.costPrice.toString() : "",
             minStock: medicineSelect.minStock ? medicineSelect.minStock.toString() : "",
             maxStock: medicineSelect.maxStock ? medicineSelect.maxStock.toString() : "",
             manufacturer: medicineSelect.manufacturer || "",
@@ -58,7 +56,6 @@ const EditMedicine = (props: EditMedicine) => {
             description: submitData.description,
             unit: submitData.unit,
             price: Number(submitData.price),
-            costPrice: Number(submitData.costPrice),
             manufacturer: submitData.manufacturer,
             status: submitData.status,
             minStock: Number(submitData.minStock),
@@ -166,22 +163,6 @@ const EditMedicine = (props: EditMedicine) => {
                                 value={submitData.price}
                                 placeholder="Giá bán"
                                 onChange={(e) => handleChangeSubmit("price", e.target.value)}
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">
-                                Giá nhập (VND) 
-                            </label>
-                            <input
-                                type="number"
-                                
-                                min="0"
-                                step="1000"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                value={submitData.costPrice}
-                                placeholder="Giá nhập"
-                                onChange={(e) => handleChangeSubmit("costPrice", e.target.value)}
                             />
                         </div>
 

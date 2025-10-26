@@ -7,7 +7,6 @@ public class MedicineResponse {
     private String unit;
 
     private Long price;
-    private Long costPrice;
 
     private String manufacturer;
     private String status;
@@ -23,28 +22,6 @@ public class MedicineResponse {
     private Boolean isOutOfStock;
 
     public MedicineResponse() {
-    }
-
-    public MedicineResponse(Long id, String name, String description, String unit, 
-                                   Long price, Long costPrice, 
-                                   String manufacturer, String status, 
-                                   Integer currentStock, Integer minStock, Integer maxStock, Long categoryId, 
-                                   String categoryName) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.unit = unit;
-        this.price = price;
-        this.costPrice = costPrice;
-        this.manufacturer = manufacturer;
-        this.status = status;
-        this.currentStock = currentStock;
-        this.minStock = minStock;
-        this.maxStock = maxStock;
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.isLowStock = currentStock <= minStock;
-        this.isOutOfStock = "OUT_OF_STOCK".equals(status);
     }
 
     public Long getId() {
@@ -87,14 +64,6 @@ public class MedicineResponse {
         this.price = price;
     }
 
-    public Long getCostPrice() {
-        return costPrice;
-    }
-
-    public void setCostPrice(Long costPrice) {
-        this.costPrice = costPrice;
-    }
-
     public String getManufacturer() {
         return manufacturer;
     }
@@ -117,7 +86,7 @@ public class MedicineResponse {
 
     public void setCurrentStock(Integer currentStock) {
         this.currentStock = currentStock;
-        this.isLowStock = currentStock <= minStock;
+        this.isLowStock = currentStock != null && minStock != null && currentStock <= minStock;
     }
 
     public Integer getMinStock() {
@@ -126,7 +95,7 @@ public class MedicineResponse {
 
     public void setMinStock(Integer minStock) {
         this.minStock = minStock;
-        this.isLowStock = currentStock <= minStock;
+        this.isLowStock = currentStock != null && minStock != null && currentStock <= minStock;
     }
 
     public Integer getMaxStock() {

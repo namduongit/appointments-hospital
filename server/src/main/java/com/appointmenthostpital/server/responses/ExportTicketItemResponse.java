@@ -6,11 +6,7 @@ public class ExportTicketItemResponse {
     private String medicineName;
     private Integer quantity;
 
-    public ExportTicketItemResponse(Long id, Long medicineId, String medicineName, Integer quantity) {
-        this.id = id;
-        this.medicineId = medicineId;
-        this.medicineName = medicineName;
-        this.quantity = quantity;
+    public ExportTicketItemResponse() {
     }
 
     public Long getId() {

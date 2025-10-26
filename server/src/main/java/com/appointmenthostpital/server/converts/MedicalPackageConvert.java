@@ -6,12 +6,13 @@ import com.appointmenthostpital.server.responses.MedicalPackageResponse;
 
 public class MedicalPackageConvert {
     public static MedicalPackageResponse convertToResponse(MedicalPackageModel medicalPackageModel) {
-        return new MedicalPackageResponse(
-                medicalPackageModel.getId(),
-                medicalPackageModel.getName(),
-                medicalPackageModel.getDescription(),
-                medicalPackageModel.getStatus(),
-                medicalPackageModel.getPrice());
+        MedicalPackageResponse response = new MedicalPackageResponse();
+        response.setId(medicalPackageModel.getId());
+        response.setName(medicalPackageModel.getName());
+        response.setDescription(medicalPackageModel.getDescription());
+        response.setStatus(medicalPackageModel.getStatus());
+        response.setPrice(medicalPackageModel.getPrice());
+        return response;
     }
 
     public static void convertFromCreateRequest(MedicalPackageModel model,

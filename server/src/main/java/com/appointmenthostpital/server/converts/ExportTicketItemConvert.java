@@ -5,12 +5,11 @@ import com.appointmenthostpital.server.responses.ExportTicketItemResponse;
 
 public class ExportTicketItemConvert {
     public static ExportTicketItemResponse convertToResponse(ExportTicketItemModel model) {
-        ExportTicketItemResponse response = new ExportTicketItemResponse(
-            model.getId(),
-            model.getMedicine().getId(),
-            model.getMedicine().getName(),
-            model.getQuantity()
-        );
+        ExportTicketItemResponse response = new ExportTicketItemResponse();
+        response.setId(model.getId());
+        response.setMedicineId(model.getMedicine().getId());
+        response.setMedicineName(model.getMedicine().getName());
+        response.setQuantity(model.getQuantity());
         return response;
     }
 }

@@ -4,8 +4,8 @@ import { getMedicineList } from "../../../services/medicine.service";
 import { getAccountList } from "../../../services/account.service";
 import { getAppointmentList } from "../../../services/appointment.service";
 import type { MedicineResponse } from "../../../responses/medicine.response";
-import type { AccountResponse } from "../../../responses/account.response";
 import type { AppointmentResponse } from "../../../responses/appointment.response";
+import type { AccountResponse } from "../../../responses/account.response";
 
 const AdminDashboardPage = () => {
     const { execute, loading } = useCallApi();

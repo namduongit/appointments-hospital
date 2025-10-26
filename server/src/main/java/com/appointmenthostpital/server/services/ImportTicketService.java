@@ -25,7 +25,7 @@ public class ImportTicketService {
     private MedicineService medicineService;
 
     @Autowired 
-    private UserService userService;
+    private AccountService accountService;
 
     public ImportTicketModel getImportTicketById(Long id) {
         return this.importTicketRepository.findById(id)
@@ -38,59 +38,53 @@ public class ImportTicketService {
     }
 
     public ImportTicketResponse handleCreateImportTicket(Authentication authentication ,AdminImportTicketDTO.CreateImportTicketRequest request) {
-        ImportTicketModel ticket = new ImportTicketModel();
-        AccountModel accountModel = this.userService.getUserByEmail(authentication.getName());
-        ticket.setPerformedBy(accountModel);
-        ImportTicketConvert.convertFromCreateRequest(ticket, request);
+        ImportTicketModel importTicketModel = new ImportTicketModel();
+        AccountModel accountModel = this.accountService.getUserByEmail(authentication.getName());
+        importTicketModel.setPerformedBy(accountModel);
+        ImportTicketConvert.convertFromCreateRequest(importTicketModel, request);
         
-        List<ImportTicketItemModel> items = request.getItems().stream().map(itemRequest -> {
-            ImportTicketItemModel item = new ImportTicketItemModel();
-            MedicineModel medicine = medicineService.getMedicineById(itemRequest.getMedicineId());
-            item.setMedicine(medicine);
-            item.setQuantity(itemRequest.getQuantity());
-            item.setUnitPrice(itemRequest.getUnitPrice());
-            item.setExpiryDate(itemRequest.getExpiryDate());
-            item.setImportTicket(ticket);
-            return item;
+        List<ImportTicketItemModel> items = request.getItems().stream().map(item -> {
+            ImportTicketItemModel ticketItemModel = new ImportTicketItemModel();
+            MedicineModel medicine = this.medicineService.getMedicineById(item.getMedicineId());
+            ticketItemModel.setMedicine(medicine);
+            ticketItemModel.setQuantity(item.getQuantity());
+            ticketItemModel.setUnitPrice(item.getUnitPrice());
+            ticketItemModel.setExpiryDate(item.getExpiryDate());
+            ticketItemModel.setImportTicket(importTicketModel);
+            return ticketItemModel;
         }).toList();
         
-        ticket.setItems(items);
-        ImportTicketModel savedTicket = this.importTicketRepository.save(ticket);
-        return ImportTicketConvert.convertToResponse(savedTicket);
+        importTicketModel.setItems(items);
+        importTicketModel.setTotalAmount(items.stream().mapToLong(
+            item -> item.getUnitPrice() * item.getQuantity()
+        ).sum());
+        return ImportTicketConvert.convertToResponse(this.importTicketRepository.save(importTicketModel));
     }
 
+    /** Change Status -> COMPLETED OR CANCELLED */
     @Transactional
-    public ImportTicketResponse handleChangeImportTicketStatus(Long id,
-            AdminImportTicketDTO.ChangeImportTicketStatusRequest request) {
-        ImportTicketModel ticket = this.getImportTicketById(id);
-        if (ticket.getStatus().equals("COMPLETED") || ticket.getStatus().equals("CANCELLED")) {
+    public ImportTicketResponse handleChangeImportTicketStatus(Long id, AdminImportTicketDTO.ChangeImportTicketStatusRequest request) {
+        ImportTicketModel importTicketModel = this.getImportTicketById(id);
+        if (importTicketModel.getStatus().equals("COMPLETED") || importTicketModel.getStatus().equals("CANCELLED")) {
             throw new RuntimeException("Không thể thay đổi trạng thái của phiếu nhập đã hoàn thành hoặc hủy");
         }
-
-        String oldStatus = ticket.getStatus();
-        String newStatus = request.getStatus();
         
-        ticket.setStatus(newStatus);
-        ticket = this.importTicketRepository.save(ticket);
+        importTicketModel.setStatus(request.getStatus());
+        importTicketModel = this.importTicketRepository.save(importTicketModel);
         
-        if ("COMPLETED".equals(newStatus) && !"COMPLETED".equals(oldStatus)) {
-            updateInventoryFromImportTicket(ticket);
+        if (importTicketModel.getStatus().equals("COMPLETED")) {
+            updateInventoryFromImportTicket(importTicketModel);
         }
         
-        return ImportTicketConvert.convertToResponse(ticket);
+        return ImportTicketConvert.convertToResponse(importTicketModel);
     }
     
-    private void updateInventoryFromImportTicket(ImportTicketModel ticket) {
-        if (ticket.getItems() == null || ticket.getItems().isEmpty()) {
-            return;
-        }
-        
+    private void updateInventoryFromImportTicket(ImportTicketModel ticket) {        
         for (ImportTicketItemModel item : ticket.getItems()) {
             try {
-                medicineService.updateMedicineStock(item.getMedicine().getId(), item.getQuantity());
+                this.medicineService.updateMedicineStock(item.getMedicine().getId(), item.getQuantity());
             } catch (Exception e) {
-                System.err.println("Lỗi khi cập nhật tồn kho cho thuốc ID " + 
-                    item.getMedicine().getId() + ": " + e.getMessage());
+                throw new RuntimeException("Cập nhật tồn kho thất bại cho thuốc: " + item.getMedicine().getName());
             }
         }
     }

@@ -16,19 +16,6 @@ public class ImportTicketResponse {
     public ImportTicketResponse() {
     }
 
-    public ImportTicketResponse(Long id, String supplierName, String reason, String performedBy, 
-                               String status, List<ImportTicketItemResponse> items, 
-                               Date createdAt, Date updatedAt) {
-        this.id = id;
-        this.supplierName = supplierName;
-        this.reason = reason;
-        this.performedBy = performedBy;
-        this.status = status;
-        this.items = items;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
-
     public Long getId() {
         return id;
     }

@@ -1,7 +1,7 @@
 import type { ExportTicketResponse } from "../../../responses/export-ticket.response";
 import ExportTicket from "../tickets/export.ticket";
 
-interface ExportTicketsTableProps {
+type ExportTicketsTableProps = {
     exportTickets: ExportTicketResponse[],
     reload?: () => void
 }

@@ -20,7 +20,6 @@ const AddMedicine = (props: AddMedicineModalProps) => {
         description: "",
         unit: "",
         price: "",
-        costPrice: "",
         manufacturer: "",
         minStock: "",
         maxStock: "",
@@ -47,7 +46,6 @@ const AddMedicine = (props: AddMedicineModalProps) => {
             description: "",
             unit: "",
             price: "",
-            costPrice: "",
             manufacturer: "",
             minStock: "",
             maxStock: "",
@@ -116,25 +114,6 @@ const AddMedicine = (props: AddMedicineModalProps) => {
                             />
                             <div className="text-xs text-gray-500 mt-1">
                                 {Number(submitData.price) > 0 && `≈ ${formatPriceVND(Number(submitData.price))}`}
-                            </div>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Giá nhập (VNĐ) 
-                            </label>
-                            <input
-                                type="number"
-                                value={submitData.costPrice}
-                                onChange={(e) => handleSubmitChange("costPrice", e.target.value)}
-                                className="w-full border rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 border-gray-300 transition-colors"
-                                placeholder="Nhập giá nhập"
-                                min="0"
-                                step="0.01"
-                                disabled={loading}
-                            />
-                            <div className="text-xs text-gray-500 mt-1">
-                                {Number(submitData.price) > 0 && `≈ ${formatPriceVND(Number(submitData.costPrice))}`}
                             </div>
                         </div>
 

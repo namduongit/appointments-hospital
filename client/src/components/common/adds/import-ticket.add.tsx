@@ -211,7 +211,7 @@ const AddImport = (props: AddImportProps) => {
                                                 <option value="">Chọn thuốc</option>
                                                 {medicines.map((medicine) => (
                                                     <option key={medicine.id} value={medicine.id}>
-                                                        {medicine.name} ({medicine.unit})
+                                                        {medicine.name} ({medicine.unit}) - {formatPriceVND(medicine.price)}
                                                     </option>
                                                 ))}
                                             </select>

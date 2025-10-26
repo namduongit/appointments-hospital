@@ -1,32 +1,24 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import TablePagination from "../../common/others/pagination";
 import AppointmentDetail from "../../common/details/appointment.detail";
 
 import { formatNumberPhone } from "../../../utils/formatNumber.util";
 import { formatDateVi } from "../../../utils/formatDate.util";
 import type { AppointmentResponse } from "../../../responses/appointment.response";
-import type { DepartmentResponse } from "../../../responses/department.response";
-import type { RoomResponse } from "../../../responses/room.response";
-import type { DoctorResponse } from "../../../responses/doctor.response";
 
-import { updateAppointment } from "../../../services/appointment.service";
+import { changeAppointmentStatus } from "../../../services/appointment.service";
 
 import useCallApi from "../../../hooks/useCallApi";
 
 type DoctorAppointmentTableProps = {
     appointments: AppointmentResponse[],
-    departments: DepartmentResponse[],
-    rooms: RoomResponse[],
-    doctors: DoctorResponse[],
     onSuccess?: () => void
 }
 
 const DoctorAppointmentTable = (props: DoctorAppointmentTableProps) => {
-    const { appointments, departments, rooms, doctors, onSuccess } = props;
-    const navigate = useNavigate();
+    const { appointments, onSuccess } = props;
 
-    const { execute, notify, doFunc } = useCallApi();
+    const { execute, notify } = useCallApi();
 
     const [page, setPage] = useState<number>(1);
     const [row, setRow] = useState<number>(5);
@@ -39,27 +31,16 @@ const DoctorAppointmentTable = (props: DoctorAppointmentTableProps) => {
         setShowDetail(true);
     }
 
-    const handleConfirmAppointment = async (appointment: AppointmentResponse) => {
-        const restResponse = await execute(updateAppointment(appointment.id, { status: "CONFIRMED" }));
-        notify(restResponse!, "Xác nhận lịch hẹn thành công");
-        doFunc(() => {
-            onSuccess?.();
-        });
+    const handleCompleteAppointment = async (appointment: AppointmentResponse) => {
+        const restResponse = await execute(changeAppointmentStatus(appointment.id, "COMPLETED"));
+        notify(restResponse!, "Đánh dấu hoàn thành thành công");
+        onSuccess?.();
     }
 
     const handleCancelAppointment = async (appointment: AppointmentResponse) => {
-        const restResponse = await execute(updateAppointment(appointment.id, { status: "CANCELED" }));
+        const restResponse = await execute(changeAppointmentStatus(appointment.id, "CANCELLED"));
         notify(restResponse!, "Hủy lịch hẹn thành công");
-        doFunc(() => {
-            onSuccess?.();
-        });
-    }
-
-    const handleStartExamination = (appointment: AppointmentResponse) => {
-        // Chuyển đến trang phiếu khám với thông tin appointment
-        navigate(`/doctor/examination/${appointment.id}`, { 
-            state: { appointmentData: appointment } 
-        });
+        onSuccess?.();
     }
 
     return (
@@ -86,12 +67,12 @@ const DoctorAppointmentTable = (props: DoctorAppointmentTableProps) => {
                                     ${appointment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : ''}
                                     ${appointment.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : ''}
                                     ${appointment.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' : ''}
-                                    ${appointment.status === 'CANCELED' ? 'bg-red-100 text-red-700' : ''}
+                                    ${appointment.status === 'CANCELLED' ? 'bg-red-100 text-red-700' : ''}
                                 `}>
                                     {appointment.status === 'PENDING' ? 'Chưa xác nhận' : ''}
                                     {appointment.status === 'CONFIRMED' ? 'Đã xác nhận' : ''}
                                     {appointment.status === 'COMPLETED' ? 'Đã hoàn thành' : ''}
-                                    {appointment.status === 'CANCELED' ? 'Đã hủy' : ''}
+                                    {appointment.status === 'CANCELLED' ? 'Đã hủy' : ''}
                                 </span>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-600">
@@ -109,14 +90,14 @@ const DoctorAppointmentTable = (props: DoctorAppointmentTableProps) => {
                                         Xem
                                     </button>
 
-                                    {appointment.status === 'PENDING' && (
+                                    {(appointment.status === 'PENDING' || appointment.status === 'CONFIRMED') && (
                                         <>
                                             <button 
                                                 className="px-3 py-1 text-green-600 border border-green-300 rounded-md hover:bg-green-50 transition-colors text-xs font-medium"
-                                                onClick={() => handleConfirmAppointment(appointment)}
+                                                onClick={() => handleCompleteAppointment(appointment)}
                                             >
                                                 <i className="fa-solid fa-check mr-1"></i>
-                                                Xác nhận
+                                                Hoàn thành
                                             </button>
                                             <button 
                                                 className="px-3 py-1 text-red-600 border border-red-300 rounded-md hover:bg-red-50 transition-colors text-xs font-medium"
@@ -128,16 +109,6 @@ const DoctorAppointmentTable = (props: DoctorAppointmentTableProps) => {
                                         </>
                                     )}
 
-                                    {appointment.status === 'CONFIRMED' && (
-                                        <button 
-                                            className="px-3 py-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-xs font-medium"
-                                            onClick={() => handleStartExamination(appointment)}
-                                        >
-                                            <i className="fa-solid fa-stethoscope mr-1"></i>
-                                            Khám
-                                        </button>
-                                    )}
-
                                     {appointment.status === 'COMPLETED' && (
                                         <span className="px-3 py-1 bg-green-100 text-green-700 rounded-md text-xs font-medium">
                                             <i className="fa-solid fa-check-circle mr-1"></i>
@@ -145,7 +116,7 @@ const DoctorAppointmentTable = (props: DoctorAppointmentTableProps) => {
                                         </span>
                                     )}
 
-                                    {appointment.status === 'CANCELED' && (
+                                    {appointment.status === 'CANCELLED' && (
                                         <span className="px-3 py-1 bg-red-100 text-red-700 rounded-md text-xs font-medium">
                                             <i className="fa-solid fa-ban mr-1"></i>
                                             Đã hủy

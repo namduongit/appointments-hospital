@@ -86,7 +86,7 @@ const MedicineDetail = (props: MedicineDetail) => {
                             <div>
                                 <label className="block text-sm font-medium text-gray-600 mb-1">Giá nhập</label>
                                 <p className="font-semibold text-lg text-blue-600">
-                                    {formatPriceVND(medicineSelect.costPrice)}
+                                    Chưa cập nhật
                                 </p>
                             </div>
                         </div>

@@ -10,14 +10,7 @@ public class ImportTicketItemResponse {
     private Long unitPrice;
     private Date expiryDate;
 
-    public ImportTicketItemResponse(Long id, Long medicineId, String medicineName, 
-                                   Integer quantity, Long unitPrice, Date expiryDate) {
-        this.id = id;
-        this.medicineId = medicineId;
-        this.medicineName = medicineName;
-        this.quantity = quantity;
-        this.unitPrice = unitPrice;
-        this.expiryDate = expiryDate;
+    public ImportTicketItemResponse() {
     }
 
     public Long getId() {

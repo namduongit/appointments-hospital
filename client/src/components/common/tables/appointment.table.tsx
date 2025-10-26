@@ -76,12 +76,12 @@ const AppointmentTable = (props: AppointmentTableProps) => {
                                                                             ${appointment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' : ''}
                                                                             ${appointment.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' : ''}
                                                                             ${appointment.status === 'COMPLETED' ? 'bg-blue-100 text-blue-700' : ''}
-                                                                            ${appointment.status === 'CANCELED' ? 'bg-red-100 text-red-700' : ''}
+                                                                            ${appointment.status === 'CANCELLED' ? 'bg-red-100 text-red-700' : ''}
                                                                         `}>
                                     {appointment.status === 'PENDING' ? 'Chưa xác nhận' : ''}
                                     {appointment.status === 'CONFIRMED' ? 'Đã xác nhận' : ''}
                                     {appointment.status === 'COMPLETED' ? 'Đã hoàn thành' : ''}
-                                    {appointment.status === 'CANCELED' ? 'Đã hủy' : ''}
+                                    {appointment.status === 'CANCELLED' ? 'Đã hủy' : ''}
                                 </span>
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-600">
@@ -110,10 +110,11 @@ const AppointmentTable = (props: AppointmentTableProps) => {
                     )) : (
                         <>
                             <tr>
-                                <td colSpan={6} className="px-4 py-3 text-sm text-gray-600 text-center">
-                                    <div className="flex justify-center items-center gap-3">
-                                        <i className="fa-solid fa-inbox"></i>
-                                        <span>Không tìm thấy dữ liệu</span>
+                                <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                                    <div className="flex flex-col items-center">
+                                        <i className="fa-solid fa-calendar-check text-4xl mb-3 text-gray-300"></i>
+                                        <p className="text-lg font-medium">Không có lịch hẹn nào</p>
+                                        <p className="text-sm mt-1">Chưa có dữ liệu để hiển thị</p>
                                     </div>
                                 </td>
                             </tr>

@@ -6,13 +6,14 @@ import com.appointmenthostpital.server.responses.RoomResponse;
 
 public class RoomConvert {
     public static RoomResponse convertToResponse(RoomModel model) {
-        return new RoomResponse(
-            model.getId(),
-            model.getName(),
-            model.getStatus(),
-            model.getDepartmentModel() != null ? model.getDepartmentModel().getId() : null,
-            model.getDepartmentModel() != null ? model.getDepartmentModel().getName() : null
-        );
+        RoomResponse response = new RoomResponse();
+        response.setId(model.getId());
+        response.setName(model.getName());
+        response.setStatus(model.getStatus());
+        response.setDepartmentId(model.getDepartmentModel() != null ? model.getDepartmentModel().getId() : null);
+        response.setDepartmentName(model.getDepartmentModel() != null ? model.getDepartmentModel().getName() : null);
+        
+        return response;
     }
 
     public static void convertFromCreateRequest(RoomModel roomModel, AdminRoomDTO.CreateRoomRequest request) {

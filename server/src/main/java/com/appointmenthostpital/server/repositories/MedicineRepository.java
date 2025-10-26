@@ -7,5 +7,4 @@ import com.appointmenthostpital.server.models.MedicineModel;
 
 @Repository
 public interface MedicineRepository extends JpaRepository<MedicineModel, Long> {
-
 }

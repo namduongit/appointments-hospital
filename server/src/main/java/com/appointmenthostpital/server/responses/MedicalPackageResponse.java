@@ -4,18 +4,10 @@ public class MedicalPackageResponse {
     private Long id;
     private String name;
     private String description;
-    private String status;
     private Long price;
+    private String status;
 
     public MedicalPackageResponse() {
-    }
-
-    public MedicalPackageResponse(Long id, String name, String description, String status, Long price) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.price = price;
     }
 
     public Long getId() {

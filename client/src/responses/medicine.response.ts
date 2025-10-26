@@ -5,18 +5,19 @@ type MedicineResponse = {
     unit: string,
 
     price: number,
-    costPrice: number,
     
-    barcode: string,
     manufacturer: string,
     status: string,
-
     currentStock: number,
+
     minStock: number,
     maxStock: number,
 
     categoryId: number,
-    categoryName: string
+    categoryName: string,
+
+    isLowStock: boolean,
+    isOutOfStock: boolean
 }
 
 export type { MedicineResponse };

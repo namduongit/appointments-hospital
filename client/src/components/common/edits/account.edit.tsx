@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useCallApi from "../../../hooks/useCallApi";
-import type { AccountResponse } from "../../../responses/account.response";
+import type { AccountResponse } from "../../../responses/account-detail.response";
 import { updateAccount } from "../../../services/account.service";
 import { accountStatus } from "../../../constants/status.constant";
 import { roles } from "../../../constants/role.constant";

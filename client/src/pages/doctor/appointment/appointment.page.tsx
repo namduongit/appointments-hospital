@@ -4,26 +4,16 @@ import { appointmentStatus, dayStatus } from "../../../constants/status.constant
 
 import DoctorAppointmentTable from "../../../components/doctor/tables/appointment.table";
 import type { AppointmentResponse } from "../../../responses/appointment.response";
-import type { DepartmentResponse } from "../../../responses/department.response";
-import type { RoomResponse } from "../../../responses/room.response";
-import type { DoctorResponse } from "../../../responses/doctor.response";
 
-import { getAppointmentList } from "../../../services/appointment.service";
-import { getDepartmentList } from "../../../services/department.service";
-import { getRoomList } from "../../../services/room.service";
-import { getDoctorList } from "../../../services/doctor.service";
+import { getDoctorAppointments } from "../../../services/appointment.service";
 
 import useCallApi from "../../../hooks/useCallApi";
 
 const DoctorAppointmentPage = () => {
-    const { execute, doFunc } = useCallApi();
+    const { execute } = useCallApi();
 
     const [appointments, setAppointments] = useState<AppointmentResponse[]>([]);
     const [appointmentsFilter, setAppointmentsFilter] = useState<AppointmentResponse[]>([]);
-
-    const [departments, setDepartments] = useState<DepartmentResponse[]>([]);
-    const [rooms, setRooms] = useState<RoomResponse[]>([]);
-    const [doctors, setDoctors] = useState<DoctorResponse[]>([]);
 
     const [searchForm, setSearchForm] = useState({
         input: "",
@@ -36,44 +26,12 @@ const DoctorAppointmentPage = () => {
     }
 
     const handleGetAppointmentList = async () => {
-        const restResponse = await execute(getAppointmentList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: AppointmentResponse[] = restResponse.data;
-                setAppointments(Array.isArray(data) ? data : []);
-                setAppointmentsFilter(Array.isArray(data) ? data : []);
-            }
-        })
-    }
-
-    const handleGetDepartmentList = async () => {
-        const restResponse = await execute(getDepartmentList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: DepartmentResponse[] = restResponse.data;
-                setDepartments(Array.isArray(data) ? data : []);
-            }
-        })
-    }
-
-    const handleGetRoomList = async () => {
-        const restResponse = await execute(getRoomList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: RoomResponse[] = restResponse.data;
-                setRooms(Array.isArray(data) ? data : []);
-            }
-        })
-    }
-
-    const handleGetDoctorList = async () => {
-        const restResponse = await execute(getDoctorList());
-        doFunc(() => {
-            if (restResponse?.result) {
-                const data: DoctorResponse[] = restResponse.data;
-                setDoctors(Array.isArray(data) ? data : []);
-            }
-        })
+        const restResponse = await execute(getDoctorAppointments());
+        if (restResponse?.result) {
+            const data: AppointmentResponse[] = restResponse.data;
+            setAppointments(Array.isArray(data) ? data : []);
+            setAppointmentsFilter(Array.isArray(data) ? data : []);
+        }
     }
 
     useEffect(() => {
@@ -101,10 +59,18 @@ const DoctorAppointmentPage = () => {
 
     useEffect(() => {
         handleGetAppointmentList();
-        handleGetDepartmentList();
-        handleGetRoomList();
-        handleGetDoctorList();
     }, []);
+
+    const stats = {
+        totalAppointments: appointments.length,
+        confirmedAppointments: appointments.filter(a => a.status === 'CONFIRMED').length,
+        completedAppointments: appointments.filter(a => a.status === 'COMPLETED').length,
+        cancelledAppointments: appointments.filter(a => a.status === 'CANCELLED').length,
+        todayAppointments: appointments.filter(a => {
+            const today = new Date().toDateString();
+            return new Date(a.createdAt).toDateString() === today;
+        }).length
+    };
 
     return (
         <main className="appointments-page p-4 sm:p-6">
@@ -114,7 +80,55 @@ const DoctorAppointmentPage = () => {
                         Quản lý lịch hẹn bác sĩ
                     </h3>
                     <div className="text-sm text-gray-600">
-                        Tổng: <span className="font-semibold text-blue-600">{appointments.length}</span> lịch hẹn
+                        <div>Tổng: <span className="font-semibold text-blue-600">{stats.totalAppointments}</span> lịch hẹn</div>
+                        <div>Hôm nay: <span className="font-semibold text-green-600">{stats.todayAppointments}</span></div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-blue-100 rounded-lg">
+                                <i className="fa-solid fa-calendar text-blue-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Tổng lịch hẹn</p>
+                                <p className="text-lg font-semibold">{stats.totalAppointments}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-green-100 rounded-lg">
+                                <i className="fa-solid fa-check-circle text-green-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Đã xác nhận</p>
+                                <p className="text-lg font-semibold">{stats.confirmedAppointments}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-purple-100 rounded-lg">
+                                <i className="fa-solid fa-user-check text-purple-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Hoàn thành</p>
+                                <p className="text-lg font-semibold">{stats.completedAppointments}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                        <div className="flex items-center">
+                            <div className="p-2 bg-red-100 rounded-lg">
+                                <i className="fa-solid fa-ban text-red-600"></i>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-gray-600">Đã hủy</p>
+                                <p className="text-lg font-semibold">{stats.cancelledAppointments}</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -125,7 +139,7 @@ const DoctorAppointmentPage = () => {
                             <input
                                 type="text"
                                 className="border border-gray-300 rounded-md py-2 pl-10 pr-4 text-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                placeholder="Tìm theo tên bệnh nhân hoặc id ..."
+                                placeholder="Tìm theo tên bệnh nhân, ID hoặc SĐT..."
                                 value={searchForm.input}
                                 onChange={(e) => handleChangeSearch("input", e.target.value)}
                             />
@@ -137,7 +151,7 @@ const DoctorAppointmentPage = () => {
                                 value={searchForm.status}
                                 onChange={(e) => handleChangeSearch("status", e.target.value)}
                             >
-                                <option value="">Chọn trạng thái</option>
+                                <option value="">Tất cả trạng thái</option>
                                 {appointmentStatus.map((status) => (
                                     <option key={status.id} value={status.value}>
                                         {status.name}
@@ -145,13 +159,14 @@ const DoctorAppointmentPage = () => {
                                 ))}
                             </select>
                         </div>
+
                         <div className="flex-1">
                             <select
                                 className="w-full border border-gray-300 rounded-md py-2 px-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                 value={searchForm.date}
                                 onChange={(e) => handleChangeSearch("date", e.target.value)}
                             >
-                                <option value="">Sắp xếp theo</option>
+                                <option value="">Sắp xếp theo ngày</option>
                                 {dayStatus.map((status) => (
                                     <option key={status.id} value={status.value}>
                                         {status.name}
@@ -160,11 +175,20 @@ const DoctorAppointmentPage = () => {
                             </select>
                         </div>
                     </div>
+                    <div className="appointments__options flex justify-end items-center gap-2">
+                        <button 
+                            className="font-semibold bg-green-600 text-white hover:text-green-600 hover:bg-white hover:ring-3 hover:ring-green-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
+                            onClick={() => window.location.href = '/doctor/create-invoice'}
+                        >
+                            <i className="fa-solid fa-receipt me-2"></i>
+                            <span>Tạo hóa đơn</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="appointments__data hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
-                        <DoctorAppointmentTable appointments={appointmentsFilter} departments={departments} rooms={rooms} doctors={doctors} onSuccess={handleGetAppointmentList} />
+                        <DoctorAppointmentTable appointments={appointmentsFilter} onSuccess={handleGetAppointmentList} />
                     </div>
                 </div>
             </div>

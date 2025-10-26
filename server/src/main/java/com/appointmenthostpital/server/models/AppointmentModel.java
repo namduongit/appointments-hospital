@@ -26,29 +26,29 @@ public class AppointmentModel {
     @Column(nullable = false)
     private String time;
     private String note;
-    @Column(columnDefinition = "enum('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELED') default 'PENDING'")
+    @Column(columnDefinition = "enum('PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED') default 'PENDING'")
     private String status = "PENDING";
     
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "account_id")
+    @JsonBackReference
     private AccountModel accountModel;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "department_id")
+    @JsonBackReference
     private DepartmentModel departmentModel;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "room_id")
+    @JsonBackReference
     private RoomModel roomModel;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "doctor_id")
+    @JsonBackReference
     private AccountModel doctorModel;
 
     public Long getId() {

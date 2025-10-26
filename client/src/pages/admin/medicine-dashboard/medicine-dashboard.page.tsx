@@ -10,7 +10,7 @@ import type { ExportTicketResponse } from "../../../responses/export-ticket.resp
 
 const AdminMedicineDashboardPage = () => {
     const { execute } = useCallApi();
-    
+
     const [medicines, setMedicines] = useState<MedicineResponse[]>([]);
     const [categories, setCategories] = useState<MedicineCategoryResponse[]>([]);
     const [importTickets, setImportTickets] = useState<ImportTicketResponse[]>([]);
@@ -53,19 +53,19 @@ const AdminMedicineDashboardPage = () => {
     const stats = {
         totalMedicines: medicines.length,
         totalCategories: categories.length,
-        
+
         activeMedicines: medicines.filter(m => m.status === 'active').length,
         inactiveMedicines: medicines.filter(m => m.status === 'inactive').length,
         outOfStockMedicines: medicines.filter(m => m.status === 'out_of_stock').length,
-        
+
         lowStockMedicines: medicines.filter(m => m.currentStock <= m.minStock).length,
         overStockMedicines: medicines.filter(m => m.currentStock > m.maxStock).length,
         totalCurrentStock: medicines.reduce((sum, m) => sum + (m.currentStock || 0), 0),
-        
+
         totalStockValue: medicines.reduce((sum, m) => sum + (m.price * m.currentStock || 0), 0),
         averagePrice: medicines.length > 0 ? medicines.reduce((sum, m) => sum + (m.price || 0), 0) / medicines.length : 0,
         highValueMedicines: medicines.filter(m => m.price > 100000).length,
-        
+
         totalImports: importTickets.length,
         totalExports: exportTickets.length,
         recentImports: importTickets.filter(t => {
@@ -94,8 +94,8 @@ const AdminMedicineDashboardPage = () => {
         .sort((a, b) => b.totalValue - a.totalValue)
         .slice(0, 10);
 
-    const medicinesNeedingAttention = medicines.filter(m => 
-        m.currentStock <= m.minStock || 
+    const medicinesNeedingAttention = medicines.filter(m =>
+        m.currentStock <= m.minStock ||
         m.status === 'out_of_stock'
     ).slice(0, 8);
 
@@ -228,9 +228,12 @@ const AdminMedicineDashboardPage = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-6">
                         <h3 className="text-lg font-semibold text-gray-900">Cần chú ý</h3>
-                        <span className="bg-red-100 text-red-800 text-sm font-medium px-2 py-1 rounded-full">
-                            {medicinesNeedingAttention.length}
-                        </span>
+                        <div className="flex items-center text-red-600 font-semibold">
+                            <i className="fa-solid fa-bell"></i>
+                            <span className="text-red-800 text-sm font-medium px-2 py-1 rounded-full">
+                                {medicinesNeedingAttention.length}
+                            </span>
+                        </div>
                     </div>
                     <div className="space-y-3">
                         {medicinesNeedingAttention.length > 0 ? (
@@ -291,11 +294,10 @@ const AdminMedicineDashboardPage = () => {
                             {topMedicinesByValue.slice(0, 8).map((medicine, index) => (
                                 <tr key={medicine.id} className="border-b border-gray-100 hover:bg-gray-50">
                                     <td className="py-3 px-4">
-                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${
-                                            index === 0 ? 'bg-yellow-500' :
-                                            index === 1 ? 'bg-gray-400' :
-                                            index === 2 ? 'bg-orange-600' : 'bg-gray-300'
-                                        }`}>
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white ${index === 0 ? 'bg-yellow-500' :
+                                                index === 1 ? 'bg-gray-400' :
+                                                    index === 2 ? 'bg-orange-600' : 'bg-gray-300'
+                                            }`}>
                                             {index + 1}
                                         </div>
                                     </td>

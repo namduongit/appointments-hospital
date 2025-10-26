@@ -11,7 +11,6 @@ type CreateMedicineParams = {
     unit: string,
 
     price: string,
-    costPrice: string,
 
     manufacturer: string,
 
@@ -26,7 +25,6 @@ type UpdateMedicineParams = {
     description: string,
     unit: string,
     price: number,
-    costPrice: number,
     manufacturer: string,
     status: string,
     minStock: number,
@@ -76,12 +74,6 @@ export const createMedicine = async (params: CreateMedicineParams) => {
 
 export const updateMedicine = async (id: number, params: UpdateMedicineParams) => {
     const response = await api.put(`/api/medicines/${id}`, params);
-    const restResponse: RestResponse = response.data;
-    return restResponse;
-}
-
-export const deleteMedicine = async (id: number) => {
-    const response = await api.delete(`/api/medicines/${id}`);
     const restResponse: RestResponse = response.data;
     return restResponse;
 }

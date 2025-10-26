@@ -1,4 +1,4 @@
-import type { AccountResponse } from "../../../responses/account.response";
+import type { AccountResponse } from "../../../responses/account-detail.response";
 
 type AccountDetail = {
     accountSelect: AccountResponse,

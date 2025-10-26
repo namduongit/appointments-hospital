@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.appointmenthostpital.server.converts.MedicineConvert;
-import com.appointmenthostpital.server.dtos.admin.AdminMedicineInventoryDTO;
-
+import com.appointmenthostpital.server.dtos.admin.AdminMedicineDTO;
+import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
 import com.appointmenthostpital.server.models.MedicineModel;
 import com.appointmenthostpital.server.repositories.MedicineRepository;
 import com.appointmenthostpital.server.responses.MedicineResponse;
@@ -23,7 +23,7 @@ public class MedicineService {
     private MedicineCategoryService medicineCategoryService;
 
     public MedicineModel getMedicineById(Long id) {
-        return medicineRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy thuốc"));
+        return medicineRepository.findById(id).orElseThrow(() -> new NotFoundResourceException("Không tìm thấy thuốc"));
     }
 
     public List<MedicineResponse> handleGetMedicineList() {
@@ -31,7 +31,7 @@ public class MedicineService {
         return models.stream().map(MedicineConvert::convertToResponse).toList();
     }
 
-    public MedicineResponse handleCreateMedicine(AdminMedicineInventoryDTO.CreateMedicineRequest request) {
+    public MedicineResponse handleCreateMedicine(AdminMedicineDTO.CreateMedicineRequest request) {
         MedicineModel modelInventoryModel = new MedicineModel();
         modelInventoryModel.setCategoryModel(medicineCategoryService.getCategoryById(request.getCategoryId()));
         MedicineConvert.convertFromCreateRequest(modelInventoryModel, request);
@@ -40,7 +40,7 @@ public class MedicineService {
         return MedicineConvert.convertToResponse(modelInventoryModel);
     }
 
-    public MedicineResponse handleUpdateMedicine(Long id, AdminMedicineInventoryDTO.UpdateMedicineRequest request) {
+    public MedicineResponse handleUpdateMedicine(Long id, AdminMedicineDTO.UpdateMedicineRequest request) {
         MedicineModel medicine = this.getMedicineById(id);
         medicine.setCategoryModel(medicineCategoryService.getCategoryById(request.getCategoryId()));
         
