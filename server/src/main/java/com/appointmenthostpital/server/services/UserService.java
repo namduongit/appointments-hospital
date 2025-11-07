@@ -7,6 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import com.appointmenthostpital.server.converts.AccountDetailConvert;
 import com.appointmenthostpital.server.converts.AppointmentConvert;
+import com.appointmenthostpital.server.converts.PrescriptionInvoiceConvert;
+import com.appointmenthostpital.server.converts.ServiceInvoiceConvert;
 import com.appointmenthostpital.server.dtos.user.UserAppointmentDTO;
 import com.appointmenthostpital.server.dtos.user.UserUpdateDTO;
 import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
@@ -15,6 +17,8 @@ import com.appointmenthostpital.server.models.AccountModel;
 import com.appointmenthostpital.server.repositories.UserRepository;
 import com.appointmenthostpital.server.responses.AccountDetail;
 import com.appointmenthostpital.server.responses.AppointmentResponse;
+import com.appointmenthostpital.server.responses.PrescriptionInvoiceResponse;
+import com.appointmenthostpital.server.responses.ServiceInvoiceResponse;
 
 @Service
 public class UserService {
@@ -73,5 +77,21 @@ public class UserService {
         appointmentModel.setAccountModel(accountModel);
         appointmentModel = this.appointmentService.createAppointment(appointmentModel);
         return AppointmentConvert.convertToResponse(appointmentModel);
+    }
+
+    public List<ServiceInvoiceResponse> handleGetServiceInvoiceList(Authentication authentication) {
+        String email = authentication.getName();
+        AccountModel accountModel = this.getUserByEmail(email);
+        return  accountModel.getPatientServiceInvoices().stream()
+                .map(ServiceInvoiceConvert::convertToResponse)
+                .toList();  
+    }
+
+    public List<PrescriptionInvoiceResponse> handleGetPrescriptionInvoiceList(Authentication authentication) {
+        String email = authentication.getName();
+        AccountModel accountModel = this.getUserByEmail(email);
+        return  accountModel.getPatientPrescriptionInvoices().stream()
+                .map(PrescriptionInvoiceConvert::convertToResponse)
+                .toList();  
     }
 }

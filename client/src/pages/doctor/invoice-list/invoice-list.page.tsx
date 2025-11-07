@@ -176,7 +176,7 @@ const DoctorInvoiceListPage = () => {
                                 </div>
                                 <div className="ml-3">
                                     <p className="text-sm text-gray-600">Tổng doanh thu</p>
-                                    <p className="text-lg font-semibold">{examinationStats.totalAmount.toLocaleString('vi-VN')}₫</p>
+                                    <p className="text-lg font-semibold">{examinationStats.totalAmount.toLocaleString('vi-VN')}</p>
                                 </div>
                             </div>
                         </div>
@@ -234,7 +234,7 @@ const DoctorInvoiceListPage = () => {
                                 </div>
                                 <div className="ml-3">
                                     <p className="text-sm text-gray-600">Tổng giá trị</p>
-                                    <p className="text-lg font-semibold">{prescriptionStats.totalAmount.toLocaleString('vi-VN')}₫</p>
+                                    <p className="text-lg font-semibold">{prescriptionStats.totalAmount.toLocaleString('vi-VN')}</p>
                                 </div>
                             </div>
                         </div>
@@ -306,7 +306,7 @@ const DoctorInvoiceListPage = () => {
                                                     {new Date(invoice.createdAt).toLocaleDateString('vi-VN')}
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-gray-900 font-semibold">
-                                                    {invoice.totalAmount.toLocaleString('vi-VN')} ₫
+                                                    {invoice.totalAmount.toLocaleString('vi-VN')} 
                                                 </td>
                                                 <td className="px-4 py-3 text-sm">
                                                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
@@ -363,7 +363,7 @@ const DoctorInvoiceListPage = () => {
                                                     {new Date(invoice.createdAt).toLocaleDateString('vi-VN')}
                                                 </td>
                                                 <td className="px-4 py-3 text-sm text-gray-900 font-semibold">
-                                                    {invoice.totalAmount.toLocaleString('vi-VN')} ₫
+                                                    {invoice.totalAmount.toLocaleString('vi-VN')} 
                                                 </td>
                                                 <td className="px-4 py-3 text-sm">
                                                     <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${

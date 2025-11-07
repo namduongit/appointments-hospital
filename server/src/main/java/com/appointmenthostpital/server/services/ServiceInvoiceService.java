@@ -37,6 +37,11 @@ public class ServiceInvoiceService {
         ).toList();
     }
 
+    public ServiceInvoiceResponse handleGetServiceInvoiceById(Long id) {
+        ServiceInvoiceModel invoiceModel = this.getServiceInvoiceById(id);
+        return ServiceInvoiceConvert.convertToResponse(invoiceModel);
+    }
+
     public void handleDetailServiceInvoice(ServiceInvoiceModel invoiceModel,
     DoctorServiceInvoiceDTO.CreateServiceInvoiceRequest request) {
         List<ServiceInvoiceDetailModel> details = request.getMedicalPackages().stream().map(packageItem -> {

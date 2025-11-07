@@ -281,7 +281,7 @@ const AssistorPrescriptionInvoicePage = () => {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3 font-semibold text-blue-600">
-                                                {invoice.totalAmount.toLocaleString('vi-VN')} ₫
+                                                {invoice.totalAmount.toLocaleString('vi-VN')} 
                                             </td>
                                             <td className="px-4 py-3 text-center">
                                                 <div className="flex items-center justify-center gap-2">
@@ -328,7 +328,7 @@ const AssistorPrescriptionInvoicePage = () => {
                                 </span>
                                 <span>
                                     Tổng giá trị: <span className="font-semibold text-blue-600">
-                                        {filteredInvoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0).toLocaleString('vi-VN')} ₫
+                                        {filteredInvoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0).toLocaleString('vi-VN')} 
                                     </span>
                                 </span>
                             </div>

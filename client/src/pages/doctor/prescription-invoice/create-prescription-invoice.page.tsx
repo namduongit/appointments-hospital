@@ -312,7 +312,7 @@ const CreatePrescriptionInvoicePage = () => {
                                                     Đơn vị: {medicine.unit} | Tồn kho: {medicine.currentStock}
                                                 </p>
                                                 <p className="text-sm font-semibold text-blue-600">
-                                                    {medicine.price.toLocaleString('vi-VN')} ₫/{medicine.unit}
+                                                    {medicine.price.toLocaleString('vi-VN')} /{medicine.unit}
                                                 </p>
                                             </div>
                                             <button
@@ -368,7 +368,7 @@ const CreatePrescriptionInvoicePage = () => {
                                                     <div className="flex-1">
                                                         <h6 className="font-medium text-gray-900">{medicineDetails.name}</h6>
                                                         <p className="text-sm text-gray-600">
-                                                            {medicineDetails.price.toLocaleString('vi-VN')} ₫/{medicineDetails.unit}
+                                                            {medicineDetails.price.toLocaleString('vi-VN')} /{medicineDetails.unit}
                                                         </p>
                                                     </div>
                                                     <button
@@ -417,7 +417,7 @@ const CreatePrescriptionInvoicePage = () => {
                                                             Thành tiền
                                                         </label>
                                                         <span className="block py-1 text-sm font-semibold text-blue-600">
-                                                            {totalPrice.toLocaleString('vi-VN')} ₫
+                                                            {totalPrice.toLocaleString('vi-VN')} 
                                                         </span>
                                                     </div>
                                                 </div>

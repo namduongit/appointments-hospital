@@ -57,7 +57,21 @@ const useCallApi = () => {
         }
     }
 
-    return { execute, doFunc, notify, loading };
+    const showError = (restResponse: RestResponse) => {
+        if (!restResponse) return;
+        const apiErrorMessage = restResponse.errorMessage;
+        if (apiErrorMessage) {
+            if (Array.isArray(apiErrorMessage)) {
+                apiErrorMessage.forEach((error: string) => {
+                    showToast("Lưu ý", error, "warning");
+                });
+            } else {
+                showToast("Lưu ý", apiErrorMessage, "warning");
+            }
+        }
+    }
+
+    return { execute, doFunc, notify, showError, loading };
 }
 
 export default useCallApi;

@@ -35,6 +35,7 @@ api.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${auth.accessToken}`;
     }
   }
+  config.headers['X-Request-Path'] = window.location.pathname;
   return config;
 });
 

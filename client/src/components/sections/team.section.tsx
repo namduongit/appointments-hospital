@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import NurseSection from './nurse.section';
-import { getDoctorList } from '../../services/doctor.service';
+import { getDoctorList } from '../../services/public.service';
 import useCallApi from '../../hooks/useCallApi';
 import type { DoctorResponse } from '../../responses/doctor.response';
 
@@ -14,9 +14,9 @@ const TeamSection = () => {
     }, []);
 
     const loadDoctors = async () => {
-        const response = await execute(getDoctorList());
-        if (response?.result) {
-            const data: DoctorResponse[] = response.data;
+        const restResponse = await execute(getDoctorList());
+        if (restResponse?.result) {
+            const data: DoctorResponse[] = restResponse.data;
             setDoctors(data);
         }
     };

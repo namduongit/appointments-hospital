@@ -31,6 +31,11 @@ public class PrescriptionInvoiceService {
         return prescriptionInvoiceRepository.findById(id).orElseThrow(() -> new NotFoundResourceException("Không tìm thấy hóa đơn kê thuốc"));
     }
 
+    public PrescriptionInvoiceResponse handleGetPrescriptionInvoiceById(Long id) {
+        PrescriptionInvoiceModel invoiceModel = this.getPrescriptionInvoiceById(id);
+        return PrescriptionInvoiceConvert.convertToResponse(invoiceModel);
+    }
+
     public List<PrescriptionInvoiceResponse> handleGetPrescriptionInvoiceList() {
         return this.prescriptionInvoiceRepository.findAll().stream().map(
             PrescriptionInvoiceConvert::convertToResponse

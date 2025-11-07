@@ -17,13 +17,15 @@ import com.appointmenthostpital.server.dtos.user.UserAppointmentDTO;
 import com.appointmenthostpital.server.dtos.user.UserUpdateDTO;
 import com.appointmenthostpital.server.responses.AccountDetail;
 import com.appointmenthostpital.server.responses.AppointmentResponse;
+import com.appointmenthostpital.server.responses.PrescriptionInvoiceResponse;
+import com.appointmenthostpital.server.responses.ServiceInvoiceResponse;
 import com.appointmenthostpital.server.services.UserService;
 import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/public")
+@RequestMapping("/api/patient")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -67,6 +69,28 @@ public class UserController {
     public ResponseEntity<RestResponse<List<AppointmentResponse>>> handleGetAppointmentList(Authentication authentication) {
         List<AppointmentResponse> response = this.userService.handleGetAppointmentList(authentication);
         return ResponseEntity.status(HttpStatusResponse.OK).body(new RestResponse<List<AppointmentResponse>>(
+                HttpStatusResponse.OK,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
+    }
+
+    @GetMapping("/service-invoices")
+    public ResponseEntity<RestResponse<List<ServiceInvoiceResponse>>> handleGetServiceInvoiceList(Authentication authentication) {
+        List<ServiceInvoiceResponse> response = this.userService.handleGetServiceInvoiceList(authentication);
+        return ResponseEntity.status(HttpStatusResponse.OK).body(new RestResponse<List<ServiceInvoiceResponse>>(
+                HttpStatusResponse.OK,
+                true,
+                response,
+                HttpStatusResponse.SUCCESS_MESSAGE,
+                null));
+    }
+
+    @GetMapping("/prescription-invoices")
+    public ResponseEntity<RestResponse<List<PrescriptionInvoiceResponse>>> handleGetPrescriptionInvoiceList(Authentication authentication) {
+        List<PrescriptionInvoiceResponse> response = this.userService.handleGetPrescriptionInvoiceList(authentication);
+        return ResponseEntity.status(HttpStatusResponse.OK).body(new RestResponse<List<PrescriptionInvoiceResponse>>(
                 HttpStatusResponse.OK,
                 true,
                 response,

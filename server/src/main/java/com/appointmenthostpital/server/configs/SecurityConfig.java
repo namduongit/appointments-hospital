@@ -48,6 +48,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authz -> authz
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/auth/*").permitAll()
+            .requestMatchers("/api/vnpay/**").permitAll()
             .requestMatchers("/api/public/**").authenticated()
 
             .requestMatchers("/api/accounts/**").hasAnyRole("ADMIN", "DOCTOR", "ASSISTOR", "USER")

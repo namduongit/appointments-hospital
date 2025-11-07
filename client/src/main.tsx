@@ -37,11 +37,15 @@ const AdminMedicalPackagePage = lazy(() => import("./pages/admin/medical-package
 const AdminPrescriptionInvoicePage = lazy(() => import("./pages/admin/prescription-invoice/prescription-invoice.page"));
 const AdminServiceInvoicePage = lazy(() => import("./pages/admin/service-invoice/service-invoice.page"));
 
+const ServiceInvoicePayment = lazy(() => import("./components/common/payments/service-invoice.payment"));
+const PrescriptionInvoicePayment = lazy(() => import("./components/common/payments/prescription-invoice.payment"));
 
 const LoginPage = lazy(() => import("./pages/patient/login/login.page"));
 const RegisterPage = lazy(() => import("./pages/patient/register/register.page"));
 const AccountPage = lazy(() => import("./pages/patient/account/account.page"));
 const BookingPage = lazy(() => import("./pages/patient/booking/booking.page"));
+
+const VNPayReturnPayment = lazy(() => import("./components/common/payments/vnpay-return.payment"));
 
 const router = createBrowserRouter([
   {
@@ -167,6 +171,18 @@ const router = createBrowserRouter([
         Component: AdminServiceInvoicePage
       }
     ]
+  },
+  {
+    path: "payment/service-invoice/:id",
+    Component: ServiceInvoicePayment
+  },
+  {
+    path: "payment/prescription-invoice/:id",
+    Component: PrescriptionInvoicePayment
+  },
+  {
+    path: "api/payment/vnpay-return",
+    Component: VNPayReturnPayment
   },
 ]);
 
