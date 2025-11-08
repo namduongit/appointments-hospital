@@ -11,6 +11,7 @@ import com.appointmenthostpital.server.exceptions.NotAllowedException;
 import com.appointmenthostpital.server.exceptions.NotFoundResourceException;
 import com.appointmenthostpital.server.exceptions.PasswordNotValidException;
 import com.appointmenthostpital.server.exceptions.UploadFileException;
+import com.appointmenthostpital.server.exceptions.VNPayException;
 import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
 @RestControllerAdvice
@@ -21,17 +22,18 @@ public class RuntimeExceptionHandle {
         DuplicateResourceException.class,
         NotFoundResourceException.class,
         AccountLockedException.class,
-        UploadFileException.class
+        UploadFileException.class,
+        VNPayException.class
     })
-    public ResponseEntity<RestResponse<?>> serverExceptionHandler(Exception exception) {
+    public ResponseEntity<RestResponse<?>> runtimeExceptionHandler(Exception exception) {
 
         RestResponse<Object> restResponse = new RestResponse<>();
-        restResponse.setStatusCode(HttpStatusResponse.INTERNAL_SERVER_ERROR);
+        restResponse.setStatusCode(HttpStatusResponse.BAD_REQUEST);
         restResponse.setResult(false);
         restResponse.setData(null);
         restResponse.setMessage(HttpStatusResponse.BAD_MESSAGE);
         restResponse.setErrorMessage(exception.getMessage());
 
-        return ResponseEntity.status(HttpStatusResponse.INTERNAL_SERVER_ERROR).body(restResponse);
+        return ResponseEntity.status(HttpStatusResponse.BAD_REQUEST).body(restResponse);
     }
 }

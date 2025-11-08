@@ -31,6 +31,10 @@ public class ServiceInvoiceService {
         return serviceInvoiceRepository.findById(id).orElseThrow(() -> new NotFoundResourceException("Không tìm thấy hóa đơn dịch vụ"));
     }
 
+    public ServiceInvoiceModel save(ServiceInvoiceModel invoiceModel) {
+        return this.serviceInvoiceRepository.save(invoiceModel);
+    }
+
     public List<ServiceInvoiceResponse> handleGetServiceInvoiceList() {
         return this.serviceInvoiceRepository.findAll().stream().map(
             ServiceInvoiceConvert::convertToResponse

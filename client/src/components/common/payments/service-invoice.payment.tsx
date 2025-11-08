@@ -7,9 +7,9 @@ import { getServiceInvoiceById } from "../../../services/service-invoice.service
 import momoIcon from '../../../assets/icons/momo.png';
 import vnpayIcon from '../../../assets/icons/vnpay.png';
 import qrpayIcon from '../../../assets/icons/qrpay.png';
-import { formatNumberPhone, formatPriceVND } from "../../../utils/format-number.util";
+import { formatPriceVND } from "../../../utils/format-number.util";
 import { formatDateToHourAndDay } from "../../../utils/format-date.util";
-import { callPayment } from "../../../services/payment.service";
+import { callServiceInvoicePayment } from "../../../services/payment.service";
 
 type PaymentMethod = 'vnpay' | 'momo' | 'bank-transfer';
 
@@ -31,13 +31,12 @@ const ServiceInvoicePayment = () => {
     }, [id])
 
     const handlePayment = async () => {
-        const restResponse = await execute(callPayment({
-            orderType: 'service_invoice',
+        const restResponse = await execute(callServiceInvoicePayment({
+            orderType: 'SERVICE INVOICE',
             orderId: Number(id)
         }));
         if (restResponse?.result && restResponse.data.paymentUrl && restResponse.data.requestFrom) {
-            navigate(restResponse.data.paymentUrl);
-            localStorage.setItem('PAYMENT_REQUEST_FROM', restResponse.data.requestFrom);
+            window.location.href = restResponse.data.paymentUrl;
         } else {
             showError(restResponse);
         }
@@ -119,7 +118,7 @@ const ServiceInvoicePayment = () => {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Số điện thoại:</span>
-                                        <span className="text-gray-900 font-medium">{serviceInvoice.patientPhone ? formatNumberPhone(serviceInvoice.patientPhone) : "Không có số điện thoại"}</span>
+                                        <span className="text-gray-900 font-medium">{serviceInvoice.patientPhone}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Email:</span>

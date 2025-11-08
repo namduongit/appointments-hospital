@@ -1,24 +1,24 @@
 package com.appointmenthostpital.server.controllers;
 
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appointmenthostpital.server.dtos.PaymentSend;
 import com.appointmenthostpital.server.dtos.RestResponse;
+import com.appointmenthostpital.server.dtos.VNPayCheck;
 import com.appointmenthostpital.server.dtos.VNPayResponse;
 import com.appointmenthostpital.server.services.VNPayService;
 import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
+
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/payment")
@@ -26,18 +26,17 @@ public class VNPayController {
     @Autowired
     private VNPayService vnPayService;
 
-    @PostMapping("/payment-url")
-    public ResponseEntity<RestResponse<VNPayResponse>> getPaymentUrl(
+    @PostMapping("/service-invoice/payment-url")
+    public ResponseEntity<RestResponse<VNPayResponse.Payment>> getPaymentUrl(
         @RequestBody PaymentSend order, 
         HttpServletRequest request, @RequestHeader("X-Request-Path") String requestFrom) {
         String paymentUrl = vnPayService.getPaymentUrl(order, request);
-        System.out.println("Run here: " + paymentUrl);
 
-        VNPayResponse vnPayResponse = new VNPayResponse();
+        VNPayResponse.Payment vnPayResponse = new VNPayResponse.Payment();
         vnPayResponse.setPaymentUrl(paymentUrl);
         vnPayResponse.setRequestFrom(requestFrom);
 
-        RestResponse<VNPayResponse> response = new RestResponse<>();
+        RestResponse<VNPayResponse.Payment> response = new RestResponse<>();
         response.setResult(true);
         response.setStatusCode(HttpStatusResponse.OK);
         response.setData(vnPayResponse);
@@ -47,9 +46,33 @@ public class VNPayController {
         return ResponseEntity.status(HttpStatusResponse.OK).body(response);
     }
 
-    @GetMapping("/vnpay-return")
-    public String hhh(@RequestParam Map<String, String> allParams) {
-        System.out.println("Run here");
-        return "OK";
+    @PostMapping("/prescription-invoice/payment-url")
+    public ResponseEntity<RestResponse<VNPayResponse.Payment>> getPaymentUrlPrescriptionInvoice(
+        @RequestBody PaymentSend order, 
+        HttpServletRequest request, @RequestHeader("X-Request-Path") String requestFrom) {
+        String paymentUrl = vnPayService.getPaymentUrl(order, request);
+
+        VNPayResponse.Payment vnPayResponse = new VNPayResponse.Payment();
+        vnPayResponse.setPaymentUrl(paymentUrl);
+        vnPayResponse.setRequestFrom(requestFrom);
+
+        RestResponse<VNPayResponse.Payment> response = new RestResponse<>();
+        response.setResult(true);
+        response.setStatusCode(HttpStatusResponse.OK);
+        response.setData(vnPayResponse);
+        response.setMessage(HttpStatusResponse.SUCCESS_MESSAGE);
+        response.setErrorMessage(null);
+
+        return ResponseEntity.status(HttpStatusResponse.OK).body(response);
+    }
+
+    @PostMapping("/valid/check-payment")
+    public ResponseEntity<RestResponse<VNPayResponse.CheckPayment>> checkPaymentPrescriptionInvoice(
+            @RequestBody @Valid VNPayCheck payCheck, Authentication authentication) {
+        VNPayResponse.CheckPayment response = vnPayService.processPaymentCallback(payCheck, authentication);
+
+        return ResponseEntity.status(HttpStatusResponse.OK)
+                .body(new RestResponse<VNPayResponse.CheckPayment>(HttpStatusResponse.OK, true, response, 
+                HttpStatusResponse.SUCCESS_MESSAGE, null));
     }
 }

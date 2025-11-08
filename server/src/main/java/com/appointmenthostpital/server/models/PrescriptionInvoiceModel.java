@@ -59,6 +59,8 @@ public class PrescriptionInvoiceModel {
     @JsonManagedReference
     private List<PrescriptionInvoiceDetailModel> prescriptionInvoiceDetails;
 
+    private String vnpayRef;
+
     public PrescriptionInvoiceModel() {
     }
 
@@ -156,5 +158,13 @@ public class PrescriptionInvoiceModel {
 
     public void setPrescriptionInvoiceDetails(List<PrescriptionInvoiceDetailModel> prescriptionInvoiceDetails) {
         this.prescriptionInvoiceDetails = prescriptionInvoiceDetails;
+    }
+
+    public String getVnpayRef() {
+        return vnpayRef;
+    }
+
+    public void setVnpayRef(String vnpayRef) {
+        this.vnpayRef = vnpayRef;
     }
 }

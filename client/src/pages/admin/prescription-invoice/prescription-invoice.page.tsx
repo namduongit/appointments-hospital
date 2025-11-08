@@ -71,7 +71,7 @@ const AdminPrescriptionInvoicePage = () => {
         totalAmount: prescriptionInvoices.reduce((sum, invoice) => sum + (invoice.totalAmount || 0), 0),
         totalMedicines: prescriptionInvoices.reduce((sum, invoice) => sum + (invoice.medicines?.length || 0), 0),
         pendingInvoices: prescriptionInvoices.filter(invoice => invoice.status === 'PENDING').length,
-        completedInvoices: prescriptionInvoices.filter(invoice => invoice.status === 'COMPLETED').length,
+        paidInvoices: prescriptionInvoices.filter(invoice => invoice.status === 'PAID').length,
         cancelledInvoices: prescriptionInvoices.filter(invoice => invoice.status === 'CANCELLED').length,
         todayInvoices: prescriptionInvoices.filter(invoice => {
             const today = new Date().toDateString();
@@ -83,7 +83,7 @@ const AdminPrescriptionInvoicePage = () => {
         switch (status) {
             case 'PENDING':
                 return 'text-yellow-600 bg-yellow-100';
-            case 'COMPLETED':
+            case 'PAID':
                 return 'text-green-600 bg-green-100';
             case 'CANCELLED':
                 return 'text-red-600 bg-red-100';
@@ -153,7 +153,7 @@ const AdminPrescriptionInvoicePage = () => {
                             </div>
                             <div className="ml-3">
                                 <p className="text-sm text-gray-600">Đã hoàn thành</p>
-                                <p className="text-lg font-semibold">{stats.completedInvoices}</p>
+                                <p className="text-lg font-semibold">{stats.paidInvoices}</p>
                             </div>
                         </div>
                     </div>

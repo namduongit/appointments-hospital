@@ -13,7 +13,7 @@ type PrescriptionInvoiceDetail = {
 
 const PrescriptionInvoiceDetail = (props: PrescriptionInvoiceDetail) => {
     const { prescriptionInvoiceSelect, setShowDetail, onSuccess } = props;
-    
+    const { execute, notify } = useCallApi();
     const navigate = useNavigate();
 
     const getStatusColor = (status: string) => {
@@ -38,8 +38,13 @@ const PrescriptionInvoiceDetail = (props: PrescriptionInvoiceDetail) => {
         navigate(`/payment/prescription-invoice/${prescriptionInvoiceSelect.id}`);
     }
 
-    const handleCancel = () => {
-        onSuccess?.();
+    const handleCancel = async () => {
+        const restResponse = await execute(updatePrescriptionInvoiceStatus(prescriptionInvoiceSelect.id, 'CANCELLED'));
+        notify(restResponse!, "Hủy hóa đơn kê thuốc thành công");
+        if (restResponse?.result) {
+            setShowDetail(false);
+            onSuccess?.();
+        }
     }
 
     return (

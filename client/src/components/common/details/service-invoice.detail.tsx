@@ -40,8 +40,9 @@ const ServiceInvoiceDetail = (props: ServiceInvoiceDetailProps) => {
 
     const handleCancel = async () => {
         const restResponse = await execute(changeServiceInvoiceStatus(serviceInvoiceSelect.id, 'CANCELLED'));
-        notify(restResponse!, "Hủy hóa đơn thành công");
+        notify(restResponse!, "Hủy hóa đơn dịch vụ thành công");
         if (restResponse?.result) {
+            setShowDetail(false);
             onSuccess?.();
         }
     }

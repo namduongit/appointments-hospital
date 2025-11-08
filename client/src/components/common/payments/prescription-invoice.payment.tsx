@@ -3,9 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPrescriptionInvoiceById } from "../../../services/prescription-invoice.service";
 import type { PrescriptionInvoiceResponse } from "../../../responses/prescription-invoice.response";
 import useCallApi from "../../../hooks/useCallApi";
-import { callPayment } from "../../../services/payment.service";
+import { callPrescriptionInvoicePayment } from "../../../services/payment.service";
 import { formatDateToHourAndDay } from "../../../utils/format-date.util";
-import { formatNumberPhone, formatPriceVND } from "../../../utils/format-number.util";
+import { formatPriceVND } from "../../../utils/format-number.util";
 
 import momoIcon from '../../../assets/icons/momo.png';
 import vnpayIcon from '../../../assets/icons/vnpay.png';
@@ -31,8 +31,8 @@ const PrescriptionInvoicePayment = () => {
     }, [id])
 
     const handlePayment = async () => {
-        const restResponse = await execute(callPayment({
-            orderType: 'prescription_invoice',
+        const restResponse = await execute(callPrescriptionInvoicePayment({
+            orderType: 'PRESCRIPTION INVOICE',
             orderId: Number(id)
         }));
         if (restResponse?.result && restResponse.data.paymentUrl && restResponse.data.requestFrom) {
@@ -119,7 +119,7 @@ const PrescriptionInvoicePayment = () => {
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Số điện thoại:</span>
-                                        <span className="text-gray-900 font-medium">{serviceInvoice.patientPhone ? formatNumberPhone(serviceInvoice.patientPhone) : "Không có số điện thoại"}</span>
+                                        <span className="text-gray-900 font-medium">{serviceInvoice.patientPhone}</span>
                                     </div>
                                     <div className="flex justify-between">
                                         <span className="text-gray-600">Email:</span>

@@ -109,6 +109,28 @@ public class PrescriptionInvoiceService {
         return PrescriptionInvoiceConvert.convertToResponse(invoiceModel);
     }
 
+    @Transactional
+    public PrescriptionInvoiceResponse handleChangePrescriptionInvoiceState(
+        PrescriptionInvoiceModel invoice) {
+
+        invoice = this.prescriptionInvoiceRepository.save(invoice);
+
+        if (invoice.getStatus().equals("PAID")) {
+            this.updateInventoryFromPrescriptionInvoice(invoice);
+        }
+
+        return PrescriptionInvoiceConvert.convertToResponse(invoice);
+    }
+
+    public boolean checkMedicineStockForPrescriptionInvoice(PrescriptionInvoiceModel invoice) {
+        for (PrescriptionInvoiceDetailModel detail: invoice.getPrescriptionInvoiceDetails()) {
+            if (detail.getMedicineModel().getCurrentStock() < detail.getQuantity()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void updateInventoryFromPrescriptionInvoice(PrescriptionInvoiceModel invoice) {
         for (PrescriptionInvoiceDetailModel detail : invoice.getPrescriptionInvoiceDetails()) {
             try {

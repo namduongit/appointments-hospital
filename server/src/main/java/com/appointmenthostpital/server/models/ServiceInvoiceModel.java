@@ -57,6 +57,9 @@ public class ServiceInvoiceModel {
     @JsonManagedReference
     private List<ServiceInvoiceDetailModel> serviceInvoiceDetails = new ArrayList<>();
 
+
+    private String vnpayRef;
+
     public ServiceInvoiceModel() {
     }
 
@@ -138,5 +141,13 @@ public class ServiceInvoiceModel {
 
     public void setServiceInvoiceDetails(List<ServiceInvoiceDetailModel> serviceInvoiceDetails) {
         this.serviceInvoiceDetails = serviceInvoiceDetails;
+    }
+
+    public String getVnpayRef() {
+        return vnpayRef;
+    }
+
+    public void setVnpayRef(String vnpayRef) {
+        this.vnpayRef = vnpayRef;
     }
 }
