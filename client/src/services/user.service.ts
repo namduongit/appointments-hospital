@@ -50,3 +50,15 @@ export const getPrescriptionInvoiceList = async () => {
     const restResponse: RestResponse = response.data;
     return restResponse;
 }
+
+export const sendEmailContact = async (params: {
+    fullName: string,
+    email: string,
+    phone: string,
+    subject: string,
+    message: string
+}) => {
+    const response = await api.post("/api/patient/send-contact", params);
+    const restResponse: RestResponse = response.data;
+    return restResponse;
+}

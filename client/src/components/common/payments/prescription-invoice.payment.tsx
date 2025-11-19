@@ -3,20 +3,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getPrescriptionInvoiceById } from "../../../services/prescription-invoice.service";
 import type { PrescriptionInvoiceResponse } from "../../../responses/prescription-invoice.response";
 import useCallApi from "../../../hooks/useCallApi";
-import { callPrescriptionInvoicePayment } from "../../../services/payment.service";
+import { callCashPayment, callPrescriptionInvoicePaymentByMomo, callPrescriptionInvoicePaymentByVNPay } from "../../../services/payment.service";
 import { formatDateToHourAndDay } from "../../../utils/format-date.util";
 import { formatPriceVND } from "../../../utils/format-number.util";
 
 import momoIcon from '../../../assets/icons/momo.png';
 import vnpayIcon from '../../../assets/icons/vnpay.png';
-import qrpayIcon from '../../../assets/icons/qrpay.png';
+import cashIcon from '../../../assets/icons/cash.png';
 
-type PaymentMethod = 'vnpay' | 'momo' | 'bank-transfer';
+type PaymentMethod = 'vnpay' | 'momo' | 'cash';
 
 const PrescriptionInvoicePayment = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { execute, showError, loading } = useCallApi();
+    const { execute, notify, showError, loading } = useCallApi();
     const [serviceInvoice, setServiceInvoice] = useState<PrescriptionInvoiceResponse>({} as PrescriptionInvoiceResponse);
     const [selectedPayment, setSelectedPayment] = useState<PaymentMethod>('vnpay');
 
@@ -31,15 +31,46 @@ const PrescriptionInvoicePayment = () => {
     }, [id])
 
     const handlePayment = async () => {
-        const restResponse = await execute(callPrescriptionInvoicePayment({
-            orderType: 'PRESCRIPTION INVOICE',
-            orderId: Number(id)
-        }));
-        if (restResponse?.result && restResponse.data.paymentUrl && restResponse.data.requestFrom) {
-            window.location.href = restResponse.data.paymentUrl;
-            localStorage.setItem('PAYMENT_REQUEST_FROM', restResponse.data.requestFrom);
-        } else {
-            showError(restResponse);
+        if (selectedPayment === 'vnpay') {
+            const restResponse = await execute(callPrescriptionInvoicePaymentByVNPay({
+                orderType: 'PRESCRIPTION INVOICE',
+                orderId: Number(id)
+            }));
+            if (restResponse?.result && restResponse.data.paymentUrl && restResponse.data.requestFrom) {
+                notify(restResponse, "Đang chuyển đến cổng thanh toán VNPay");
+                window.location.href = restResponse.data.paymentUrl;
+            } else {
+                showError(restResponse);
+            }
+            return;
+        }
+
+        if (selectedPayment === 'momo') {
+            const restResponse = await execute(callPrescriptionInvoicePaymentByMomo({
+                orderType: 'PRESCRIPTION INVOICE',
+                orderId: Number(id)
+            }));
+            if (restResponse?.result && restResponse.data.paymentUrl && restResponse.data.requestFrom) {
+                notify(restResponse, "Đang chuyển đến cổng thanh toán Momo");
+                window.location.href = restResponse.data.paymentUrl;
+            } else {
+                showError(restResponse);
+            }
+        }
+
+        if (selectedPayment === 'cash') {
+            const restResponse = await execute(callCashPayment({
+                orderType: 'PRESCRIPTION INVOICE',
+                orderId: Number(id)
+            }));
+            if (restResponse?.result) {
+                notify(restResponse, "Thanh toán thành công");
+                if (restResponse.data.directUrl) {
+                    setTimeout(() => {
+                        window.location.href = restResponse.data.directUrl;
+                    }, 1000);
+                }
+            }
         }
     }
 
@@ -65,7 +96,7 @@ const PrescriptionInvoicePayment = () => {
 
     return (
         <div>
-            <div className="max-w-7xl mx-auto py-10">
+            <div className="max-w-7xl mx-auto py-10 px-10 md:px-5 lg:px-0">
                 <h1 className="text-3xl font-bold text-gray-900 mb-5">Thanh toán hóa đơn</h1>
 
                 <button
@@ -239,7 +270,6 @@ const PrescriptionInvoicePayment = () => {
                                 </div>
                             </div>
 
-                            {/* Momo */}
                             <div
                                 onClick={() => setSelectedPayment('momo')}
                                 className={`border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${selectedPayment === 'momo'
@@ -267,27 +297,26 @@ const PrescriptionInvoicePayment = () => {
                                     </div>
                                 </div>
                             </div>
-
                             <div
-                                onClick={() => setSelectedPayment('bank-transfer')}
-                                className={`border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${selectedPayment === 'bank-transfer'
+                                onClick={() => setSelectedPayment('cash')}
+                                className={`border-2 rounded-lg p-4 cursor-pointer transition-all hover:shadow-md ${selectedPayment === 'cash'
                                     ? 'border-green-500 bg-green-50'
                                     : 'border-gray-200 hover:border-gray-300'
                                     }`}
                             >
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center space-x-4">
-                                        <img src={qrpayIcon} alt="QR Pay" className="w-12 h-12 object-contain" />
+                                        <img src={cashIcon} alt="cash" className="w-12 h-12 object-contain" />
                                         <div>
-                                            <h3 className="font-semibold text-gray-900">Chuyển khoản ngân hàng</h3>
-                                            <p className="text-sm text-gray-600">Chuyển khoản qua QR code</p>
+                                            <h3 className="font-semibold text-gray-900">Tiền mặt</h3>
+                                            <p className="text-sm text-gray-600">Sử dụng tiền mặt để thanh toán</p>
                                         </div>
                                     </div>
-                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedPayment === 'bank-transfer'
+                                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedPayment === 'cash'
                                         ? 'border-green-500 bg-green-500'
                                         : 'border-gray-300'
                                         }`}>
-                                        {selectedPayment === 'bank-transfer' && (
+                                        {selectedPayment === 'cash' && (
                                             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -295,18 +324,9 @@ const PrescriptionInvoicePayment = () => {
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
-                        {selectedPayment === 'bank-transfer' && (
-                            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                                <h4 className="font-semibold text-gray-900 mb-2">Thông tin chuyển khoản:</h4>
-                                <div className="space-y-1 text-sm">
-                                    <p className="text-gray-700">Ngân hàng: <span className="font-semibold">VietinBank</span></p>
-                                    <p className="text-gray-700">Số tài khoản: <span className="font-semibold">0388 853 835</span></p>
-                                    <p className="text-gray-700">Chủ tài khoản: <span className="font-semibold">NGUYEN NAM DUONG</span></p>
-                                </div>
-                            </div>
-                        )}
 
                         <div className="bg-gray-50 rounded-lg p-4 mb-6">
                             <div className="flex justify-between items-center mb-3">

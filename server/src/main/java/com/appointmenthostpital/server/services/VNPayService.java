@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 
 import com.appointmenthostpital.server.configs.VNPayConfig;
 import com.appointmenthostpital.server.dtos.PaymentSend;
-import com.appointmenthostpital.server.dtos.VNPayCheck;
-import com.appointmenthostpital.server.dtos.VNPayResponse;
+import com.appointmenthostpital.server.dtos.vnpay.VNPayCheck;
+import com.appointmenthostpital.server.dtos.vnpay.VNPayResponse;
 import com.appointmenthostpital.server.exceptions.VNPayException;
 import com.appointmenthostpital.server.models.AccountModel;
 import com.appointmenthostpital.server.models.PrescriptionInvoiceModel;
 import com.appointmenthostpital.server.models.ServiceInvoiceModel;
-import com.appointmenthostpital.server.utils.VNPay;
+import com.appointmenthostpital.server.utils.VNPayUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -57,6 +57,7 @@ public class VNPayService extends VNPayConfig {
         String version = "2.1.0";
         String command = "pay";
         String orderType = "other";
+        
         Long totalAmount = 0L;
         String orderRequestType = order.getOrderType();
         if (orderRequestType.equals("SERVICE INVOICE")) {
@@ -74,8 +75,8 @@ public class VNPayService extends VNPayConfig {
             throw new IllegalArgumentException("Lỗi tạo hóa đơn do sai loại");
         }
 
-        String transactionReference = VNPay.getRandomNumber(8);
-        String clientIpRequest = VNPay.getIpAddress(request);
+        String transactionReference = VNPayUtil.getRandomNumber(8);
+        String clientIpRequest = VNPayUtil.getIpAddress(request);
 
         String terminalCode = this.getTerminalCode();
 
@@ -129,7 +130,7 @@ public class VNPayService extends VNPayConfig {
             }
         }
 
-        String secureHash = VNPay.hmacSHA512(this.getSecretKey(), hashData.toString());
+        String secureHash = VNPayUtil.hmacSHA512(this.getSecretKey(), hashData.toString());
         query.append("&vnp_SecureHash=");
         query.append(secureHash);
         String paymentUrl = this.getUrlPayment() + "?" + query.toString();
@@ -176,7 +177,7 @@ public class VNPayService extends VNPayConfig {
             }
         }
 
-        String expectedSecureHash = VNPay.hmacSHA512(this.getSecretKey(), hashData.toString());
+        String expectedSecureHash = VNPayUtil.hmacSHA512(this.getSecretKey(), hashData.toString());
         return expectedSecureHash.equalsIgnoreCase(payCheck.getSecureHash());
     }
 
@@ -254,6 +255,8 @@ public class VNPayService extends VNPayConfig {
     }
 
     public String getDirectUrl(Authentication authentication, String orderType) {
+        if (authentication == null) return "/";
+        
         String email = authentication.getName();
         AccountModel accountModel = accountService.getUserByEmail(email);
 

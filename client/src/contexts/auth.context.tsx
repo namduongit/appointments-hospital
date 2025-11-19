@@ -73,7 +73,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => window.clearTimeout(timeOut);
   }, [token, expiresAt]);
 
-  // Function clear token
   const clearAuth = () => {
     setToken("");
     setEmail("");
@@ -82,7 +81,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     sessionStorage.removeItem("CURRENT_USER");
   };
 
-  // Function set variable
   const setAuth = (authResponse: UserAuth) => {
     setToken(authResponse.accessToken);
     setEmail(authResponse.email);
@@ -96,7 +94,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     email,
     role,
     expiresAt,
-    isAuthenticated: !!token,
+    isAuthenticated: !!token && !!email && !!expiresAt,
     setAuth,
     clearAuth
   }), [token, expiresAt]);

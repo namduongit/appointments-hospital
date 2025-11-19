@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.appointmenthostpital.server.dtos.PaymentSend;
 import com.appointmenthostpital.server.dtos.RestResponse;
-import com.appointmenthostpital.server.dtos.VNPayCheck;
-import com.appointmenthostpital.server.dtos.VNPayResponse;
+import com.appointmenthostpital.server.dtos.vnpay.VNPayCheck;
+import com.appointmenthostpital.server.dtos.vnpay.VNPayResponse;
 import com.appointmenthostpital.server.services.VNPayService;
 import com.appointmenthostpital.server.utils.HttpStatusResponse;
 
@@ -21,14 +21,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/payment/vnpay")
 public class VNPayController {
     @Autowired
     private VNPayService vnPayService;
 
     @PostMapping("/service-invoice/payment-url")
-    public ResponseEntity<RestResponse<VNPayResponse.Payment>> getPaymentUrl(
-        @RequestBody PaymentSend order, 
+    public ResponseEntity<RestResponse<VNPayResponse.Payment>> getPaymentUrlServiceInvoice(
+        @Valid @RequestBody PaymentSend order, 
         HttpServletRequest request, @RequestHeader("X-Request-Path") String requestFrom) {
         String paymentUrl = vnPayService.getPaymentUrl(order, request);
 

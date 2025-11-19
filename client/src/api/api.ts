@@ -23,6 +23,11 @@ api.interceptors.response.use(
     if (!error.response) {
       throw new Error("Network Error");
     }
+    if (error.response.data === "") {
+      error.response.data = {
+        statusCode: error.status
+      } as RestResponse;
+    }
     return error.response;
   }
 );

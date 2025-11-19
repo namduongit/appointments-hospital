@@ -18,7 +18,7 @@ public class MethodArgumentTypeMismatchExceptionHandler {
         restResponse.setResult(false);
         restResponse.setData(null);
         restResponse.setMessage(HttpStatusResponse.BAD_MESSAGE);
-        restResponse.setErrorMessage("Dữ liệu truyền vào không hợp lệ!");
+        restResponse.setErrorMessage(HttpStatusResponse.INVALID_DATA);
 
         return ResponseEntity.status(HttpStatusResponse.BAD_REQUEST).body(restResponse);
     }

@@ -40,9 +40,10 @@ const TeamSection = () => {
                     whileInView="visible"
                     viewport={{ once: true, margin: "-100px" }}
                 >
-                    {doctors.map((doctor, idx) => (
+                    {doctors.slice(0, 4).map((doctor, idx) => (
                         <motion.div
                             key={idx}
+                            className="h-full"
                             variants={{
                                 hidden: { 
                                     opacity: 0, 

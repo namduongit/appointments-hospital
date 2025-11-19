@@ -60,6 +60,8 @@ public class ServiceInvoiceModel {
 
     private String vnpayRef;
 
+    private String momoRef;
+
     public ServiceInvoiceModel() {
     }
 
@@ -149,5 +151,13 @@ public class ServiceInvoiceModel {
 
     public void setVnpayRef(String vnpayRef) {
         this.vnpayRef = vnpayRef;
+    }
+
+    public String getMomoRef() {
+        return momoRef;
+    }
+
+    public void setMomoRef(String momoRef) {
+        this.momoRef = momoRef;
     }
 }

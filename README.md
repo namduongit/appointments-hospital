@@ -3,7 +3,6 @@
 _Backend: Spring Boot | Frontend: React + Vite + TypeScript_
 
 ---
-
 ## Getting Started
 
 ### 1. Clone the Repository
@@ -11,52 +10,58 @@ _Backend: Spring Boot | Frontend: React + Vite + TypeScript_
 git clone https://github.com/namduongit/appointments-hospital
 cd appointments-hospital
 ```
----
-### 2. Environment Configuration
-Before running the application, you **must** configure the environment variables:
-#### Server Configuration
-**Properties file**: (`server/src/main/resources/application.properties`)
-```properties
-# Application Config
-spring.application.name=server
-server.port=8000
 
-# Database Config
-spring.datasource.url=jdbc:mysql://localhost:3306/jwt_demo
-spring.datasource.username=namduongit
-spring.datasource.password=NDuong205
-
-# JPA Config
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-
-# Client URL
-CLIENT_URL=http://localhost:5173
-
-# JWT Config
-SECRET_KEY=SjHJaop2ktX2WesRaw2T8Ou/z8qCxiTIK+FVyxTkuEa/I1Z2q7Pesp/ETyKqIwbuIbe7xcMSqwvZxBG/GkFX3Q==
-EXPIRATION_TIME=86400
-
-# Console DEBUG
-logging.level.org.springframework.security=DEBUG
-
-# File Upload Configuration
-spring.servlet.multipart.max-file-size=10MB
-spring.servlet.multipart.max-request-size=10MB
-```
-
-
-**Firebase json**: (`server/src/main/resources/firebase-service-account.json`)
-- Content file download in Firebase console -> Project settings
-
-#### Client Configuration (`client/.env`)
-Create and configure the following variables:
-```env
-# Server
-VITE_SERVER_URL=http://localhost:8000
-VITE_SERVER_PORT=8000
-VITE_SERVER_HOST=http://localhost
+### 2. Structure Overview
+The project is divided into two main directories:
+- `client/`: Contains the Spring Boot application for handling server-side logic and database interactions.
+- `server/`: Contains the React application for the user interface.
+```bash
+root/
+├── client/                                 # React (vite + TypeScript) frontend
+    ├── src/                                # Source files
+    │   ├── .../
+    │   │   ├── .../
+    │   │   └── .../
+    │   └── test/
+    └── .env                                # Environment variables for backend    
+└── server/                                 # Spring Boot backend
+    ├── src/
+    │   ├── main/
+    │       ├── java/                       # Java source files
+    │       ├── resources/                  # Application resources
+    │           └── firebase/
+    │               └── config.json
+    │           └── templates/
+    │           └── application.properties
+    │   └── .../
+    └── .pom.xml                            # Maven configuration
 ```
 
 ---
+### 3. Environment Configuration
+- Config client environment variables in `client/.env`.
+- Config server environment variables in `server/src/main/resources/application.properties`.
+- Config Firebase credentials in `server/src/main/resources/firebase/config.json`.
 
+**Note**: Read example environment variable in `.example.*.*`
+
+---
+### 4. Some useful applications have been integrated
+- **Firebase**: For authentication and real-time database.
+- **RabbitMQ**: For handling asynchronous tasks and messaging.
+- **Payment Gateway**: Integrated payment processing for medical services.
+- **Email Service**: Automated email notifications for appointments and updates.
+- **Jasper Reports**: For generating dynamic reports and documents.
+
+***Note***: Docs for these integrations can be found in the `server/docs/` directory.
+
+---
+### 5. Running the Application
+
+
+---
+### 6. Contact author   
+For any questions or support, please contact:
+- Name: Duong Nguyen
+- Email: nguyennamduong205@gmail.com
+- GitHub: [namduongit](https://github.com/namduongit)

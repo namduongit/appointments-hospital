@@ -61,6 +61,8 @@ public class PrescriptionInvoiceModel {
 
     private String vnpayRef;
 
+    private String momoRef;
+
     public PrescriptionInvoiceModel() {
     }
 
@@ -166,5 +168,13 @@ public class PrescriptionInvoiceModel {
 
     public void setVnpayRef(String vnpayRef) {
         this.vnpayRef = vnpayRef;
+    }
+
+    public String getMomoRef() {
+        return momoRef;
+    }
+    
+    public void setMomoRef(String momoRef) {
+        this.momoRef = momoRef;
     }
 }
