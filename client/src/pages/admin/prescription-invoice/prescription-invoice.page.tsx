@@ -5,9 +5,10 @@ import useCallApi from "../../../hooks/useCallApi";
 import { prescriptionInvoiceStatus } from "../../../constants/status.constant";
 import type { PrescriptionInvoiceResponse } from "../../../responses/prescription-invoice.response";
 import PrescriptionInvoiceDetail from "../../../components/common/details/prescription-invoice.detail";
+import { printPrescriptionTicket } from "../../../services/report-print.service";
 
 const AdminPrescriptionInvoicePage = () => {
-    const { execute } = useCallApi();
+    const { execute, notify } = useCallApi();
 
     const [prescriptionInvoices, setPrescriptionInvoices] = useState<PrescriptionInvoiceResponse[]>([]);
     const [filteredInvoices, setFilteredInvoices] = useState<PrescriptionInvoiceResponse[]>([]);
@@ -109,6 +110,11 @@ const AdminPrescriptionInvoicePage = () => {
         setSelectedInvoice(invoice);
         setShowDetail(true);
     };
+
+    const handlePrint = async (invoice: PrescriptionInvoiceResponse) => {
+        const res = await execute(printPrescriptionTicket(invoice.id));
+        notify(res, 'In hóa đơn thuốc thành công');
+    }
 
     return (
         <main className="prescription-invoice-page p-4 sm:p-6">
@@ -285,6 +291,15 @@ const AdminPrescriptionInvoicePage = () => {
                                                     >
                                                         <i className="fa-solid fa-eye mr-1"></i>
                                                         Chi tiết
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handlePrint(invoice)}
+                                                        className="px-3 py-1 bg-yellow-100 text-yellow-600 rounded hover:bg-yellow-200 transition-colors text-xs font-medium"
+                                                        title="In hóa đơn"
+                                                    >
+                                                        <i className="fa-solid fa-edit mr-1"></i>
+                                                        In hóa đơn
                                                     </button>
                                                 </div>
                                             </td>

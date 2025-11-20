@@ -5,15 +5,16 @@ import useCallApi from "../../../hooks/useCallApi";
 import { serviceInvoiceStatus } from "../../../constants/status.constant";
 import type { ServiceInvoiceResponse } from "../../../responses/service-nvoice.response";
 import ServiceInvoiceDetail from "../../../components/common/details/service-invoice.detail";
+import { printServiceTicket } from "../../../services/report-print.service";
 
 const AdminServiceInvoicePage = () => {
-    const { execute } = useCallApi();
+    const { execute, notify } = useCallApi();
 
     const [serviceInvoices, setServiceInvoices] = useState<ServiceInvoiceResponse[]>([]);
     const [filteredInvoices, setFilteredInvoices] = useState<ServiceInvoiceResponse[]>([]);
     const [showDetail, setShowDetail] = useState<boolean>(false);
     const [selectedInvoice, setSelectedInvoice] = useState<ServiceInvoiceResponse | null>(null);
-    
+
     const [searchForm, setSearchForm] = useState({
         input: "",
         status: "",
@@ -108,6 +109,11 @@ const AdminServiceInvoicePage = () => {
     const handleShowDetail = (invoice: ServiceInvoiceResponse) => {
         setSelectedInvoice(invoice);
         setShowDetail(true);
+    }
+
+    const handlePrint = async (invoice: ServiceInvoiceResponse) => {
+        const res = await execute(printServiceTicket(invoice.id));
+        notify(res, 'In hóa đơn thành công');
     }
 
     return (
@@ -280,7 +286,7 @@ const AdminServiceInvoicePage = () => {
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3 font-semibold text-blue-600">
-                                                {invoice.totalAmount.toLocaleString('vi-VN')} 
+                                                {invoice.totalAmount.toLocaleString('vi-VN')}
                                             </td>
                                             <td className="px-4 py-3 text-center">
                                                 <div className="flex items-center justify-center gap-2">
@@ -291,6 +297,15 @@ const AdminServiceInvoicePage = () => {
                                                     >
                                                         <i className="fa-solid fa-eye mr-1"></i>
                                                         Chi tiết
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => handlePrint(invoice)}
+                                                        className="px-3 py-1 bg-yellow-100 text-yellow-600 rounded hover:bg-yellow-200 transition-colors text-xs font-medium"
+                                                        title="In hóa đơn"
+                                                    >
+                                                        <i className="fa-solid fa-edit mr-1"></i>
+                                                        In hóa đơn
                                                     </button>
                                                 </div>
                                             </td>
@@ -319,7 +334,7 @@ const AdminServiceInvoicePage = () => {
                                 </span>
                                 <span>
                                     Tổng giá trị: <span className="font-semibold text-blue-600">
-                                        {filteredInvoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0).toLocaleString('vi-VN')} 
+                                        {filteredInvoices.reduce((sum, invoice) => sum + invoice.totalAmount, 0).toLocaleString('vi-VN')}
                                     </span>
                                 </span>
                             </div>
