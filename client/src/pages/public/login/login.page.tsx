@@ -28,11 +28,12 @@ const LoginPage = () => {
         if (restResponse?.result) {
             auth.setAuth(restResponse.data);
             setTimeout(() => {
-                if (auth.role !== "USER") {
-                    window.location.href = `/${auth.role?.toLowerCase()}`;
-                } else {
-                    window.location.href = "/";
-                }
+                // if (auth.role !== "USER") {
+                //     window.location.href = `/${auth.role?.toLowerCase()}`;
+                // } else {
+                //     window.location.href = "/";
+                // }
+                window.location.href = "/";
             }, 1000);
         }
     }

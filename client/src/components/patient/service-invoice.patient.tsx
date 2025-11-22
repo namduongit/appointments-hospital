@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { ServiceInvoiceResponse } from "../../responses/service-nvoice.response";
 import TablePagination from "../common/others/pagination";
-import { formatDateToHourAndDay } from "../../utils/format-date.util";
 import ServiceInvoiceDetail from "./others/service-invoice-detail";
 
 type ServiceInvoicePatientProps = {
