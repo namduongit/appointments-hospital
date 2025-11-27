@@ -57,7 +57,16 @@ root/
 
 ---
 ### 5. Running the Application
-
+**Run with `Docker`**
+```bash
+# Run in background
+docker compose up -d
+# Run in console
+docker compose up
+```
+**Run with `command`**
+- Client: npm install && npm run dev
+- Server: gradle runBoot
 
 ---
 ### 6. Contact author   
