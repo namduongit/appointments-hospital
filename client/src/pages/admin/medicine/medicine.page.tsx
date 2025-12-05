@@ -257,8 +257,8 @@ const AdminMedicinePage = () => {
 
                 <div className="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
-                        {select === "medicine" && <MedicineTable medicines={medicinesFilter} categories={categories} onSuccess={handleGetMedicineList} />}
-                        {select === "category" && <MedicineCategoryTable categories={categoriesFilter} onSuccess={handleGetMedicineCategoryList} />}
+                        {select === "medicine" && <MedicineTable medicines={medicinesFilter} categories={categories} onSuccess={handleGetMedicineList} isFix={true} />}
+                        {select === "category" && <MedicineCategoryTable categories={categoriesFilter} onSuccess={handleGetMedicineCategoryList} isFix={true} />}
                     </div>
                 </div>
             </div>

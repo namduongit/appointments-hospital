@@ -11,11 +11,11 @@ import useCallApi from "../../../hooks/useCallApi";
 type MedicalPackageTableProps = {
     medicalPackages: MedicalPackageResponse[];
     onSuccess?: () => void;
+    isFix?: boolean;
 }
 
 const MedicalPackageTable = (props: MedicalPackageTableProps) => {
-    const { medicalPackages, onSuccess } = props;
-
+    const { medicalPackages, onSuccess, isFix } = props;
     const { execute, notify } = useCallApi();
 
     const [page, setPage] = useState<number>(1);
@@ -36,7 +36,7 @@ const MedicalPackageTable = (props: MedicalPackageTableProps) => {
     }
 
     const handleChangeStatus = async (medicalPackageSelect: MedicalPackageResponse, status: string) => {
-        const restResponse = await execute(changeMedicalPackageStatus(medicalPackageSelect.id,  status ));
+        const restResponse = await execute(changeMedicalPackageStatus(medicalPackageSelect.id, status));
         notify(restResponse!, status === "INACTIVE" ? "Tạm dừng gói dịch vụ thành công" : "Kích hoạt gói dịch vụ thành công");
         if (restResponse?.result) {
             onSuccess?.();
@@ -78,11 +78,15 @@ const MedicalPackageTable = (props: MedicalPackageTableProps) => {
                                         <i className="fa-solid fa-info"></i>
                                     </button>
 
+                                    {isFix && (
+                                        <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                                            onClick={() => handleEdit(medicalPackage)}
+                                        >
+                                            <i className="fa-solid fa-wrench"></i>
+                                        </button>
+                                    )}
+
                                     <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-                                        onClick={() => handleEdit(medicalPackage)}
-                                    >
-                                        <i className="fa-solid fa-wrench"></i>
-                                    </button>                                    <button className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
                                         onClick={() => handleChangeStatus(medicalPackage, medicalPackage.status === "ACTIVE" ? "INACTIVE" : "ACTIVE")}
                                     >
                                         <i className={`fa-solid ${medicalPackage.status === "ACTIVE" ? "fa-lock" : "fa-lock-open"}`}></i>

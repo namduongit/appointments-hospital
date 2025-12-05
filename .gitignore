@@ -35,3 +35,6 @@ server/gradle/
 
 # Database
 mysql_data/
+
+# Dist
+dist/

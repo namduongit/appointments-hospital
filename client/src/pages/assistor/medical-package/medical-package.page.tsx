@@ -191,18 +191,18 @@ const AssistorMedicalPackagePage = () => {
                         </div>
                     </div>
                     <div className="flex justify-end items-center gap-2">
-                        <button className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
+                        {/* <button className="font-semibold bg-blue-600 text-white hover:text-blue-600 hover:bg-white hover:ring-3 hover:ring-blue-600 px-4 py-2 rounded shadow cursor-pointer flex items-center"
                             onClick={() => setIsOpenCreateMedicalPackage(true)}
                         >
                             <i className="fa-solid fa-plus me-2"></i>
                             <span>Thêm gói dịch vụ</span>
-                        </button>
+                        </button> */}
                     </div>
                 </div>
 
                 <div className="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
-                        <MedicalPackageTable medicalPackages={medicalPackagesFilter} onSuccess={handleGetMedicalPackageList} />
+                        <MedicalPackageTable medicalPackages={medicalPackagesFilter} onSuccess={handleGetMedicalPackageList} isFix={false} />
                     </div>
                 </div>
             </div>

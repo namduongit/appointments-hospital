@@ -214,7 +214,7 @@ const AdminMedicalPackagePage = () => {
 
                 <div className="hidden lg:block bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                     <div className="overflow-x-auto">
-                        <MedicalPackageTable medicalPackages={medicalPackagesFilter} onSuccess={handleGetMedicalPackageList} />
+                        <MedicalPackageTable medicalPackages={medicalPackagesFilter} onSuccess={handleGetMedicalPackageList} isFix={true} />
                     </div>
                 </div>
             </div>

@@ -9,12 +9,13 @@ import { formatPriceVND } from "../../../utils/format-number.util";
 
 type MedicineTableProps = {
     medicines: MedicineResponse[];
-    categories?: MedicineCategoryResponse[];
+    categories: MedicineCategoryResponse[];
+    isFix?: boolean;
     onSuccess?: () => void;
 }
 
 const MedicineTable = (props: MedicineTableProps) => {
-    const { medicines, categories = [], onSuccess } = props;
+    const { medicines, categories, isFix, onSuccess } = props;
 
     const [page, setPage] = useState<number>(1);
     const [row, setRow] = useState<number>(5);
@@ -33,7 +34,7 @@ const MedicineTable = (props: MedicineTableProps) => {
     };
 
     const getStatusColor = (status: string) => {
-        switch(status) {
+        switch (status) {
             case 'ACTIVE': return 'bg-green-100 text-green-800';
             case 'OUT_OF_STOCK': return 'bg-red-100 text-red-800';
             case 'INACTIVE': return 'bg-gray-100 text-gray-800';
@@ -42,7 +43,7 @@ const MedicineTable = (props: MedicineTableProps) => {
     };
 
     const getStatusText = (status: string) => {
-        switch(status) {
+        switch (status) {
             case 'ACTIVE': return 'Hoạt động';
             case 'OUT_OF_STOCK': return 'Hết hàng';
             case 'INACTIVE': return 'Không hoạt động';
@@ -93,7 +94,7 @@ const MedicineTable = (props: MedicineTableProps) => {
                             </td>
                             <td className="px-4 py-3 text-sm text-gray-600 text-center">
                                 <div className="flex items-center justify-center gap-3">
-                                    <button 
+                                    <button
                                         className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
                                         onClick={() => handleShowDetail(medicine)}
                                         title="Xem chi tiết"
@@ -101,13 +102,15 @@ const MedicineTable = (props: MedicineTableProps) => {
                                         <i className="fa-solid fa-info"></i>
                                     </button>
 
-                                    <button 
+                                    {isFix && (
+                                    <button
                                         className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
                                         onClick={() => handleShowEdit(medicine)}
                                         title="Chỉnh sửa"
                                     >
                                         <i className="fa-solid fa-wrench"></i>
                                     </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>
@@ -125,14 +128,14 @@ const MedicineTable = (props: MedicineTableProps) => {
                 </tbody>
             </table>
             <TablePagination array={medicines} page={page} row={row} setPage={setPage} setRow={setRow} />
-            
+
             {showDetail && selectedMedicine && (
                 <MedicineDetail
                     medicineSelect={selectedMedicine}
                     setShowDetail={setShowDetail}
                 />
             )}
-            
+
             {showEdit && selectedMedicine && (
                 <EditMedicine
                     medicineSelect={selectedMedicine}

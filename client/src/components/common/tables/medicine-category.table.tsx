@@ -7,11 +7,12 @@ import type { MedicineCategoryResponse } from "../../../responses/medicine-categ
 
 type MedicineCategoryTableProps = {
     categories: MedicineCategoryResponse[];
+    isFix?: boolean;
     onSuccess?: () => void;
 }
 
 const MedicineCategoryTable = (props: MedicineCategoryTableProps) => {
-    const { categories, onSuccess } = props;
+    const { categories, isFix, onSuccess } = props;
 
     const [page, setPage] = useState<number>(1);
     const [row, setRow] = useState<number>(5);
@@ -58,13 +59,15 @@ const MedicineCategoryTable = (props: MedicineCategoryTableProps) => {
                                         <i className="fa-solid fa-info"></i>
                                     </button>
 
-                                    <button 
-                                        className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-                                        onClick={() => handleShowEdit(category)}
-                                        title="Chỉnh sửa"
-                                    >
-                                        <i className="fa-solid fa-wrench"></i>
-                                    </button>
+                                    {isFix && (
+                                        <button 
+                                            className="px-0.75 py-0.75 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                                            onClick={() => handleShowEdit(category)}
+                                            title="Chỉnh sửa"
+                                        >
+                                            <i className="fa-solid fa-wrench"></i>
+                                        </button>
+                                    )}
                                 </div>
                             </td>
                         </tr>

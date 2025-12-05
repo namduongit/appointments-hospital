@@ -109,7 +109,7 @@ const EditMedicine = (props: EditMedicine) => {
                                 onChange={(e) => handleChangeSubmit("categoryId", e.target.value)}
                             >
                                 <option value="">Chọn loại thuốc</option>
-                                {categories.map((category) => (
+                                {categories && categories.map((category) => (
                                     <option key={category.id} value={category.id}>
                                         {category.name}
                                     </option>
