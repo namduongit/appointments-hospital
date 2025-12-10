@@ -84,14 +84,14 @@ const router = createBrowserRouter([
       {
         path: "page/account",
         element:
-          <ProtectRoute roles={["USER"]}>
+          <ProtectRoute roles={["USER", "ADMIN", "ASSISTOR"]}>
             <AccountPage />
           </ProtectRoute>
       },
       {
         path: "page/booking",
         element:
-          <ProtectRoute roles={[]}>
+          <ProtectRoute roles={["USER", "ADMIN", "ASSISTOR"]}>
             <BookingPage />
           </ProtectRoute>
       }
